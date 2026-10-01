@@ -1,0 +1,75 @@
+/* The ChakraVue AI mark (Logo.tsx, logoMarkup in logoData.ts). */
+
+.logo {
+  display: block;
+  overflow: visible;
+}
+
+.logo__disc {
+  fill: #000;
+}
+
+.logo__glyph {
+  fill: #fff;
+}
+
+/* The glyphs turn around the centre of the disc. */
+.logo__glyphs {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+/* --- Header: the mark exactly as supplied, beside the wordmark. It never
+   turns, so every glyph stays where the artwork puts it. --- */
+
+.header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.header__logo {
+  width: 1.75em;
+  height: auto;
+  aspect-ratio: 1000 / 968;
+  flex: none;
+}
+
+/* --- Footer: the mark as supplied (never turned), large and faint,
+   centred behind the links. The wrap holds its place; the mark
+   inside it rises in as the footer arrives (Footer.tsx). --- */
+
+.footer__emblem-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: clamp(320px, 34vw, 500px);
+  aspect-ratio: 1000 / 968;
+  opacity: 0.14;
+  translate: -50% -50%;
+  /* Soft round edge, so it settles into the footer rather than sitting on it. */
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  pointer-events: none;
+}
+
+.footer__emblem {
+  width: 100%;
+  height: 100%;
+}
+
+.footer__emblem .logo__glyph {
+  fill: #ffb46a;
+}
+
+@media (max-width: 900px) {
+  .footer__emblem-wrap {
+    width: min(420px, 92vw);
+    opacity: 0.12;
+  }
+
+  .header__logo {
+    width: 1.6em;
+  }
+}

@@ -1,0 +1,55 @@
+/* ==========================================================================
+   The site's palette, Plum (theme.ts).
+
+   Stylesheet colours are rewritten at runtime; decorative renders take
+   the fitted colour matrix below, and the WebGL scenes apply the same
+   matrix in their own shaders (theme/grade.ts). Photographs of people are
+   deliberately left out.
+   ========================================================================== */
+
+html:not([data-theme="original"]) :is(
+    .ps-hero__art,
+    .theater__photo
+  ) {
+  filter: url(#cv-theme-filter);
+}
+
+/* Art whose own filter is animated (the blog doorway) puts this in front
+   of it, so the grade survives the animation. */
+html:not([data-theme="original"]) {
+  --cv-grade: url(#cv-theme-filter);
+}
+
+/* Product renders shot on black: colour only, and the black melts into the panel. */
+html:not([data-theme="original"]) .slit__img {
+  filter: url(#cv-theme-filter-light);
+  mix-blend-mode: lighten;
+}
+
+html:not([data-theme="original"]) .slit__img--dim {
+  filter: url(#cv-theme-filter-light) brightness(0.3) saturate(0.3);
+}
+
+/* The palette's ambient light: its shade glowing in from the top left and
+   the bottom right of the screen, screened over the page so blacks take
+   the colour and whites stay white. Pages built mostly from flat black
+   (Services, About, Blog, Contact, Privacy) would otherwise lose the
+   palette entirely; the home and Product Suite pages already carry lit
+   colour, so they get less. Colour and strength come from theme.ts. */
+html:not([data-theme="original"]) body::after {
+  position: fixed;
+  inset: 0;
+  z-index: 880;
+  background:
+    radial-gradient(70% 60% at 10% -8%, color-mix(in srgb, var(--cv-ambient) 100%, transparent), transparent 72%),
+    radial-gradient(62% 55% at 96% 108%, color-mix(in srgb, var(--cv-ambient) 85%, transparent), transparent 72%),
+    radial-gradient(110% 80% at 55% 50%, color-mix(in srgb, var(--cv-ambient) 30%, transparent), transparent 85%);
+  content: "";
+  mix-blend-mode: screen;
+  opacity: var(--cv-ambient-a, 0);
+  pointer-events: none;
+}
+
+html:is([data-page="home"], [data-page="product-suite"]):not([data-theme="original"]) body::after {
+  opacity: calc(var(--cv-ambient-a, 0) * 0.45);
+}

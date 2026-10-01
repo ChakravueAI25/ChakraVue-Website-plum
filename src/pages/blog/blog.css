@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Blog page
+   ========================================================================== */
+
+.blog-page {
+  background: #000;
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.blog-hero {
+  position: relative;
+  min-height: 520px;
+  padding: 152px 0 64px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* A scrim over the source photo hides the "Future with us" text that's
+   baked into the image itself (a screenshot crop, not a clean asset) and
+   keeps the live heading below readable over the bright doorway on the
+   right. Fully opaque (not just dimmed) through the whole left ~45%, where
+   both the baked-in text and the live heading sit, so none of the original
+   text can show through a partial tint — then fades out toward the glow,
+   with a vertical vignette blending the top/bottom into the page's own
+   black. */
+.blog-hero__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #030202 0%, #030202 42%, transparent 74%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%, transparent 78%, rgba(0, 0, 0, 0.75) 100%),
+    url("/images/blog/hero-bg.jpg") center / cover no-repeat;
+  filter: var(--cv-grade,) brightness(var(--glow, 1));
+}
+
+.blog-hero .section__inner {
+  position: relative;
+}
+
+.blog-hero__heading {
+  max-width: 620px;
+  margin-top: 18px;
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.6vw, 58px);
+  line-height: 1.18;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-shadow: 0 0 24px rgba(255, 180, 120, 0.25);
+}
+
+.blog-hero__sub {
+  max-width: 460px;
+  margin-top: 20px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgba(255, 236, 225, 0.72);
+}
+
+/* --------------------------------------------------------------------------
+   Shared: date/tag meta + byline (featured post and grid cards)
+   -------------------------------------------------------------------------- */
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-meta__date {
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.post-meta__tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 139, 18, 0.35);
+  background: rgba(255, 139, 18, 0.1);
+  font-family: var(--font-nav);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.post-author__avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 139, 18, 0.4);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 139, 18, 0.3), rgba(20, 14, 10, 0.94) 70%);
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 11px;
+}
+
+.post-author__name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 400;
+  color: #fff;
+}
+
+.post-author__role {
+  margin-top: 2px;
+  font-family: var(--font-nav);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Featured post
+   -------------------------------------------------------------------------- */
+
+.blog-featured {
+  padding: 80px 0 50px;
+  background: #030303;
+}
+
+.post-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 28px;
+  background: linear-gradient(180deg, #100d0a, #0a0908);
+}
+
+/* Stands in for a cover photo until real article art exists. */
+.post-feature__art {
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background:
+    radial-gradient(70% 90% at 30% 20%, rgba(255, 139, 18, 0.22), transparent 60%),
+    linear-gradient(160deg, #1c140c, #0b0a08);
+}
+
+.post-feature__tag-mark {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 34px);
+  letter-spacing: 0.04em;
+  color: rgba(255, 180, 110, 0.35);
+  text-transform: uppercase;
+}
+
+.post-feature__title {
+  margin-top: 16px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.28;
+  font-weight: 400;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.post-feature__excerpt {
+  margin-top: 16px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(255, 236, 225, 0.65);
+}
+
+/* --------------------------------------------------------------------------
+   Post grid
+   -------------------------------------------------------------------------- */
+
+.blog-grid {
+  padding: 20px 0 110px;
+  background: #030303;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.post-card {
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #100d0a, #0a0908);
+  text-align: left;
+}
+
+.post-card__art {
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background:
+    radial-gradient(70% 90% at 30% 20%, rgba(255, 139, 18, 0.18), transparent 60%),
+    linear-gradient(160deg, #1c140c, #0b0a08);
+}
+
+.post-card__tag-mark {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 180, 110, 0.32);
+  text-transform: uppercase;
+}
+
+.post-card .post-meta {
+  margin-top: 18px;
+}
+
+.post-card__title {
+  margin-top: 12px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.32;
+  font-weight: 400;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.post-card__excerpt {
+  margin-top: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 236, 225, 0.6);
+}
+
+.post-card .post-author {
+  margin-top: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .post-feature {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .blog-hero {
+    padding: 116px 0 48px;
+  }
+
+  .blog-featured {
+    padding: 56px 0 36px;
+  }
+
+  .blog-grid {
+    padding: 12px 0 80px;
+  }
+
+  .post-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .post-feature {
+    padding: 16px;
+    border-radius: 22px;
+  }
+}

@@ -1,0 +1,479 @@
+/* ==========================================================================
+   Product theater: a fixed 3D stage with the product chapters scrolling
+   over it (ProductTheater.tsx, motion/webgl/theater)
+   ========================================================================== */
+
+.theater {
+  --explode: 0;
+  position: relative;
+  background: #040302;
+}
+
+/* The studio's light rises out of the black of the statement above it
+   instead of starting on a hard edge. */
+.theater::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 160px;
+  background: linear-gradient(180deg, #020202, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.theater__stage {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.theater__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Keeps the copy legible where it overlaps the studio. */
+.theater__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 3, 2, 0.82) 0%, rgba(4, 3, 2, 0.35) 34%, transparent 52%);
+  pointer-events: none;
+}
+
+.theater__labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.theater__eyebrow {
+  position: absolute;
+  top: clamp(104px, 12vh, 132px);
+  left: clamp(24px, 7vw, 120px);
+  color: rgba(255, 242, 232, 0.72);
+  font-family: var(--font-nav);
+  font-size: 18px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* --- Product rail (right edge) ------------------------------------------ */
+
+.theater__rail {
+  position: absolute;
+  top: 50%;
+  right: clamp(16px, 3vw, 44px);
+  z-index: 2;
+  display: grid;
+  gap: 22px;
+  translate: 0 -50%;
+}
+
+.theater__rail button {
+  --p: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 4px 16px 4px 0;
+  border: 0;
+  background: none;
+  color: rgba(255, 236, 225, 0.45);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.4s ease;
+}
+
+.theater__rail em {
+  font-style: normal;
+  opacity: 0;
+  translate: 8px 0;
+  transition: opacity 0.4s ease, translate 0.5s var(--ease-out);
+  white-space: nowrap;
+}
+
+/* Progress through the product's chapter, as a filling hairline. */
+.theater__rail i {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(var(--amber), var(--amber)) top / 100% calc(var(--p) * 100%) no-repeat, rgba(255, 190, 130, 0.18);
+}
+
+.theater__rail button:hover,
+.theater__rail button.is-active {
+  color: #fff3e7;
+}
+
+.theater__rail button:hover em,
+.theater__rail button:focus-visible em {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.theater__rail button.is-active span {
+  color: var(--amber);
+}
+
+/* --- Scroll hint ---------------------------------------------------------- */
+
+.theater__hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  color: rgba(255, 236, 214, 0.7);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: clamp(0, calc(1 - var(--explode) * 4), 1);
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.theater__hint i {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(rgba(255, 222, 184, 0.8), transparent);
+  animation: hintDrop 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+/* --- Chapters and copy ---------------------------------------------------- */
+
+.theater__chapter {
+  position: relative;
+  z-index: 1;
+  height: 300vh;
+  pointer-events: none;
+}
+
+/* The first chapter starts on top of the stage rather than below it. */
+.theater__chapter:first-of-type {
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+
+.theater__copy {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  height: 100svh;
+  align-items: center;
+  padding: 0 0 0 clamp(24px, 7vw, 120px);
+}
+
+.theater__copy-inner {
+  width: min(430px, 34vw);
+  pointer-events: auto;
+}
+
+.theater__index {
+  color: rgba(255, 236, 225, 0.5);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+}
+
+.theater__index b {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.theater__title {
+  margin-top: 18px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.theater__desc {
+  margin-top: 22px;
+  color: rgba(255, 236, 225, 0.72);
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.5;
+}
+
+.theater__parts {
+  display: grid;
+  gap: 0;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.theater__parts li {
+  display: flex;
+  gap: 14px;
+  padding: 9px 0;
+  border-top: 1px solid rgba(255, 190, 130, 0.12);
+  color: rgba(255, 243, 231, 0.85);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.theater__parts li b {
+  color: var(--amber);
+}
+
+.theater__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 26px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 0.3s ease;
+}
+
+.theater__cta span {
+  transition: translate 0.35s var(--ease-out);
+}
+
+.theater__cta:hover,
+.theater__cta:focus-visible {
+  color: #ffc285;
+}
+
+.theater__cta:hover span,
+.theater__cta:focus-visible span {
+  translate: 6px 0;
+}
+
+.theater__photo {
+  display: none;
+}
+
+/* --- Labels in the exploded view (placed by the engine) ------------------- */
+
+.tlabel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.tlabel__dot {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #ffb46a;
+  border-radius: 50%;
+  background: rgba(255, 139, 18, 0.35);
+  box-shadow: 0 0 12px rgba(255, 139, 18, 0.85);
+}
+
+/* The leader line runs from the dot to the pill; the engine sets its length
+   and angle when labels are nudged apart (--len, --ang, --dy). */
+.tlabel__line {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  width: var(--len, 62px);
+  height: 1px;
+  background: linear-gradient(90deg, #ffb46a, rgba(255, 180, 106, 0.3));
+  transform: rotate(var(--ang, 0rad));
+  transform-origin: 0 50%;
+}
+
+.tlabel__text {
+  position: absolute;
+  top: calc(-12px + var(--dy, 0px));
+  left: 70px;
+  padding: 5px 11px;
+  border: 1px solid rgba(255, 170, 100, 0.38);
+  border-radius: 999px;
+  background: rgba(10, 7, 5, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff3e7;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tlabel__text b {
+  margin-right: 8px;
+  color: var(--amber);
+}
+
+.tlabel--left .tlabel__line {
+  left: auto;
+  right: 8px;
+  background: linear-gradient(270deg, #ffb46a, rgba(255, 180, 106, 0.3));
+  transform-origin: 100% 50%;
+}
+
+.tlabel--left .tlabel__text {
+  left: auto;
+  right: 70px;
+}
+
+/* --- Phones: product above, copy docked at the bottom --------------------- */
+
+@media (max-width: 900px) {
+  .theater__shade {
+    background: linear-gradient(0deg, rgba(4, 3, 2, 0.94) 0%, rgba(4, 3, 2, 0.7) 34%, transparent 58%);
+  }
+
+  .theater__rail {
+    display: none;
+  }
+
+  .theater__eyebrow {
+    top: 86px;
+    left: 20px;
+    font-size: 15px;
+  }
+
+  .theater__hint {
+    display: none;
+  }
+
+  .theater__chapter {
+    height: 260vh;
+  }
+
+  .theater__copy {
+    align-items: flex-end;
+    padding: 0 20px 28px;
+  }
+
+  .theater__copy-inner {
+    width: 100%;
+  }
+
+  .theater__title {
+    margin-top: 10px;
+    font-size: 24px;
+  }
+
+  .theater__desc {
+    margin-top: 12px;
+    font-size: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .theater__parts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+    margin-top: 16px;
+  }
+
+  .theater__parts li {
+    padding: 7px 0;
+    font-size: 9.5px;
+  }
+
+  .theater__cta {
+    margin-top: 14px;
+  }
+
+  /* Phones: numbered chips only; the list under the product names them. */
+  .tlabel__text {
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+
+  .tlabel__text b {
+    margin-right: 0;
+  }
+
+  .tlabel__text span {
+    display: none;
+  }
+}
+
+/* --- Static version: no WebGL, or reduced motion -------------------------- */
+
+.theater--static .theater__stage {
+  display: none;
+}
+
+.theater--static .theater__chapter {
+  height: auto;
+  margin-top: 0;
+  padding: clamp(64px, 8vw, 110px) 0;
+  pointer-events: auto;
+}
+
+.theater--static .theater__chapter + .theater__chapter {
+  border-top: 1px solid rgba(255, 190, 130, 0.08);
+}
+
+.theater--static .theater__copy {
+  position: static;
+  display: grid;
+  height: auto;
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.theater--static .theater__copy-inner {
+  width: auto;
+}
+
+.theater--static .theater__photo {
+  display: block;
+  width: 100%;
+  border: 1px solid #c48447;
+  border-radius: 20px;
+  background: radial-gradient(70% 60% at 50% 55%, rgba(255, 110, 30, 0.14), #0d1110 72%);
+  object-fit: contain;
+  aspect-ratio: 450 / 491;
+}
+
+@media (max-width: 760px) {
+  .theater--static .theater__copy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

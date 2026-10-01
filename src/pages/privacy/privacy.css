@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Privacy Policy page
+   ========================================================================== */
+
+.privacy-page {
+  background: #000;
+}
+
+/* Narrower than .section__inner — a long-form legal document reads better
+   in a tighter column than the site's usual 1180px sections. */
+.privacy-container {
+  width: min(820px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.privacy-hero {
+  /* Clears the fixed header pill — no separate hero art on this page. */
+  padding: 152px 0 40px;
+  background: #000;
+}
+
+.privacy-hero__heading {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.6vw, 54px);
+  font-weight: 400;
+  line-height: 1.18;
+  text-transform: uppercase;
+}
+
+.privacy-hero__updated {
+  margin-top: 14px;
+  font-family: var(--font-nav);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.privacy-hero__intro {
+  margin-top: 22px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(255, 236, 225, 0.72);
+}
+
+.privacy-hero__intro + .privacy-hero__intro {
+  margin-top: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Body
+   -------------------------------------------------------------------------- */
+
+.privacy-body {
+  padding: 20px 0 120px;
+  background: #030303;
+}
+
+.privacy-section {
+  padding-top: 36px;
+  margin-top: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.privacy-section:first-child {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: none;
+}
+
+.privacy-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 400;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.privacy-section p {
+  margin-top: 14px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 236, 225, 0.72);
+}
+
+.privacy-section p a {
+  color: var(--amber);
+  transition: color 0.25s ease;
+}
+
+.privacy-section p a:hover,
+.privacy-section p a:focus-visible {
+  text-decoration: underline;
+}
+
+.privacy-contact-block {
+  display: block;
+  margin-top: 16px;
+  padding: 20px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #100d0a, #0a0908);
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: #fff;
+}
+
+.privacy-contact-block a {
+  color: var(--amber);
+  transition: color 0.25s ease;
+}
+
+.privacy-contact-block a:hover,
+.privacy-contact-block a:focus-visible {
+  text-decoration: underline;
+}
+
+.privacy-footer-updated {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .privacy-hero {
+    padding: 116px 0 32px;
+  }
+
+  .privacy-body {
+    padding: 12px 0 90px;
+  }
+
+  .privacy-section {
+    padding-top: 28px;
+    margin-top: 28px;
+  }
+}

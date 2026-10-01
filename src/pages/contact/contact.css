@@ -1,0 +1,279 @@
+/* ==========================================================================
+   Contact Us page
+   ========================================================================== */
+
+.contact-page {
+  background: #000;
+}
+
+/* --------------------------------------------------------------------------
+   Main: info column + form card
+   -------------------------------------------------------------------------- */
+
+.contact-main {
+  /* No hero above this anymore, so this padding is also what clears the
+     fixed header pill (see .about-hero for the same pattern). */
+  padding: 140px 0 130px;
+  background: #030303;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 64px;
+  align-items: start;
+}
+
+/* --- Info column -------------------------------------------------------- */
+
+.contact-info__heading {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.6vw, 34px);
+  font-weight: 400;
+  line-height: 1.28;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.contact-info__intro {
+  margin-top: 20px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(255, 236, 225, 0.68);
+}
+
+.contact-info__list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin: 44px 0 0;
+}
+
+.contact-info__item {
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.contact-info__label {
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+.contact-info__value {
+  margin-top: 8px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  color: #fff;
+}
+
+.contact-info__value a {
+  transition: color 0.25s ease;
+}
+
+.contact-info__value a:hover,
+.contact-info__value a:focus-visible {
+  color: var(--amber);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* --- Form card ------------------------------------------------------------ */
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 28px;
+  background: linear-gradient(180deg, #100d0a, #0a0908);
+}
+
+.contact-form__heading {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 400;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-form__field span {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: rgba(255, 236, 225, 0.65);
+  text-transform: uppercase;
+}
+
+.contact-form__field input,
+.contact-form__field select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 14px;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.contact-form__field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ff8b12' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+/* Most browsers respect background/color on individual <option> elements
+   even though the popup itself is otherwise native-rendered — this keeps
+   the open dropdown dark and on-brand instead of falling back to the OS's
+   default white list. */
+.contact-form__field select option {
+  background: #0a0908;
+  color: #fff;
+  font-family: var(--font-display);
+}
+
+.contact-form__field select:invalid {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.contact-form__field input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+  font-family: var(--font-display);
+}
+
+.contact-form__field input:focus,
+.contact-form__field select:focus {
+  outline: none;
+  border-color: var(--amber);
+  background: rgba(255, 139, 18, 0.06);
+  box-shadow: 0 0 0 4px rgba(255, 139, 18, 0.1);
+}
+
+/* The label lights up with the field you're in. */
+.contact-form__field span {
+  transition: color 0.3s ease;
+}
+
+.contact-form__field:focus-within span {
+  color: var(--amber);
+}
+
+.contact-form__field input,
+.contact-form__field select {
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.35s ease;
+}
+
+.contact-form__submit {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 999px;
+  background: var(--amber);
+  color: #140b04;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  /* `translate`, not `transform`: the button is magnetic (transform is GSAP's). */
+  transition: background 0.25s ease, translate 0.25s ease, box-shadow 0.25s ease;
+}
+
+.contact-form__submit:hover,
+.contact-form__submit:focus-visible {
+  background: #ffa640;
+  box-shadow: 0 12px 30px rgba(255, 139, 18, 0.3);
+  translate: 0 -2px;
+}
+
+/* --- Map ------------------------------------------------------------------ */
+
+.contact-map {
+  margin-top: 56px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 28px;
+  /* Placeholder tone while the iframe's own map tiles load in. */
+  background: #100d0a;
+}
+
+/* The embedded map's own info card names the building's real listing, not
+   ChakraVue — this header is what actually carries the company's name. */
+.contact-map__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.contact-map__pin {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 5px rgba(255, 139, 18, 0.18);
+}
+
+.contact-map__label {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.contact-map__frame {
+  display: block;
+  width: 100%;
+  height: 420px;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 56px;
+  }
+}
+
+@media (max-width: 760px) {
+  .contact-main {
+    padding: 108px 0 90px;
+  }
+
+  .contact-form {
+    padding: 28px 24px;
+    border-radius: 22px;
+  }
+
+  .contact-map {
+    margin-top: 40px;
+    border-radius: 22px;
+  }
+
+  .contact-map__frame {
+    height: 280px;
+  }
+}

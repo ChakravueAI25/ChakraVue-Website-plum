@@ -1,0 +1,415 @@
+/* ==========================================================================
+   About Us page
+   ========================================================================== */
+
+.about-page {
+  background: #000;
+}
+
+/* --------------------------------------------------------------------------
+   Hero — the statement over a network of minds (AboutHero.tsx, minds.ts)
+   -------------------------------------------------------------------------- */
+
+.about-hero {
+  /* The network's colours, read by the canvas (they follow the palette). */
+  --minds-node: #ffb46a;
+  --minds-link: #ff8b12;
+  --minds-signal: #fbd896;
+  display: grid;
+  min-height: clamp(620px, 100svh, 980px);
+  padding: 140px 0 110px;
+  overflow: hidden;
+  isolation: isolate;
+  align-content: center;
+  background:
+    radial-gradient(70% 55% at 50% 112%, rgba(255, 110, 24, 0.2), transparent 70%),
+    radial-gradient(45% 40% at 85% 10%, rgba(228, 20, 16, 0.08), transparent 70%),
+    #030202;
+}
+
+.about-hero__minds {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The network thins out at the edges and under the statement. */
+  -webkit-mask-image: radial-gradient(120% 95% at 50% 50%, #000 45%, transparent 100%);
+  mask-image: radial-gradient(120% 95% at 50% 50%, #000 45%, transparent 100%);
+}
+
+/* A soft pool of dark behind the statement keeps it clear of the links. */
+.about-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(42% 34% at 50% 52%, rgba(3, 2, 2, 0.82), transparent 100%),
+    linear-gradient(180deg, #030202 0%, transparent 18%, transparent 82%, #030202 100%);
+  content: "";
+  pointer-events: none;
+}
+
+.about-hero__copy {
+  position: relative;
+  text-align: center;
+}
+
+.about-hero__quote {
+  position: relative;
+  max-width: 1040px;
+  margin: 26px auto 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.4vw, 66px);
+  font-weight: 400;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+
+.about-hero__quote em {
+  color: #fbd896;
+  font-style: normal;
+  text-shadow: 0 0 28px rgba(251, 216, 150, 0.45);
+}
+
+@media (max-width: 760px) {
+  .about-hero {
+    min-height: 560px;
+    padding: 120px 0 80px;
+  }
+
+  .about-hero__quote {
+    font-size: clamp(26px, 7.4vw, 36px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Founder statement
+   -------------------------------------------------------------------------- */
+
+.founder {
+  padding: 90px 0;
+  background:
+    radial-gradient(55% 85% at 12% 15%, rgba(255, 139, 18, 0.14), transparent 62%),
+    #060504;
+}
+
+/* Every other statement mirrors the glow and swaps which side the heading
+   and the card sit on, so three in a row read as alternating, not repeated. */
+.founder--reverse {
+  background:
+    radial-gradient(55% 85% at 88% 15%, rgba(255, 139, 18, 0.14), transparent 62%),
+    #060504;
+}
+
+.founder__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+
+.founder--reverse .founder__inner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+}
+
+.founder--reverse .founder__heading {
+  order: 2;
+}
+
+.founder--reverse .founder__card {
+  order: 1;
+}
+
+.founder__heading {
+  text-align: left;
+}
+
+.founder__title {
+  margin-top: 18px;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.5vw, 36px);
+  line-height: 1.28;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* Profile card: portrait on the left; name, role, a hairline divider and
+   the quote on the right. */
+.founder__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(180px, 17vw, 240px) minmax(0, 1fr);
+  gap: clamp(28px, 3vw, 44px);
+  align-items: center;
+  margin: 0;
+  padding: clamp(24px, 2.6vw, 36px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+/* Black frame: two portraits are cut out on black and one on transparency,
+   so a black base makes all three sit identically. The faint warm glow at
+   the bottom only shows through the transparent one's edges. */
+.founder__photo {
+  aspect-ratio: 6 / 7;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(90% 60% at 50% 110%, rgba(255, 139, 18, 0.22), transparent 70%),
+    #000;
+}
+
+.founder__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* --zoom tightens loosely framed portraits (set per leader in data.ts). */
+  transform: scale(var(--zoom, 1));
+  /* The entrance settle (LeaderStatement.tsx) rides on `scale`, separate
+     from the hover zoom on `transform`. */
+  scale: var(--reveal-scale, 1);
+  transition: transform 0.6s ease;
+}
+
+.founder__card:hover .founder__photo img {
+  transform: scale(calc(var(--zoom, 1) * 1.04));
+}
+
+.founder__name {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.25;
+  font-weight: 400;
+  color: #fff;
+}
+
+.founder__role {
+  margin-top: 8px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+.founder__divider {
+  display: block;
+  height: 1px;
+  margin: 20px 0 18px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+}
+
+.founder__mark {
+  display: block;
+  height: 30px;
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--amber);
+  opacity: 0.85;
+}
+
+.founder__quote {
+  font-family: var(--font-body);
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.45;
+  color: var(--text);
+}
+
+/* --------------------------------------------------------------------------
+   Team — circular portraits, name and role only
+   -------------------------------------------------------------------------- */
+
+.team {
+  padding: 110px 0 130px;
+  background: #030303;
+  text-align: center;
+}
+
+.team__intro {
+  max-width: 640px;
+  margin: 0 auto 72px;
+}
+
+.team__heading {
+  position: relative;
+  margin-top: 18px;
+  padding-top: 22px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.3;
+  font-weight: 400;
+  color: #fff;
+}
+
+/* Short amber rule between the label and the heading. */
+.team__heading::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 34px;
+  height: 2px;
+  background: var(--amber);
+  /* --rule draws it out from the centre on entrance (TeamGrid.tsx). */
+  transform: translateX(-50%) scaleX(var(--rule, 1));
+}
+
+.team__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 64px 32px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Black disc behind the cut-out, a thin amber ring, and a soft glow that
+   brightens on hover. */
+.team-member__photo {
+  width: clamp(140px, 13vw, 184px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background:
+    radial-gradient(80% 60% at 50% 110%, rgba(255, 139, 18, 0.2), transparent 70%),
+    #000;
+  box-shadow:
+    0 0 0 1px rgba(255, 139, 18, 0.45),
+    0 0 0 6px rgba(255, 139, 18, 0.06),
+    0 18px 40px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.team-member__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.team-member:hover .team-member__photo {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(255, 139, 18, 0.85),
+    0 0 0 6px rgba(255, 139, 18, 0.12),
+    0 0 36px rgba(255, 110, 20, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+.team-member:hover .team-member__photo img {
+  transform: scale(1.05);
+}
+
+.team-member__name {
+  margin: 24px 0 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 400;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.team-member__role {
+  max-width: 240px;
+  margin-top: 8px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .founder__inner,
+  .founder--reverse .founder__inner {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  /* Stacked single-column: keep the heading above the card always, rather
+     than following the desktop alternating left/right order. */
+  .founder--reverse .founder__heading,
+  .founder--reverse .founder__card {
+    order: 0;
+  }
+
+  .founder__heading {
+    text-align: center;
+  }
+
+  .team__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .about-hero {
+    padding-top: 80px;
+  }
+
+  .founder {
+    padding: 72px 0;
+  }
+
+  /* Phones: portrait stacks above the text. */
+  .founder__card {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 20px 20px 28px;
+  }
+
+  .founder__photo {
+    width: min(220px, 70%);
+    margin: 0 auto;
+  }
+
+  .founder__body {
+    text-align: center;
+  }
+
+  .team {
+    padding: 72px 0 90px;
+  }
+
+  .team__intro {
+    margin-bottom: 48px;
+  }
+
+  .team-member__photo {
+    width: 132px;
+  }
+
+  .team-member__name {
+    font-size: 14px;
+  }
+
+  .team-member__role {
+    font-size: 10px;
+  }
+}

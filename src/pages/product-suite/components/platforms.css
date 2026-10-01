@@ -1,0 +1,448 @@
+/* ==========================================================================
+   Software platforms console (PlatformConsole.tsx), on the Product Suite page
+   ========================================================================== */
+
+.plat {
+  --hair: rgba(255, 214, 170, 0.14);
+  --soft: rgba(255, 243, 231, 0.72);
+  position: relative;
+  padding: clamp(100px, 10vw, 150px) 0;
+  overflow: clip;
+  background:
+    radial-gradient(50% 40% at 70% 55%, rgba(255, 110, 24, 0.14), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 80px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 80px),
+    #040302;
+}
+
+.plat__head {
+  max-width: 760px;
+}
+
+.plat__title {
+  margin-top: 18px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 48px);
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.plat__lead {
+  margin-top: 20px;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.8;
+}
+
+.plat__console {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: clamp(18px, 2.4vw, 32px);
+  margin-top: clamp(48px, 5vw, 72px);
+  align-items: start;
+}
+
+/* --- The list --- */
+
+.plat-list {
+  position: relative;
+  display: grid;
+  gap: 6px;
+}
+
+.plat-list button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 2px 10px;
+  padding: 16px 18px 16px 16px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: none;
+  color: rgba(255, 243, 231, 0.6);
+  font-family: var(--font-display);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.plat-list button::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--amber);
+  box-shadow: 0 0 12px rgba(255, 139, 18, 0.9);
+  scale: 1 0;
+  transition: scale 0.45s var(--ease-out);
+}
+
+.plat-list button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.plat-list button.is-active {
+  border-color: rgba(255, 139, 18, 0.35);
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.14), rgba(255, 139, 18, 0.02));
+  color: #fff;
+}
+
+.plat-list button.is-active::before {
+  scale: 1 1;
+}
+
+.plat-list__index {
+  grid-row: 1 / span 2;
+  color: var(--amber);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.plat-list__name {
+  font-size: 13px;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.plat-list__cat {
+  color: rgba(255, 236, 225, 0.45);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* --- The screen --- */
+
+.plat-screen {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 214, 170, 0.2);
+  border-radius: 26px;
+  background:
+    radial-gradient(80% 60% at 80% 20%, rgba(255, 110, 24, 0.12), transparent 70%),
+    linear-gradient(160deg, #120d0a, #060403);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 236, 220, 0.06);
+}
+
+/* Faint display lines. */
+.plat-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 4px);
+  pointer-events: none;
+}
+
+.plat-screen__bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--hair);
+  color: rgba(255, 236, 225, 0.4);
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.plat-screen__bar i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 214, 170, 0.18);
+}
+
+.plat-screen__bar i:first-child {
+  background: var(--amber);
+  box-shadow: 0 0 8px rgba(255, 139, 18, 0.8);
+}
+
+.plat-screen__bar span {
+  margin-left: 10px;
+}
+
+/* The re-render: a bright line running down the display. */
+.plat-screen__scan {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
+  height: 12%;
+  background: linear-gradient(transparent, rgba(255, 190, 120, 0.22) 80%, rgba(255, 236, 214, 0.9) 98%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.plat-screen__content {
+  position: relative;
+  z-index: 1;
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.plat-screen__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px;
+  gap: 24px;
+  align-items: start;
+}
+
+.plat-screen__cat {
+  color: rgba(255, 236, 225, 0.55);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.plat-screen__cat b {
+  margin-right: 8px;
+  color: var(--amber);
+  font-weight: 400;
+}
+
+.plat-screen__title {
+  margin: 16px 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.plat-screen__summary {
+  max-width: 560px;
+  margin-top: 16px;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.plat-glyph {
+  width: 140px;
+  height: 140px;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(255, 139, 18, 0.35));
+}
+
+.plat-glyph__line {
+  fill: none;
+  stroke: rgba(255, 236, 220, 0.8);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+
+.plat-glyph__line--hot {
+  stroke: var(--amber);
+}
+
+.plat-screen__features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plat-screen__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 243, 231, 0.86);
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.plat-screen__features li::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 8px rgba(255, 139, 18, 0.9);
+}
+
+/* A bundle's apps, side by side, each with its own drawing and features. */
+.plat-apps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.plat-app {
+  padding: 20px;
+  border: 1px solid var(--hair);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.plat-app__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.plat-app .plat-glyph {
+  flex: none;
+  width: 56px;
+  height: 56px;
+}
+
+.plat-app__title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.3vw, 18px);
+  font-weight: 400;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.plat-app__summary {
+  margin-top: 14px;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.plat-app__features {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.plat-app__features li {
+  padding: 10px 14px;
+}
+
+.plat-screen__flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plat-screen__flow li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 236, 225, 0.75);
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  text-transform: uppercase;
+}
+
+.plat-screen__flow li + li::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.3), var(--amber));
+}
+
+.plat-screen__note {
+  margin-top: 24px;
+  color: rgba(255, 236, 225, 0.45);
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* --- Phones and tablets: tabs across the top, then the screen --- */
+
+@media (max-width: 900px) {
+  .plat__console {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plat-list {
+    display: flex;
+    gap: 8px;
+    margin: 0 -18px;
+    padding: 0 18px 6px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .plat-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .plat-list button {
+    flex: 0 0 auto;
+    grid-template-columns: auto auto;
+    align-items: center;
+    padding: 11px 14px;
+    border-color: var(--hair);
+    border-radius: 999px;
+    scroll-snap-align: start;
+  }
+
+  .plat-list button::before,
+  .plat-list__cat {
+    display: none;
+  }
+
+  .plat-list__index {
+    grid-row: auto;
+  }
+
+  .plat-list__name {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .plat-screen {
+    min-height: 0;
+  }
+
+  .plat-screen__top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plat-glyph {
+    order: -1;
+    width: 84px;
+    height: 84px;
+  }
+
+  .plat-screen__features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plat-apps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plat-app .plat-glyph {
+    order: 0;
+    width: 48px;
+    height: 48px;
+  }
+}

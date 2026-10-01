@@ -1,0 +1,1047 @@
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
+
+:root {
+  --bg: #030303;
+  --panel: #121010;
+  --panel-soft: #1c1615;
+  --text: #fff3e7;
+  --muted: #c99b78;
+  --amber: #ff8b12;
+  --orange: #ff5a00;
+  --red: #e41410;
+  --line: rgba(255, 139, 18, 0.35);
+  /* One typeface for the whole site: Audiowide. The role tokens are kept so
+     every stylesheet stays readable; they all resolve to the same face. */
+  --font-display: "Audiowide", Arial, sans-serif;
+  --font-body: "Audiowide", Arial, sans-serif;
+  --font-nav: "Audiowide", Arial, sans-serif;
+  --font-ui: "Audiowide", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Audiowide has a single weight and no italic: never fake either. */
+  font-synthesis: none;
+  scroll-behavior: smooth;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #000;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.site-shell {
+  min-height: 100vh;
+  /* clip, not hidden: hidden makes this a scroll container, which silently
+     breaks position: sticky for the product theater's stage. */
+  overflow-x: clip;
+  background: #000;
+}
+
+.section {
+  position: relative;
+  width: 100%;
+}
+
+.section__inner {
+  width: min(1180px, calc(100% - 96px));
+  margin: 0 auto;
+}
+
+/* The company name is always written "ChakraVue AI", even inside labels set
+   in capitals (BrandText.tsx). A utility, so it wins over those labels. */
+.brand-name {
+  text-transform: none !important;
+}
+
+/* Header: a full-width, borderless bar fixed above everything. It sits
+   transparent over the hero (as in the design) and only picks up a dark
+   backdrop once the page scrolls, so the links stay legible over content. */
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+.header--scrolled {
+  background: linear-gradient(180deg, rgba(6, 4, 3, 0.82), rgba(6, 4, 3, 0.55));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Grid, not flex: a true center column keeps the brand exactly mid-page no
+   matter how unevenly the two link groups' text widths compare. */
+.header__nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  column-gap: clamp(12px, 1.5vw, 22px);
+  padding: 48px clamp(24px, 4.6vw, 66px) 26px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(11px, 0.97vw, 14px);
+  font-weight: 400;
+  line-height: 19px;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.45s cubic-bezier(0.16, 0.8, 0.24, 1),
+    transform 0.45s cubic-bezier(0.16, 0.8, 0.24, 1),
+    padding 0.4s ease;
+}
+
+.header--scrolled .header__nav {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Fully hidden (not just faded) until the hero headline lands — see HomePage/Hero. */
+.header--hidden .header__nav {
+  opacity: 0;
+  transform: translateY(-18px);
+  pointer-events: none;
+}
+
+.header__brand {
+  color: #fff;
+  text-transform: none;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transition: text-shadow 0.3s ease;
+}
+
+.header__brand:hover {
+  text-shadow: 0 0 18px rgba(255, 170, 90, 0.55);
+}
+
+/* The two link groups sit in the grid's equal outer columns (see the note
+   above .header__nav) and split them into three equal slots, each link
+   centered in its slot — matching the evenly spaced rhythm of the design. */
+.header__nav-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  align-items: center;
+}
+
+.header__nav a:not(.header__brand) {
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.header__nav a:not(.header__brand)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  transform: translateX(-50%) scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.header__nav a:not(.header__brand):hover,
+.header__nav a.is-active {
+  color: #ffd29a;
+}
+
+.header__nav a:not(.header__brand):hover::after,
+.header__nav a.is-active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Shared: "Institute creates data…" statement band */
+.insight-statement {
+  position: relative;
+  display: grid;
+  min-height: 448px;
+  place-items: center;
+  padding: 96px 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(42% 42% at 50% 0%, rgba(235, 95, 30, 0.55), transparent 100%),
+    linear-gradient(180deg, #45190d 0%, #2c140c 22%, #170b08 50%, #0b0604 75%, #020202 100%);
+  text-align: center;
+}
+
+/* While the statement is pinned and read by scrolling (InsightStatement.tsx),
+   the band becomes the whole screen with the words centred in it. */
+.insight-statement.is-stage {
+  min-height: 100vh;
+  align-content: center;
+  padding-top: 96px;
+}
+
+.insight-statement__beam {
+  position: absolute;
+  top: 11px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 120, 40, 0.5) 20%, #ffb46a 50%, rgba(255, 120, 40, 0.5) 80%, transparent);
+  box-shadow: 0 0 22px 4px rgba(255, 110, 30, 0.45);
+  animation: beamBreathe 5s ease-in-out infinite alternate;
+}
+
+@keyframes beamBreathe {
+  from {
+    opacity: 0.65;
+    transform: scaleX(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.insight-statement__text {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 61px;
+  color: #fff;
+}
+
+.insight-statement__text em {
+  --lit: 1;
+  font-style: normal;
+  color: color-mix(in srgb, #fbd896 calc(var(--lit) * 100%), #ffffff);
+  text-shadow: 0 0 calc(var(--lit) * 26px) color-mix(in srgb, rgba(251, 216, 150, 0.5) calc(var(--lit) * 100%), transparent);
+}
+
+/* The closing line under a statement (the homepage's "Shaping What
+   Healthcare…"), set off by a short rule. */
+.insight-statement__coda {
+  position: relative;
+  margin-top: 40px;
+  padding-top: 30px;
+  color: rgba(255, 242, 232, 0.82);
+  font-family: var(--font-display);
+  font-size: clamp(17px, 1.7vw, 24px);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.insight-statement__coda::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 44px;
+  height: 2px;
+  background: var(--amber);
+  box-shadow: 0 0 12px rgba(255, 139, 18, 0.7);
+  translate: -50% 0;
+}
+
+.insight-statement__coda em {
+  --lit: 1;
+  font-style: normal;
+  color: color-mix(in srgb, #fbd896 calc(var(--lit) * 100%), #ffffff);
+  text-shadow: 0 0 calc(var(--lit) * 22px) color-mix(in srgb, rgba(251, 216, 150, 0.5) calc(var(--lit) * 100%), transparent);
+}
+
+@media (max-width: 760px) {
+  .insight-statement {
+    min-height: 320px;
+    padding: 72px 18px;
+  }
+
+  .insight-statement__coda {
+    margin-top: 30px;
+    padding-top: 24px;
+  }
+
+  .insight-statement__text {
+    font-size: 28px;
+    line-height: 38px;
+  }
+}
+
+/* Blurred-horizon sunset from the design: a dark sky warming downward into a
+   bright horizon line at ~75%, with a darker reflected "ground" beneath it.
+   Stops are sampled from the Figma frame; the side vignettes darken the lower
+   corners the way the photo does. */
+.hero {
+  height: 882px;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(40% 30% at 0% 88%, rgba(40, 14, 4, 0.7), transparent 100%),
+    radial-gradient(30% 40% at 0% 62%, rgba(60, 24, 6, 0.45), transparent 100%),
+    radial-gradient(38% 34% at 100% 30%, rgba(120, 100, 80, 0.18), transparent 100%),
+    linear-gradient(
+      180deg,
+      #1c120b 0%,
+      #2c1a0f 22%,
+      #422613 34%,
+      #683b1d 45%,
+      #a4663a 56%,
+      #cf9254 63.5%,
+      #e6b271 68%,
+      #fbd59c 72.5%,
+      #fde4ac 74.8%,
+      #d49a54 76%,
+      #d98f47 77.2%,
+      #9f5019 79.5%,
+      #853f16 81.6%,
+      #945020 86%,
+      #874a21 88%,
+      #3a1d0c 96%,
+      #000 100%
+    );
+}
+
+/* Thin, bright horizon streak plus its soft right-hand reflection. */
+.hero__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 2%, rgba(255, 236, 190, 0.85) 30%, rgba(255, 240, 200, 0.95) 55%, rgba(255, 225, 170, 0.6) 85%, transparent 100%)
+      0 74.6% / 100% 3px no-repeat,
+    radial-gradient(22% 4% at 72% 78.6%, rgba(250, 196, 122, 0.8), transparent 100%);
+  filter: blur(1.5px);
+  pointer-events: none;
+  z-index: 1;
+  animation: horizonBreathe 6s ease-in-out infinite alternate;
+}
+
+@keyframes horizonBreathe {
+  from {
+    opacity: 0.82;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* WebGL data landscape (Hero.tsx), laid over the painted gradient and
+   meeting its horizon line exactly. Transparent until it has loaded. */
+.hero__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+
+
+@keyframes hintDrop {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.hero h1 {
+  max-width: 722px;
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 61px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  /* Its entrance (characters rising out of a blur) is driven by Hero.tsx. */
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: #fbd896;
+}
+
+/* A soft shadow lifts the copy off the mark behind it (home.css). */
+.home .hero h1,
+.home .hero__lead {
+  text-shadow: 0 2px 18px rgba(10, 4, 0, 0.55), 0 0 2px rgba(10, 4, 0, 0.4);
+}
+
+.section-label {
+  color: rgba(255, 242, 232, 0.72);
+  font-family: var(--font-nav);
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.product .section-label {
+  position: relative;
+  z-index: 5;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.78vw, 40px);
+  line-height: 1.28em;
+}
+
+/* Shared: "We got featured in" band with a continuous logo marquee. */
+.featured-strip {
+  min-height: 179px;
+  padding: 19px 24px 30px;
+  background: #000;
+  /* Hairlines fade out at both ends so the strip reads as a seam of light
+     between the hero and the statement band, not a boxed-off bar. */
+  border-block: 1px solid #efbf7a;
+  border-image: linear-gradient(90deg, transparent, #efbf7a 18%, #efbf7a 82%, transparent) 1;
+  text-align: center;
+}
+
+.featured-strip__title {
+  color: #fff;
+  font-family: var(--font-nav);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  text-transform: uppercase;
+}
+
+.featured-strip__viewport {
+  position: relative;
+  width: 100%;
+  margin-top: 27px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.featured-strip__track {
+  display: flex;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: marquee 46s linear infinite;
+}
+
+.featured-strip__track:hover {
+  animation-play-state: paused;
+}
+
+/* With motion on, FeaturedInStrip drives the track from scroll velocity instead. */
+.featured-strip__track.is-driven {
+  animation: none;
+  will-change: transform;
+}
+
+/* Spacing lives on the item (margin), not the row (gap). With `gap`, -50%
+   lands half a gap short of one full logo-set's width — each loop restart
+   visibly snapped. Margin makes every item+spacing unit identical, so one
+   set is exactly half the doubled track and the loop is truly seamless. */
+.featured-strip__track li {
+  flex: none;
+  margin-right: clamp(16px, 4.9vw, 71px);
+}
+
+.featured-strip__track img {
+  display: block;
+  width: 79px;
+  height: 79px;
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.featured-strip__track li:hover img {
+  transform: translateY(-6px);
+  filter: drop-shadow(0 10px 18px rgba(255, 30, 20, 0.45));
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* The track is the logo list rendered twice, so -50% is exactly one full loop. */
+    transform: translateX(-50%);
+  }
+}
+
+/* Visually hidden but available to assistive tech. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .featured-strip__track li {
+    margin-right: 14px;
+  }
+
+  .featured-strip__track img {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+.product {
+  padding: clamp(40px, 5.3vw, 76px) 0 clamp(32px, 5.3vw, 76px);
+  overflow: hidden;
+  /* Rises out of the statement band's near-black and settles into the
+     podium art's own dark teal, so there's no step between the two. */
+  background: linear-gradient(180deg, #020202 0%, #0d1110 14%);
+  text-align: center;
+}
+
+.product-stage {
+  position: relative;
+  /* Breaks out of .section__inner's 1180px cap so the art can fill wide
+     screens instead of sitting as a fixed-size island in a growing margin.
+     50% here is 50% of .product-stage's own (soon-to-be 100vw) box, which
+     cancels out to the same page-center every absolutely-positioned child
+     below already targets, so nothing needs to move to compensate. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  /* Everything below is sized in em against this font-size, so the whole
+     composition scales as one piece, and grows 1.5x on wide screens so it
+     still fills wide monitors. Re-derived for the full (uncropped) source
+     image, whose height/width ratio is 1308/736 = 1.7772 — taller than the
+     old cropped asset's 1.423, so the stage height and art's bottom offset
+     below are NOT simply carried over from the old numbers. (Plain
+     calc(vw + px) addition only — calc() can't divide one length by
+     another, which silently invalidated an earlier version of this rule and
+     made everything fall back to defaults.) */
+  font-size: clamp(8.4px, 1.1111vw, 20px);
+  height: 76em;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  /* Pulls the stage up under the label so the dome peak lands where the
+     design has it; the stage itself is transparent above the art. */
+  margin-top: -9em;
+  overflow: hidden;
+  /* Softens the podium glow's cut-off edge into the band below. */
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 3em), transparent);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 3em), transparent);
+}
+
+/* Podium + glow artwork. The source photo is exactly one half of the
+   design's symmetric dome + podium (verified directly against the file: a
+   plain copy and a horizontally-flipped copy placed edge to edge, with zero
+   overlap, reproduce the whole scene — dome, podium and neon rim — with no
+   seam). Sized in em (inherited from .product-stage, since this element
+   doesn't set its own font-size) so it scales with the stage.
+
+   bottom is set so the art's top (the mirrored peak) sits ~15px inside the
+   stage — comfortably unclipped by .product-stage's own overflow:hidden —
+   while still showing down through the neon ring (measured directly off the
+   file at ~76% of the image's height) before the stage crops the rest. */
+.product-stage__art {
+  position: absolute;
+  z-index: 0;
+  bottom: -20.2em;
+  width: 53.125em;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  animation: artGlow 7s ease-in-out infinite alternate;
+  /* The art's own dark backdrop has a hard top edge; fade it into the
+     section gradient so the stage has no visible rectangle. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%);
+}
+
+/* Wraps both podium copies so the pair can rise together on scroll. Same
+   box as the stage, so the art's em positions below are unchanged. */
+.product-stage__podium {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Plain copy on the left, its right edge at the stage's center line. */
+.product-stage__art--left {
+  right: calc(50% - 1px);
+}
+
+/* Mirrored copy on the right, its left edge at the same center line —
+   scaleX(-1) flips the image in place without shifting the box position,
+   so the two meet exactly at 50% with no gap and no overlap. */
+.product-stage__art--right {
+  left: calc(50% - 1px);
+  transform: scaleX(-1);
+}
+
+@keyframes artGlow {
+  from {
+    filter: brightness(0.94) saturate(1);
+  }
+  to {
+    filter: brightness(1.06) saturate(1.08);
+  }
+}
+
+.product-stage > p {
+  position: absolute;
+  /* Percentage, not em: this element sets its own font-size below, and an
+     em top would then scale against that (its own, already-2x) font-size
+     instead of the stage's — percent of the stage's height sidesteps that. */
+  top: 34.69%;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 2em;
+  line-height: 1.28125em;
+  font-weight: 400;
+  text-transform: uppercase;
+  /* Product changes are animated by ProductSuite.tsx (out, swap, scramble in). */
+}
+
+@keyframes productFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.assistant-card {
+  position: absolute;
+  top: 31.94em;
+  z-index: 3;
+  width: 28.125em;
+  height: 30.75em;
+  aspect-ratio: auto;
+  margin-top: 0;
+  /* A window: products slide through it rather than past its edges. */
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1.4375em;
+  background:
+    radial-gradient(80% 72% at 50% 44%, rgba(214, 216, 217, 0.22), transparent 55%),
+    linear-gradient(145deg, #24272b 0%, #111316 100%);
+  border-color: #c48447;
+  box-shadow: 0 34px 68px rgba(0, 0, 0, 0.6);
+  touch-action: pan-y;
+  user-select: none;
+  /* The float and hover use `translate`/`scale`, leaving `transform` free
+     for the scroll entrance. */
+  transition: scale 0.3s ease, box-shadow 0.3s ease;
+  animation: cardHoverFloat 6s ease-in-out infinite alternate;
+}
+
+@keyframes cardHoverFloat {
+  0% {
+    translate: 0 0;
+    box-shadow: 0 34px 68px rgba(0, 0, 0, 0.6);
+  }
+  100% {
+    translate: 0 -12px;
+    box-shadow: 0 45px 85px rgba(255, 90, 0, 0.15), 0 34px 68px rgba(0, 0, 0, 0.8);
+  }
+}
+
+.assistant-card:hover {
+  scale: 1.02;
+  box-shadow: 0 50px 90px rgba(255, 90, 0, 0.25), 0 40px 75px rgba(0, 0, 0, 0.8);
+  animation-play-state: paused;
+}
+
+.assistant-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Dashboard/screenshot-style products read better contained than cropped. */
+.assistant-card__image--render {
+  padding: 34px 24px;
+  object-fit: contain;
+  background: radial-gradient(70% 60% at 50% 55%, rgba(255, 110, 30, 0.14), #0c0d0f 72%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+
+.stage-arrow {
+  position: absolute;
+  z-index: 4;
+  top: 45.75em;
+  width: 3.125em;
+  height: 3.125em;
+  border: 1px solid rgba(255, 191, 83, 0.42);
+  border-radius: 50%;
+  background: rgba(29, 18, 8, 0.7);
+  color: rgba(255, 210, 151, 0.82);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  /* `scale`, not `transform`: the arrows are magnetic (transform is GSAP's). */
+  transition: border-color 0.25s ease, background 0.25s ease, scale 0.25s ease;
+}
+
+.stage-arrow:hover,
+.stage-arrow:focus-visible {
+  border-color: rgba(255, 191, 83, 0.85);
+  background: rgba(60, 34, 12, 0.85);
+  scale: 1.08;
+}
+
+.stage-arrow:active {
+  scale: 0.96;
+}
+
+.stage-arrow--left {
+  left: calc(50% - 21.3125em);
+}
+
+.stage-arrow--right {
+  right: calc(50% - 21.3125em);
+}
+
+.stage-arrow span {
+  width: 0;
+  height: 0;
+  border-top: 0.5625em solid transparent;
+  border-bottom: 0.5625em solid transparent;
+  border-right: 1em solid #c48447;
+  transform: translateX(-2px);
+}
+
+.stage-arrow--right span {
+  border-right: 0;
+  border-left: 1em solid #c48447;
+  transform: translateX(2px);
+}
+
+/* "The Core Idea": an eclipse-like glow — a dark core at top-center ringed
+   by red, then orange, fading out to black at the bottom and sides. Stops
+   are sampled from the design; the right side runs a little dimmer. */
+.core-copy {
+  position: relative;
+  min-height: clamp(560px, 50.4vw, 760px);
+  padding: clamp(80px, 8.6vw, 124px) 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+  background: #030102;
+}
+
+/* The eclipse glow on its own layer, so it can rise like a sunrise as the
+   section scrolls in (CoreIdea.tsx). The layer is 1.5× the section's width
+   so the ellipse (wider than the section) never meets its edges while it's
+   scaled down; 38.67% of that width is the original 58% of the section, so
+   at rest it is the original gradient exactly. */
+.core-copy__glow {
+  position: absolute;
+  inset: 0 -25%;
+  z-index: -2;
+  background: radial-gradient(
+    38.67% 95% at 50% 0%,
+    #010101 0%,
+    #0d0203 12%,
+    #240805 17%,
+    #561513 31%,
+    #8a2520 46%,
+    #c9502c 60%,
+    #e8781f 72%,
+    #f5a050 80%,
+    #e0843a 88%,
+    #834327 96%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  transform-origin: 50% 0%;
+  /* Feathers the layer's top edge, which would otherwise show as a seam
+     while the glow is still low in the section. At rest this band sits
+     under the section's own black top fade (.core-copy::after). */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+  will-change: transform, opacity;
+}
+
+.core-copy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, #000 0%, transparent 16%),
+    linear-gradient(90deg, transparent 55%, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+
+.eyebrow {
+  margin-bottom: clamp(48px, 7.3vw, 105px);
+  color: #f2af63;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.33vw, 48px);
+  line-height: 1.28em;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.core-copy h2 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.22vw, 32px);
+  font-weight: 400;
+  line-height: 1.28em;
+}
+
+.core-copy h2 + p {
+  max-width: 900px;
+  margin-top: 24px;
+  color: #fff;
+  font-size: clamp(16px, 1.39vw, 20px);
+  line-height: 1.2em;
+}
+
+.value-grid {
+  padding: 55px 0 60px;
+  background: #030102;
+}
+
+.value-grid__inner {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 450px));
+  justify-content: center;
+  gap: 39px 65px;
+}
+
+.value-card {
+  min-height: 418px;
+  padding: 22px 24px 40px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom-color: rgba(255, 255, 255, 0.22);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #0e0d0d, #161314);
+  text-align: center;
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 45px rgba(255, 90, 0, 0.15), 0 18px 32px rgba(0, 0, 0, 0.55);
+}
+
+.value-card span,
+.value-card h3 {
+  color: #f2af63;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.value-card span {
+  display: block;
+  font-size: clamp(34px, 3.33vw, 48px);
+  line-height: 1.28em;
+}
+
+.value-card h3 {
+  margin: 16px 0 27px;
+  font-size: clamp(32px, 3.33vw, 48px);
+  line-height: 1.28em;
+}
+
+.value-card p {
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.39vw, 20px);
+  line-height: 1.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .section__inner {
+    width: min(100% - 36px, 560px);
+  }
+
+  /* The mobile bar only ever shows links on one side (see below), so the
+     symmetric grid that centers the brand on desktop has nothing to balance
+     against — fall back to a plain flex row instead of faking a center. */
+  .header__nav,
+  .header--scrolled .header__nav {
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+    padding: 16px;
+    font-size: 11px;
+  }
+
+  .header__nav-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .header__brand {
+    font-size: 15px;
+  }
+
+  /* Keep the first two links so the pill stays compact on small screens. */
+  .header__nav-group--start a:nth-child(n + 3),
+  .header__nav-group--end {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+    line-height: 38px;
+  }
+
+  .product {
+    min-height: 0;
+    padding-bottom: 56px;
+  }
+
+  /* Switch from the desktop's magic-number absolute layout to grid areas —
+     robust regardless of exact sizes, and lets the card/arrows/title reflow
+     into a sensible stack instead of overflowing a fixed 900px stage. */
+  .product-stage {
+    position: relative;
+    /* Undo the desktop full-bleed breakout — mobile stays within the
+       normal content column like every other section. */
+    width: auto;
+    margin-left: 0;
+    margin-top: 20px;
+    font-size: 16px;
+    height: auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "title title title"
+      "left card right";
+    align-items: center;
+    justify-items: center;
+    row-gap: 20px;
+    padding: 36px 8px 170px;
+  }
+
+  /* left:50%/right:50% and scaleX(-1) are all size-independent, so the
+     base .product-stage__art--left/--right rules still hold here unchanged —
+     only the width and vertical offset need a mobile-scaled value. */
+  .product-stage__art {
+    bottom: -121px;
+    width: 340px;
+  }
+
+  .product-stage > p {
+    grid-area: title;
+    position: static;
+    font-size: 22px;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  .stage-arrow {
+    position: static;
+    width: 40px;
+    height: 40px;
+  }
+
+  .stage-arrow--left {
+    grid-area: left;
+  }
+
+  .stage-arrow--right {
+    grid-area: right;
+  }
+
+  .assistant-card {
+    grid-area: card;
+    position: static;
+    width: min(220px, 56vw);
+    height: auto;
+    aspect-ratio: 450 / 492;
+  }
+
+  .core-copy {
+    min-height: 480px;
+  }
+
+  .value-card {
+    min-height: 0;
+  }
+
+  .value-grid__inner {
+    grid-template-columns: 1fr;
+  }
+
+}

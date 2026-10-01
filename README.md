@@ -204,16 +204,16 @@ ships. When real models exist, export them as GLB and replace the builders in
 `motion/webgl/theater/models/`: the engine only needs a group, a list of parts
 with explode offsets, and label anchors.
 
-## Colour palettes
+## Colour palette
 
-The palette button (bottom left) switches the whole site between Ember (the
-original), Plum (black and #331a31) and Midnight (#090c13 and #352315). The
-choice is saved in the browser.
+The site is Plum (black and #331a31) throughout; there is no palette
+switcher. The stylesheets are still written in the original Ember colours,
+and Plum is applied over them at runtime (`SITE_THEME` in `theme.ts`).
 - `src/theme/palette.ts` defines the palettes and one colour transform per
   palette (in OKLCH: darks take the base, lit colours take the tone's hue,
   near-whites become white).
 - `src/theme/theme.ts` rewrites every colour in the loaded stylesheets
-  through it at runtime, and restores the originals for Ember. Nothing in
+  through it at runtime. Nothing in
   the stylesheets needs to change when you add a section.
 - The WebGL scenes apply the same transform as a colour matrix in their own
   shaders (`theme/grade.ts`), and decorative renders take it as an SVG
@@ -228,7 +228,8 @@ choice is saved in the browser.
   glowing in from the top left and bottom right of the screen, screened
   over the page (`body::after` in `theme.css`, lighter on the home and
   Product Suite pages, which already carry lit colour).
-- To add a palette, add an entry to `THEMES`.
+- To change the site's palette, set `SITE_THEME` to another entry in
+  `THEMES` (Ember is `"original"`, Midnight is `"navy"`).
 
 ## Typography
 
@@ -266,5 +267,6 @@ The blog cards show the Blog page's current posts, which are still placeholder
 text. Everything else on the homepage is existing site copy: the hero summary
 is the first line of the clinical-systems section, and the team and blog
 headings come from the About and Blog pages.
-#   C h a k r a V u e - W e b s i t e - p l u m  
+#   C h a k r a V u e - W e b s i t e - p l u m 
+ 
  

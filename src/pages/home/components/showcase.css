@@ -1,0 +1,422 @@
+/* ==========================================================================
+   Product showcase (ProductShowcase.tsx)
+
+   Each panel is driven by three numbers, animated by GSAP (or set by the
+   .is-open class when motion is off):
+     --o      0 closed … 1 open: the panel's width and where its shot sits
+     --slit   width of the lit band through the product, 0 … 1 (fully lit)
+     --power  the lamp: 0 dark … 1 on (flickers on at the entrance)
+   Everything else below is derived from them.
+   ========================================================================== */
+
+.showcase {
+  padding: clamp(96px, 9vw, 140px) 0 clamp(96px, 9vw, 140px);
+  background: #030202;
+}
+
+.showcase__stage {
+  /* How much wider the open panel is than a closed one. */
+  --G: 4.4;
+  --gap: 12px;
+  /* The product shot fills the top of the panel; the copy sits below it. */
+  --shot-h: 60%;
+  display: flex;
+  gap: var(--gap);
+  height: clamp(540px, 46vw, 640px);
+  container-type: inline-size;
+}
+
+.slit {
+  --o: 0;
+  --slit: 0.028;
+  --power: 1;
+  /* The open panel's width: the shot and copy are laid out at this size
+     from the start, so nothing reflows while a panel opens. */
+  --shot-w: calc((100cqw - 3 * var(--gap)) * var(--G) / (3 + var(--G)));
+  position: relative;
+  flex: 1 1 0;
+  flex-grow: calc(1 + (var(--G) - 1) * var(--o));
+  min-width: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 214, 170, calc(0.07 + 0.12 * var(--o)));
+  border-radius: 22px;
+  background:
+    radial-gradient(90% 50% at 50% 104%, rgba(255, 110, 30, calc(0.04 + 0.1 * var(--o))), transparent 70%),
+    #020101;
+  transition: border-color 0.4s ease;
+}
+
+.slit.is-open {
+  --o: 1;
+  --slit: 1;
+}
+
+.slit:not(.is-open):hover {
+  border-color: rgba(255, 180, 106, 0.4);
+}
+
+/* Grounds the open product and keeps the copy legible where the two meet. */
+.slit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(0deg, rgba(2, 1, 1, 0.94) 0%, rgba(2, 1, 1, 0.6) 30%, transparent 50%);
+  opacity: var(--o);
+  pointer-events: none;
+}
+
+/* --- The product and its light ------------------------------------------- */
+
+/* The shot is always the open panel's size: in a closed panel it stays
+   centred and the panel shows a vertical sliver of it. */
+.slit__media {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((1 - var(--o)) * (50% - var(--shot-w) / 2));
+  width: var(--shot-w);
+  pointer-events: none;
+}
+
+.slit__shot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--shot-h);
+}
+
+.slit__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  user-select: none;
+}
+
+.slit__img--dim {
+  filter: brightness(0.3) saturate(0.3);
+  opacity: calc(0.3 + 0.7 * var(--power));
+}
+
+.slit__img--lit {
+  clip-path: inset(0 calc(50% - var(--slit) * 50%));
+  opacity: var(--power);
+}
+
+/* Inside a narrow slit the product reads as brightly lit. */
+.slit__wash {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(50% - var(--slit) * 50%));
+  background: linear-gradient(90deg, transparent 30%, rgba(255, 222, 186, 0.22) 50%, transparent 70%);
+  -webkit-mask-image: linear-gradient(transparent, #000 25%, #000 72%, transparent);
+  mask-image: linear-gradient(transparent, #000 25%, #000 72%, transparent);
+  mix-blend-mode: screen;
+  opacity: calc(var(--power) * (1 - var(--slit)));
+}
+
+.slit__haze {
+  position: absolute;
+  inset: -12% 0;
+  background: radial-gradient(calc(7% + var(--slit) * 30%) 44% at 50% 50%, rgba(255, 128, 36, 0.3), transparent 100%);
+  mix-blend-mode: screen;
+  opacity: calc(var(--power) * (1 - var(--slit)));
+}
+
+/* The two edges of the slit: a bright core in a soft amber glow. They sweep
+   apart as the slit widens and fade as it reaches full width. */
+.slit__beam {
+  position: absolute;
+  top: 2%;
+  bottom: -10%;
+  left: calc(50% - var(--slit) * 50%);
+  width: 84px;
+  translate: -50% 0;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), #fff3e2 calc(50% - 1px), #fff3e2 calc(50% + 1px), transparent calc(50% + 1px)),
+    radial-gradient(closest-side, rgba(255, 178, 102, 0.6), rgba(255, 110, 20, 0.2) 45%, transparent);
+  -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 66%, transparent);
+  mask-image: linear-gradient(transparent, #000 30%, #000 66%, transparent);
+  mix-blend-mode: screen;
+  opacity: calc(var(--power) * (1 - var(--slit) * var(--slit) * var(--slit)));
+}
+
+.slit__beam--r {
+  left: calc(50% + var(--slit) * 50%);
+}
+
+/* --- Closed-panel label (the whole panel is the button) ------------------- */
+
+.slit__tab {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.slit.is-open .slit__tab {
+  cursor: default;
+}
+
+.slit__tab:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: -4px;
+}
+
+.slit__index {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.slit__name {
+  position: absolute;
+  bottom: 24px;
+  left: 18px;
+  color: rgba(255, 243, 231, 0.82);
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  opacity: clamp(0, 1 - var(--o) * 3, 1);
+  transition: color 0.3s ease;
+}
+
+.slit__tab:hover .slit__name {
+  color: #fff;
+}
+
+/* --- Open-panel copy ---------------------------------------------------------- */
+
+.slit__body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  display: grid;
+  width: var(--shot-w);
+  justify-items: start;
+  gap: 10px;
+  padding: 0 clamp(26px, 3vw, 40px) clamp(28px, 3vw, 38px);
+  pointer-events: none;
+}
+
+.slit__body > * {
+  pointer-events: auto;
+}
+
+.slit__title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.3vw, 32px);
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.slit__tagline {
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.slit__desc {
+  max-width: 580px;
+  margin-top: 4px;
+  color: rgba(255, 243, 231, 0.72);
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.slit__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 13px 22px;
+  border: 1px solid rgba(255, 180, 106, 0.55);
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 12px;
+  text-transform: uppercase;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.slit__cta span {
+  color: #ffb46a;
+  transition: translate 0.35s var(--ease-out);
+}
+
+.slit__cta:hover,
+.slit__cta:focus-visible {
+  border-color: var(--amber);
+  background: rgba(255, 139, 18, 0.12);
+}
+
+.slit__cta:hover span,
+.slit__cta:focus-visible span {
+  translate: 4px 0;
+}
+
+/* Time left on the open product while the showcase plays by itself. */
+.slit__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.15), var(--amber));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* Without the motion layer, the class alone decides what's shown. */
+.showcase__stage:not(.is-driven) .slit:not(.is-open) .slit__body {
+  visibility: hidden;
+}
+
+/* --- Phones: the panels stack, and the slit turns horizontal ---------------- */
+
+@media (max-width: 900px) {
+  .showcase__stage {
+    --band: 72px;
+    --G: 7.4;
+    --gap: 10px;
+    --shot-h: 230px;
+    /* Where the slit crosses a closed band: below the label, never through it. */
+    --band-slit: 64%;
+    flex-direction: column;
+    height: calc(3 * var(--band) + 3 * var(--gap) + var(--band) * var(--G));
+  }
+
+  .slit {
+    --shot-w: 100cqw;
+    border-radius: 18px;
+  }
+
+  /* Closed, the band shows a horizontal sliver through the middle of the shot. */
+  .slit__media {
+    top: calc((1 - var(--o)) * (var(--band-slit) - var(--shot-h) / 2));
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: calc(var(--band) * var(--G));
+  }
+
+  .slit__img--lit,
+  .slit__wash {
+    clip-path: inset(calc(50% - var(--slit) * 50%) 0);
+  }
+
+  .slit__wash {
+    background: linear-gradient(180deg, transparent 30%, rgba(255, 222, 186, 0.22) 50%, transparent 70%);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  }
+
+  .slit__haze {
+    inset: 0 -12%;
+    background: radial-gradient(46% calc(7% + var(--slit) * 30%) at 50% 50%, rgba(255, 128, 36, 0.3), transparent 100%);
+  }
+
+  .slit__beam {
+    top: calc(50% - var(--slit) * 50%);
+    right: -8%;
+    bottom: auto;
+    left: -8%;
+    width: auto;
+    height: 64px;
+    translate: 0 -50%;
+    background:
+      linear-gradient(180deg, transparent calc(50% - 1px), #fff3e2 calc(50% - 1px), #fff3e2 calc(50% + 1px), transparent calc(50% + 1px)),
+      radial-gradient(closest-side, rgba(255, 178, 102, 0.6), rgba(255, 110, 20, 0.2) 45%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 28%, #000 72%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 28%, #000 72%, transparent);
+  }
+
+  .slit__beam--r {
+    top: calc(50% + var(--slit) * 50%);
+  }
+
+  /* Keeps the label legible over the sliver of product. */
+  .slit::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(2, 1, 1, 0.88) 0%, rgba(2, 1, 1, 0.55) 30%, transparent 52%);
+    opacity: calc(1 - var(--o));
+    pointer-events: none;
+  }
+
+  .slit__index {
+    top: 15px;
+    left: 18px;
+  }
+
+  .slit__name {
+    top: 14px;
+    bottom: auto;
+    left: 52px;
+    font-size: 12px;
+    writing-mode: horizontal-tb;
+    rotate: none;
+  }
+
+  .slit__body {
+    gap: 8px;
+    padding: 0 20px 22px;
+  }
+
+  .slit__title {
+    font-size: 22px;
+  }
+
+  .slit__tagline {
+    font-size: 10px;
+  }
+
+  .slit__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12.5px;
+    line-height: 1.65;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+  }
+
+  .slit__cta {
+    margin-top: 6px;
+    padding: 12px 18px;
+    font-size: 11px;
+  }
+}

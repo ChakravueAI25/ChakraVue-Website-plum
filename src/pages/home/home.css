@@ -1,0 +1,864 @@
+/* ==========================================================================
+   Homepage additions: the parts a company homepage needs on top of the
+   original sections (hero actions and product shortcuts, section headers,
+   team, latest posts; the product showcase has its own showcase.css). Same
+   language as the rest of the site: Audiowide, black and amber, rounded dark
+   cards with amber hairlines.
+   ========================================================================== */
+
+.home {
+  --hair: rgba(255, 214, 170, 0.14);
+  --soft: rgba(255, 243, 231, 0.72);
+}
+
+/* --- Hero ----------------------------------------------------------------- */
+
+/* The hero fills the first screen, up to its designed 882px, so the product
+   shortcuts are never cut off by the fold. The painted horizon and the
+   particle landscape are both placed as a fraction of this height. */
+.home .hero {
+  height: clamp(640px, 100vh, 882px);
+  height: clamp(640px, 100svh, 882px);
+}
+
+/* The copy sits above the horizon; the product shortcuts sit on the lit ground. */
+.home .hero__content {
+  align-content: center;
+  padding-bottom: 170px;
+}
+
+.hero__copy {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+/* The mark behind the copy (Hero.tsx): whole and centred on it (the copy
+   sits in the space above the 170px the product shortcuts take), as large
+   as fits between the nav and the horizon. Its top and bottom arcs are at
+   full strength; across the band the words sit in it is softer, and the
+   copy carries a soft shadow, so the words always read. A glint of light
+   travels round the ring. */
+.hero__mark {
+  position: absolute;
+  top: calc((100% - 170px) / 2);
+  left: 50%;
+  z-index: 1;
+  width: min(680px, 50vw, 78svh);
+  aspect-ratio: 1000 / 968;
+  /* Centred on the copy, set a little lower. */
+  translate: -50% calc(-50% + 36px);
+  -webkit-mask-image: linear-gradient(180deg, #000 17%, rgba(0, 0, 0, 0.45) 23%, rgba(0, 0, 0, 0.45) 68%, #000 76%);
+  mask-image: linear-gradient(180deg, #000 17%, rgba(0, 0, 0, 0.45) 23%, rgba(0, 0, 0, 0.45) 68%, #000 76%);
+  pointer-events: none;
+}
+
+.hero__emblem {
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 8px rgba(255, 170, 90, 0.75));
+}
+
+.hero__mark-defs {
+  position: absolute;
+}
+
+.hero__mark-stop--top {
+  stop-color: #ffe2bb;
+}
+
+.hero__mark-stop--mid {
+  stop-color: #f2ab66;
+}
+
+.hero__mark-stop--low {
+  stop-color: #9a4716;
+}
+
+.hero__emblem .logo__glyph {
+  fill: url(#hero-mark-fill);
+  animation: markGlint 7s linear infinite;
+  animation-delay: calc(var(--a) * -0.0194s);
+}
+
+@keyframes markGlint {
+  0%,
+  100% {
+    fill-opacity: 0.7;
+  }
+  7% {
+    fill-opacity: 1;
+  }
+  18% {
+    fill-opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__emblem .logo__glyph {
+    animation: none;
+  }
+}
+
+.hero__lead {
+  max-width: 660px;
+  margin-top: 22px;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.8;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.hero__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.hero__btn--primary {
+  background: var(--amber);
+  box-shadow: 0 18px 40px rgba(255, 110, 20, 0.3);
+  color: #140b04;
+}
+
+/* A lighter fill rises through the button on hover. */
+.hero__btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #ffd29a;
+  transform: translateY(101%);
+  transition: transform 0.5s var(--ease-out);
+}
+
+.hero__btn--primary:hover::before,
+.hero__btn--primary:focus-visible::before {
+  transform: translateY(0);
+}
+
+.hero__btn span {
+  transition: translate 0.4s var(--ease-out);
+}
+
+.hero__btn:hover span,
+.hero__btn:focus-visible span {
+  translate: 4px 0;
+}
+
+.hero__btn--ghost {
+  border: 1px solid rgba(255, 236, 220, 0.45);
+  background: rgba(10, 5, 2, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+}
+
+.hero__btn--ghost:hover,
+.hero__btn--ghost:focus-visible {
+  border-color: #fff;
+  background: rgba(10, 5, 2, 0.45);
+}
+
+.hero__products {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  width: min(1180px, calc(100% - 96px));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  translate: -50% 0;
+}
+
+.hero__product {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 214, 170, 0.28);
+  border-radius: 16px;
+  background: rgba(14, 6, 2, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1.35;
+  text-transform: uppercase;
+  transition: border-color 0.35s ease, background-color 0.35s ease, translate 0.35s var(--ease-out);
+}
+
+.hero__product-index {
+  color: #ffb46a;
+}
+
+.hero__product-arrow {
+  margin-left: auto;
+  color: #ffb46a;
+  transition: translate 0.35s var(--ease-out);
+}
+
+.hero__product:hover,
+.hero__product:focus-visible {
+  border-color: rgba(255, 180, 106, 0.85);
+  background: rgba(20, 8, 2, 0.65);
+  translate: 0 -3px;
+}
+
+.hero__product:hover .hero__product-arrow,
+.hero__product:focus-visible .hero__product-arrow {
+  translate: 4px 0;
+}
+
+/* --- Section headers ------------------------------------------------------- */
+
+.hsec-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 48px;
+  margin-bottom: clamp(40px, 5vw, 64px);
+  text-align: left;
+}
+
+.hsec-head--center {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hsec-title {
+  max-width: 760px;
+  margin-top: 16px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: 400;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.hsec-link {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 6px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  text-transform: uppercase;
+  transition: background-size 0.45s var(--ease-out), color 0.3s ease;
+}
+
+.hsec-link span {
+  color: #ffb46a;
+  transition: translate 0.35s var(--ease-out);
+}
+
+.hsec-link:hover,
+.hsec-link:focus-visible {
+  color: #ffd29a;
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+}
+
+.hsec-link:hover span {
+  translate: 4px 0;
+}
+
+/* --- How it works ------------------------------------------------------------ */
+
+/* Four stages on one line. Each stage draws the link to the next; the
+   component sets --seg (0…1) on it as the signal passes, and .is-lit once
+   the signal has reached the stage. Without the motion layer, all are lit. */
+.hsteps {
+  --g: clamp(20px, 3vw, 48px);
+  --node: 64px;
+  padding: clamp(90px, 9vw, 130px) 0 clamp(90px, 9vw, 130px);
+  background: #030102;
+}
+
+.hsteps__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--g);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hsteps__step {
+  --seg: 1;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  text-align: center;
+}
+
+.hsteps__node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: var(--node);
+  height: var(--node);
+  place-items: center;
+  border: 1px solid rgba(255, 139, 18, 0.85);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 139, 18, 0.22), #0a0503 70%);
+  box-shadow: 0 0 0 6px rgba(255, 139, 18, 0.06), 0 0 28px rgba(255, 120, 20, 0.35);
+  color: #fff3e7;
+  font-family: var(--font-display);
+  font-size: 18px;
+  transition: border-color 0.5s ease, box-shadow 0.6s ease, color 0.5s ease, background-color 0.5s ease;
+}
+
+/* From the right edge of this stage's node to the left edge of the next. */
+.hsteps__link {
+  position: absolute;
+  top: calc(var(--node) / 2);
+  left: calc(50% + var(--node) / 2);
+  width: calc(100% + var(--g) - var(--node));
+  height: 1px;
+  background: rgba(255, 190, 130, 0.16);
+}
+
+.hsteps__link i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(var(--seg) * 100%);
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.35), #ffb46a);
+  box-shadow: 0 0 10px rgba(255, 139, 18, 0.55);
+}
+
+/* The head of the signal, only while it's travelling along this link. */
+.hsteps__link i::after {
+  content: "";
+  position: absolute;
+  top: -3.5px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff3e2;
+  box-shadow: 0 0 12px 3px rgba(255, 170, 80, 0.9), 0 0 32px 8px rgba(255, 110, 20, 0.35);
+  opacity: calc(min(var(--seg) * 14, 1) * min((1 - var(--seg)) * 14, 1));
+}
+
+/* Once the signal has arrived, data keeps flowing from stage to stage. */
+.hsteps__link::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 26px;
+  height: 5px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, transparent, #ffd29a);
+  filter: drop-shadow(0 0 6px rgba(255, 150, 60, 0.9));
+  opacity: 0;
+}
+
+.hsteps.is-complete .hsteps__link::after {
+  animation: hstepsFlow 3.2s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+  animation-delay: calc(var(--i) * 1.05s);
+}
+
+@keyframes hstepsFlow {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  32% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    left: calc(100% - 26px);
+    opacity: 0;
+  }
+}
+
+.hsteps__title {
+  margin: 26px 0 0;
+  color: #f2af63;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 1.9vw, 26px);
+  font-weight: 400;
+  line-height: 1.2;
+  text-transform: uppercase;
+  transition: color 0.5s ease, opacity 0.5s ease;
+}
+
+.hsteps__body {
+  max-width: 280px;
+  margin-top: 14px;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  line-height: 1.75;
+  transition: opacity 0.6s ease;
+}
+
+/* Waiting for the signal. */
+.hsteps.is-driven .hsteps__step:not(.is-lit) .hsteps__node {
+  border-color: rgba(255, 190, 130, 0.22);
+  background: #070403;
+  box-shadow: none;
+  color: rgba(242, 175, 99, 0.55);
+}
+
+.hsteps.is-driven .hsteps__step:not(.is-lit) .hsteps__title,
+.hsteps.is-driven .hsteps__step:not(.is-lit) .hsteps__body {
+  opacity: 0.35;
+}
+
+/* --- Team ------------------------------------------------------------------ */
+
+.hteam {
+  padding: clamp(100px, 10vw, 150px) 0 clamp(80px, 8vw, 120px);
+  /* Rises out of the black of "How it works" above, warming briefly. */
+  background: linear-gradient(180deg, #030102 0%, #120401 14%, #040302 34%);
+}
+
+.hteam__leaders {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.4vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hteam__card {
+  padding: 16px 16px 26px;
+  border: 1px solid var(--hair);
+  border-radius: 24px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  transition: translate 0.45s var(--ease-out), border-color 0.45s ease;
+}
+
+.hteam__card:hover {
+  border-color: rgba(255, 180, 106, 0.45);
+  translate: 0 -6px;
+}
+
+.hteam__photo {
+  overflow: hidden;
+  border-radius: 16px;
+  aspect-ratio: 4 / 4.2;
+  background:
+    radial-gradient(90% 60% at 50% 110%, rgba(255, 139, 18, 0.22), transparent 70%),
+    #000;
+}
+
+.hteam__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(var(--zoom, 1));
+  transition: transform 0.7s var(--ease-out);
+}
+
+.hteam__card:hover .hteam__photo img {
+  transform: scale(calc(var(--zoom, 1) * 1.05));
+}
+
+.hteam__name {
+  margin-top: 22px;
+  padding: 0 6px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.3;
+}
+
+.hteam__role {
+  margin-top: 8px;
+  padding: 0 6px;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.hteam__crew {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: clamp(32px, 4vw, 48px);
+  padding: 20px 24px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hteam__crew ul {
+  display: flex;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hteam__crew li + li {
+  margin-left: -12px;
+}
+
+.hteam__crew img {
+  display: block;
+  width: 46px;
+  height: 46px;
+  border: 2px solid #0b0806;
+  border-radius: 50%;
+  background: #000;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 139, 18, 0.45);
+  transition: translate 0.35s var(--ease-out);
+}
+
+.hteam__crew li:hover img {
+  translate: 0 -4px;
+}
+
+.hteam__crew p {
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* --- Latest posts ------------------------------------------------------------ */
+
+.hnews {
+  padding: clamp(80px, 8vw, 120px) 0 clamp(110px, 11vw, 160px);
+  background: #040302;
+}
+
+.hnews__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.4vw, 32px);
+}
+
+.hnews__card {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 24px;
+  border: 1px solid var(--hair);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #100d0a, #0a0908);
+  color: inherit;
+  transition: translate 0.45s var(--ease-out), border-color 0.45s ease;
+}
+
+.hnews__card:hover,
+.hnews__card:focus-visible {
+  border-color: rgba(255, 180, 106, 0.45);
+  translate: 0 -6px;
+}
+
+.hnews__art {
+  display: grid;
+  aspect-ratio: 16 / 10;
+  place-items: center;
+  border-radius: 14px;
+  background:
+    radial-gradient(70% 90% at 30% 20%, rgba(255, 139, 18, 0.2), transparent 60%),
+    linear-gradient(160deg, #1c140c, #0b0a08);
+}
+
+.hnews__art span {
+  color: rgba(255, 180, 110, 0.38);
+  font-family: var(--font-display);
+  font-size: 18px;
+  text-transform: uppercase;
+  transition: letter-spacing 0.6s var(--ease-out), color 0.4s ease;
+}
+
+.hnews__card:hover .hnews__art span {
+  color: rgba(255, 190, 120, 0.7);
+  letter-spacing: 0.08em;
+}
+
+.hnews__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.hnews__tag {
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 139, 18, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 139, 18, 0.1);
+  color: var(--amber);
+}
+
+.hnews__title {
+  margin: 14px 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.hnews__excerpt {
+  margin-top: 12px;
+  color: rgba(255, 236, 225, 0.6);
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.hnews__author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 20px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 12px;
+}
+
+.hnews__author small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.hnews__avatar {
+  display: grid;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(255, 139, 18, 0.4);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 139, 18, 0.3), rgba(20, 14, 10, 0.94) 70%);
+  color: var(--amber);
+  font-size: 10px;
+}
+
+/* --- Phones ------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .hteam__leaders,
+  .hnews__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hsec-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hsec-head--center {
+    align-items: center;
+  }
+
+  .hteam__crew {
+    flex-direction: column;
+    border-radius: 24px;
+    text-align: center;
+  }
+
+  /* How it works turns vertical: nodes down the left, the line between them. */
+  .hsteps {
+    --node: 52px;
+    --g: 34px;
+  }
+
+  .hsteps__list {
+    max-width: 540px;
+    margin: 0 auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hsteps__step {
+    grid-template-columns: var(--node) minmax(0, 1fr);
+    column-gap: 20px;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .hsteps__node {
+    grid-row: 1 / span 2;
+    font-size: 15px;
+  }
+
+  .hsteps__link {
+    top: var(--node);
+    left: calc(var(--node) / 2);
+    width: 1px;
+    height: calc(100% + var(--g) - var(--node));
+  }
+
+  .hsteps__link i {
+    right: 0;
+    bottom: auto;
+    width: auto;
+    height: calc(var(--seg) * 100%);
+  }
+
+  .hsteps__link i::after {
+    top: auto;
+    right: auto;
+    bottom: -4px;
+    left: -3.5px;
+  }
+
+  .hsteps__link::after {
+    left: -2px;
+    width: 5px;
+    height: 26px;
+    background: linear-gradient(180deg, transparent, #ffd29a);
+  }
+
+  .hsteps.is-complete .hsteps__link::after {
+    animation-name: hstepsFlowDown;
+  }
+
+  .hsteps__title {
+    margin-top: 14px;
+    font-size: 20px;
+  }
+
+  .hsteps__body {
+    max-width: none;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+}
+
+@keyframes hstepsFlowDown {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  32% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    top: calc(100% - 26px);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .home .hero__content {
+    padding-bottom: 230px;
+  }
+
+  .hero__lead {
+    font-size: 13px;
+  }
+
+  /* Phones: the copy fills the screen's width, so the mark rings it from
+     further out and stays quieter. */
+  .hero__mark {
+    top: calc((100% - 230px) / 2);
+    width: min(480px, 124vw);
+  }
+
+  .hero__emblem {
+    opacity: 0.6;
+  }
+
+  .hero__btn {
+    padding: 14px 22px;
+    font-size: 11px;
+  }
+
+  /* Two rows of tiles, just under the horizon. */
+  .hero__products {
+    bottom: 56px;
+    width: calc(100% - 36px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .hero__product {
+    gap: 10px;
+    padding: 12px;
+    font-size: 10px;
+  }
+
+  /* Leaders as a compact list: portrait beside name and role. */
+  .hteam__card {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    column-gap: 18px;
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .hteam__photo {
+    grid-row: 1 / -1;
+    border-radius: 12px;
+  }
+
+  .hteam__name {
+    grid-row: 2;
+    margin-top: 0;
+    padding: 0;
+    font-size: 15px;
+  }
+
+  .hteam__role {
+    grid-row: 3;
+    padding: 0;
+    font-size: 10px;
+  }
+
+  .hnews__art {
+    aspect-ratio: 16 / 7;
+  }
+}
