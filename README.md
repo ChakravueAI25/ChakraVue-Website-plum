@@ -119,11 +119,69 @@ bundle showing the Doctor App and the Patient App side by side; and
 ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
 decoding title and a self-drawing line icon.
 
-**3D products.** Surgical Assistant is a carry case beside a microscope
-(`models/briefcase.ts`): the lid opens onto the surgical display, the compute
-unit lifts out, and data runs along the cable from the microscope. Integrated
-Devices is the connectivity module (`models/module.ts`). The homepage shots
-and fallback images are renders of these models.
+**3D products.** The Surgical Assistant and the Slit Lamp Module are the same
+rugged field case, standing open (`models/briefcase.ts`, modelled on the
+owner's reference photo). They differ only in the interface on the display
+(`models/interfaces.ts`).
+- **Lid:** a screwed-down faceplate with a port strip, camera, status windows
+  and a USB hub around the display.
+- **Base:** an instrument strip (power, panel meter, status windows), the
+  compute unit, a trackball, a network switch, and a keyboard with touchpad.
+- **Compute unit** (`models/computeUnit.ts`): built in millimetres after the
+  developer-kit photo, unbranded. It has a base tray, a carrier board with
+  front I/O, a 40-pin header and camera connectors, and a module under a
+  square heatsink with a spinning fan.
+- **The interface** (`models/interfaceStack.ts`): a cleaned capture of the
+  real product UI (`public/images/product-suite/*-interface.webp`), cut into
+  layers (title and toolbar, side panels, live view, status bar) plus the
+  on-video AI overlay, which lives in its own transparent image
+  (`*-overlay.webp`) and is painted out of the capture underneath.
+  Assembled, the layers lie flush and read as one screen; the overlay
+  breathes slightly. Exploded, they lift out of the display and gather in
+  front of the case, enlarged and turned to the viewer (cancelling most of
+  the turntable's turn): the panels part, the live view comes forward, and
+  the overlay rises off it. The display dims behind them, tied to the stack
+  by projection lines. The layer rectangles are in capture pixels, so a new
+  capture only needs new numbers (`models/interfaces.ts`).
+- **The AI at work** (`models/aiEffects.ts`, cyan like the interfaces' own
+  overlays): an analysis beam sweeps the live view, leaving a measuring grid
+  and detection points in its wake, inside viewfinder corners; a reticle
+  sits on the detected eye, opening as the overlay lifts off and locking on
+  again as it settles, with pulses radiating from the pupil; and readings
+  stream from the eye into the measurement panels. Faint on the closed
+  case's screen, full once it opens.
+- **Focus** (the chapter runs longer: `focus: true` in
+  `product-suite/data.ts`, `.theater__chapter--focus`): after the parts are
+  labelled, the camera moves in until the interface fills the stage, square
+  to the viewer. The copy, shade and eyebrow step aside (`--focus`), the
+  side panels straighten, the overlay settles back onto the eye, and
+  readout cards (`.treadout`, each tagged "AI") quote values already on the
+  captured screen, scrambling in as they appear. On phones the camera
+  frames just the live view. Then it steps back and the case closes.
+- **Cleaning a capture:** paint out chip and GPU names, memory and
+  performance readouts, model names (for example the segmentation model)
+  and internal detector strings; then lift the overlay into its own image
+  (rendered at 2x with slightly heavier lines and a soft halo) and fill it
+  out of the plate.
+- **Colour:** `kit.interfaceScreen()` shows a capture as captured. It runs
+  the stage's ACES tone curve backwards (held just under the bloom
+  threshold, at 86% brightness) and writes alpha 0, which tells the palette
+  grade (`GradeShader`) to leave those pixels alone, so a cyan pupil ring
+  stays cyan. Transparent layers and the screen glass blend their colour but
+  keep that mark. Everything else is graded as usual.
+- **Exploded view:** the lid tips back, the interface gathers in front (then the focus beat), the
+  keyboard slides out, and the compute unit comes forward over the keyboard
+  to stand off the front corner, below the interface, turned and enlarged
+  while its heatsink rises off the module. Data runs along the display cable.
+- The model sits forward of the turntable axis (`SHIFT`) so the open lid
+  doesn't swing across the copy, and it asks for a higher camera
+  (`elevation`) so the deck can be seen.
+
+Integrated Devices is the connectivity module (`models/module.ts`). The
+cases' fallback images and the Surgical Assistant's homepage shot are
+renders of the model, captured with the palette set to "original" (the
+page's CSS grades them). The Slit Lamp Module's homepage panel still shows
+the product's own photographic render.
 
 **Confidentiality.** Public copy and the exploded-view labels name parts only
 generically (Port, Battery, Bluetooth, Compute unit…): no part numbers,
@@ -169,7 +227,10 @@ src/motion/            the motion system
   PointerFX.tsx        cursor tag, magnetic, spotlight
   webgl/dataHorizon.ts home hero particle landscape
   webgl/theater/       3D products: engine.ts (stage + inline modes),
-                       kit.ts (materials, explode parts), models/*.ts, textures.ts
+                       kit.ts (materials, explode parts), models/*.ts
+                       (briefcase.ts + computeUnit.ts + interfaceStack.ts +
+                       interfaces.ts + aiEffects.ts,
+                       systems, module), textures.ts
   motion.css
 src/pages/home/home.css            homepage additions (hero actions, team, blog…)
 src/shared/components/Footer.tsx   new footer
@@ -216,7 +277,8 @@ and Plum is applied over them at runtime (`SITE_THEME` in `theme.ts`).
   through it at runtime. Nothing in
   the stylesheets needs to change when you add a section.
 - The WebGL scenes apply the same transform as a colour matrix in their own
-  shaders (`theme/grade.ts`), and decorative renders take it as an SVG
+  shaders (`theme/grade.ts`; product interface screens opt out by
+  drawing with alpha 0), and decorative renders take it as an SVG
   filter (`theme/theme.css`). Art whose filter is animated (the blog
   doorway) puts `var(--cv-grade)` in front of it, so the animation never
   drops the grade. Canvases read their colours from CSS custom properties

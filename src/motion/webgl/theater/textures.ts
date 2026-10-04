@@ -2,8 +2,10 @@ import * as THREE from "three";
 
 /**
  * Screens, circuit boards and interface layers, drawn in code so the models
- * need no image assets. Everything is abstract UI (shapes, bars, retina
- * imagery): no invented clinical data or copy.
+ * need no image assets (the two rugged cases' displays load captures of
+ * the real interfaces instead; see `models/interfaceStack.ts`).
+ * Everything is abstract UI (shapes, bars, retina imagery): no invented
+ * clinical data or copy.
  */
 
 const AMBER = "#ff8b12";
@@ -125,42 +127,6 @@ function background(g: CanvasRenderingContext2D, w: number, h: number) {
   g.fillStyle = bg;
   g.fillRect(0, 0, w, h);
 }
-
-export const surgicalScreen = () =>
-  texture(1024, 640, (g, w, h) => {
-    background(g, w, h);
-    retina(g, 330, 330, 250, 7);
-    overlay(g, 330, 330, 250);
-    panel(g, 640, 60, 330, 250);
-    bars(g, 670, 100, 270, 8, seeded(3));
-    panel(g, 640, 340, 330, 240);
-    g.strokeStyle = AMBER;
-    g.lineWidth = 3;
-    g.beginPath();
-    const rnd = seeded(11);
-    for (let x = 0; x <= 280; x += 14) g.lineTo(665 + x, 470 - Math.sin(x / 26) * 40 - rnd() * 30);
-    g.stroke();
-  });
-
-export const slitScreen = () =>
-  texture(512, 512, (g, w, h) => {
-    const glow = g.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, w / 2);
-    glow.addColorStop(0, "#fff0c8");
-    glow.addColorStop(0.3, "#ffa53c");
-    glow.addColorStop(0.75, "#b33a0a");
-    glow.addColorStop(1, "#200600");
-    g.fillStyle = glow;
-    g.fillRect(0, 0, w, h);
-    g.strokeStyle = "rgba(40, 8, 0, 0.8)";
-    g.lineWidth = 16;
-    g.beginPath();
-    g.arc(w / 2, h / 2, w * 0.3, 0, Math.PI * 2);
-    g.stroke();
-    g.lineWidth = 5;
-    g.beginPath();
-    g.arc(w / 2, h / 2, w * 0.16, 0, Math.PI * 2);
-    g.stroke();
-  });
 
 export const deviceScreen = () =>
   texture(512, 320, (g, w, h) => {
@@ -325,4 +291,141 @@ export const batteryLabel = () =>
     g.fillText("BATTERY", w / 2, h / 2 - 14);
     g.font = "26px Audiowide, Arial, sans-serif";
     g.fillText("RECHARGEABLE", w / 2, h / 2 + 50);
+  });
+
+/** A rectangle on a panel, in panel units: [left, bottom, right, top] (origin at the centre, +v up). */
+export type PanelModule = [number, number, number, number];
+
+/**
+ * Black anodised faceplate, divided into screwed-down modules like a
+ * rugged field case: faint brushed grain, a dark seam round each module
+ * with a hairline highlight inside it.
+ */
+export const faceplate = (w: number, h: number, modules: PanelModule[]) =>
+  texture(Math.round(w * 900), Math.round(h * 900), (g, cw, ch) => {
+    const k = cw / w;
+    g.fillStyle = "#1b1c1f";
+    g.fillRect(0, 0, cw, ch);
+    const rnd = seeded(5);
+    for (let i = 0; i < 1600; i++) {
+      g.fillStyle = `rgba(255, 255, 255, ${(0.008 + rnd() * 0.018).toFixed(3)})`;
+      g.fillRect(rnd() * cw, rnd() * ch, 24 + rnd() * 140, 1);
+    }
+    for (const [u0, v0, u1, v1] of modules) {
+      const x = (u0 + w / 2) * k;
+      const y = (h / 2 - v1) * k;
+      const mw = (u1 - u0) * k;
+      const mh = (v1 - v0) * k;
+      g.strokeStyle = "#040405";
+      g.lineWidth = 6;
+      g.strokeRect(x, y, mw, mh);
+      g.strokeStyle = "rgba(255, 255, 255, 0.075)";
+      g.lineWidth = 1.5;
+      g.strokeRect(x + 4, y + 4, mw - 8, mh - 8);
+    }
+  });
+
+/** Monochrome LCD of a panel meter: abstract bars and a trace, no readings. */
+export const lcdMeter = () =>
+  texture(320, 200, (g, w, h) => {
+    const bg = g.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, "#c2cda4");
+    bg.addColorStop(1, "#97a67c");
+    g.fillStyle = bg;
+    g.fillRect(0, 0, w, h);
+    const rnd = seeded(23);
+    g.fillStyle = "rgba(24, 34, 14, 0.78)";
+    for (let i = 0; i < 4; i++) {
+      g.beginPath();
+      g.roundRect(22, 24 + i * 26, 60 + rnd() * 150, 12, 3);
+      g.fill();
+    }
+    g.strokeStyle = "rgba(24, 34, 14, 0.8)";
+    g.lineWidth = 3;
+    g.beginPath();
+    for (let x = 0; x <= 270; x += 10) g.lineTo(24 + x, 168 - Math.abs(Math.sin(x / 34)) * 30 - rnd() * 8);
+    g.stroke();
+  });
+
+/** Seven-segment window in standby: ghost digits with the dashes lit. */
+export const segmentWindow = (lit: string) =>
+  texture(256, 100, (g, w, h) => {
+    g.fillStyle = "#0b0605";
+    g.fillRect(0, 0, w, h);
+    const seg = (x: number, y: number, sw: number, sh: number, on: boolean) => {
+      g.fillStyle = on ? lit : "rgba(255, 255, 255, 0.05)";
+      g.beginPath();
+      g.roundRect(x, y, sw, sh, 3);
+      g.fill();
+    };
+    for (let d = 0; d < 3; d++) {
+      const x = 34 + d * 66;
+      const y = 16;
+      const s = 40;
+      seg(x + 5, y, s - 10, 6, false);
+      seg(x + 5, y + s - 3, s - 10, 6, true);
+      seg(x + 5, y + 2 * s - 6, s - 10, 6, false);
+      for (const [dx, dy] of [[0, 4], [s - 6, 4], [0, s + 1], [s - 6, s + 1]]) seg(x + dx, y + dy, 6, s - 8, false);
+      if (d < 2) seg(x + s + 6, y + 2 * s - 6, 6, 6, false);
+    }
+  });
+
+/** Small status screen: a warm title bar and a few rows of abstract readout. */
+export const statusPanel = () =>
+  texture(256, 160, (g, w, h) => {
+    background(g, w, h);
+    g.fillStyle = "rgba(255, 190, 130, 0.65)";
+    g.fillRect(16, 16, 90, 10);
+    bars(g, 16, 46, 220, 5, seeded(31), 20);
+  });
+
+/**
+ * The compute module's carrier board: near-black solder mask, faint copper
+ * pours and traces, white silkscreen outlines and plated mounting holes.
+ * Mapped onto the board's top face, so the canvas top is the back edge.
+ */
+export const carrierBoard = () =>
+  texture(640, 512, (g, w, h) => {
+    g.fillStyle = "#16181b";
+    g.fillRect(0, 0, w, h);
+    const rnd = seeded(77);
+    g.lineCap = "round";
+    for (let i = 0; i < 120; i++) {
+      let x = Math.round(rnd() * 40) * 16;
+      let y = Math.round(rnd() * 32) * 16;
+      g.strokeStyle = `rgba(255, 255, 255, ${(0.03 + rnd() * 0.04).toFixed(3)})`;
+      g.lineWidth = rnd() > 0.85 ? 3 : 1.4;
+      g.beginPath();
+      g.moveTo(x, y);
+      for (let s = 0; s < 3; s++) {
+        if (rnd() > 0.5) x += (rnd() > 0.5 ? 1 : -1) * 16 * (1 + Math.floor(rnd() * 4));
+        else y += (rnd() > 0.5 ? 1 : -1) * 16 * (1 + Math.floor(rnd() * 4));
+        g.lineTo(x, y);
+      }
+      g.stroke();
+    }
+    for (let i = 0; i < 220; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(190, 190, 195, 0.28)" : "rgba(214, 178, 96, 0.3)";
+      g.fillRect(rnd() * w, rnd() * h, 3, 3);
+    }
+    g.strokeStyle = "rgba(236, 236, 236, 0.5)";
+    g.lineWidth = 2;
+    const outline: Array<[number, number, number, number]> = [
+      [96, 48, 420, 300],
+      [24, 120, 28, 180],
+      [24, 330, 28, 70],
+      [588, 60, 30, 330],
+      [470, 40, 70, 34],
+    ];
+    for (const [x, y, rw, rh] of outline) g.strokeRect(x, y, rw, rh);
+    for (const [x, y] of [[18, 18], [w - 18, 18], [18, h - 18], [w - 18, h - 18]]) {
+      g.fillStyle = "#b9b4a6";
+      g.beginPath();
+      g.arc(x, y, 11, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = "#060607";
+      g.beginPath();
+      g.arc(x, y, 6, 0, Math.PI * 2);
+      g.fill();
+    }
   });

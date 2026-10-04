@@ -88,6 +88,34 @@ when you change one.
   - Hero, then a compact (unpinned) lead statement "Intelligence,
     Engineered for the Operating Room.", then the 3D product theater
     (`motion/webgl/theater/`, generic part labels).
+  - Surgical Assistant and Slit Lamp Module (rebuilt 2026-10-02/03 from the
+    owner's references) are the same open rugged field case
+    (`models/briefcase.ts`) with an unbranded developer-kit-style compute
+    unit (`models/computeUnit.ts`). They differ only in the interface on
+    the lid display (`models/interfaces.ts`): the real surgical UI and the
+    real Slit-Lamp Analytics UI, as cleaned captures. The owner asked for the
+    slit lamp to match the surgical case.
+  - The interface is a layer stack (`models/interfaceStack.ts`). Exploded,
+    its panels, live view and AI overlay lift out of the display and gather
+    in front of the case, enlarged and facing the viewer, so the contents
+    can be seen; the compute unit stands off the front corner, below them.
+    The owner asked for both: the interface "viewable when dismantled", and
+    the compute unit never covering the screen.
+  - Then a focus beat (longer chapter): the camera moves in until the
+    interface fills the stage, the copy steps aside, and "AI" readout cards
+    quote values from the capture. AI touches run on the screen throughout
+    (`models/aiEffects.ts`: analysis beam, lock-on reticle, readings
+    streaming into the panels). The owner asked for "some AI touch" and for
+    the interface content to be visible. Readouts quote only what the
+    capture shows; never invent clinical figures.
+  - Screens keep true colours through `kit.interfaceScreen()`: it inverts
+    the ACES tone curve and writes alpha 0, which the palette grade pass
+    skips. Anything drawn over a screen must keep that alpha (see the glass
+    and overlay blending).
+  - Never label the compute unit with a chipset or board name. Any new
+    capture must have chip/GPU names, performance readouts, model names
+    (for example the segmentation model) and internal detector strings
+    painted out.
   - Then the software platforms console (`product-suite/platforms.ts`):
     05 Dental Implant Planning; 06 ChakraVue Doctor Patient App, a bundle
     showing the Doctor App and Patient App individually (`apps` field);

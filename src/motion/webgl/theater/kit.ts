@@ -2,6 +2,14 @@ import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import * as tex from "./textures";
 
+/** three's ACES filmic matrices (column-major, as in its shader chunk), inverted for `interfaceScreen`. */
+const glslInverse = (columns: number[]) => {
+  const m = new THREE.Matrix3().fromArray(columns).invert();
+  return `mat3(${m.elements.map((n) => n.toFixed(7)).join(", ")})`;
+};
+const ACES_IN_INV = glslInverse([0.59719, 0.076, 0.0284, 0.35458, 0.90834, 0.13383, 0.04823, 0.01566, 0.83777]);
+const ACES_OUT_INV = glslInverse([1.60475, -0.10208, -0.00327, -0.53108, 1.10813, -0.07276, -0.07367, -0.00605, 1.07602]);
+
 /**
  * The modelling kit shared by the four product models: one set of
  * materials (so a look change is one line), primitive helpers, and the
@@ -31,13 +39,38 @@ export type Anchor = {
   side: "left" | "right";
 };
 
+/** A reading from a product's interface, shown as a card while the camera is in on it. */
+export type Readout = {
+  object: THREE.Object3D;
+  point: THREE.Vector3;
+  label: string;
+  value: string;
+  /** Where the card sits from the point, in screen pixels (desktop; halved on phones). */
+  card: [number, number];
+};
+
+/** Something the camera can move in on once the product is open (an interface), with its readings. */
+export type Focus = {
+  /**
+   * Writes the point to look at (world) into `target` and returns the width
+   * and height to fit. `core` asks for just the essential part, for phones.
+   */
+  frame(target: THREE.Vector3, core: boolean): { width: number; height: number };
+  /** Camera elevation that looks at it square-on. */
+  elevation: number;
+  readouts: Readout[];
+};
+
 /** Framing (height, focus, radius) is measured by the engine, not hand-tuned per model. */
 export type ProductModel = {
   group: THREE.Group;
   parts: Part[];
   anchors: Anchor[];
-  /** Per-frame hook for motion beyond the explode (cables, data packets, layer fades). */
-  update?: (explode: number, time: number) => void;
+  /** Per-frame hook for motion beyond the explode (cables, data packets, layer fades); `focus` is 0 to 1. */
+  update?: (explode: number, time: number, focus: number) => void;
+  /** Camera elevation in radians (default 0.2). Higher shows more of a product's top. */
+  elevation?: number;
+  focus?: Focus;
 };
 
 export class Kit {
@@ -46,7 +79,7 @@ export class Kit {
 
   constructor(
     readonly quality: Quality,
-    clip: THREE.Plane[],
+    private readonly clip: THREE.Plane[],
   ) {
     const clipped = <T extends THREE.Material>(material: T) => {
       material.clippingPlanes = clip;
@@ -105,13 +138,87 @@ export class Kit {
       glow: glow("#ff8b12", 2.6),
       glowWarm: glow("#ffc27a", 2.1),
       glowSoft: glow("#ff8b12", 1.2),
-      surgicalScreen: screen(tex.surgicalScreen()),
-      slitScreen: screen(tex.slitScreen(), 1.6),
       deviceScreen: screen(tex.deviceScreen()),
       emrScreen: screen(tex.emrDashboard(), 1.15),
       /** Amber construction lines that trace the housings in the exploded view. */
       edge: clipped(new THREE.LineBasicMaterial({ color: "#ffb46a", transparent: true, opacity: 0, depthWrite: false })),
     };
+  }
+
+  /** Interface captures by URL, so every layer cut from one capture shares one texture. */
+  private captures = new Map<string, { texture?: THREE.Texture; waiting: Array<(capture: THREE.Texture) => void> }>();
+
+  /**
+   * A display showing a capture of a real product interface, as captured.
+   * The stage tone-maps the frame (ACES filmic), which would mute a screen,
+   * so the shader runs the curve backwards; and it marks its pixels (alpha
+   * 0) so the palette grade leaves them alone (`GradeShader`): a cyan pupil
+   * ring stays cyan, white panels stay white. It stays just under the bloom
+   * threshold; the material's colour then scales it, so a layer can be
+   * dimmed, or pushed past 1 to glow. A transparent layer blends its colour
+   * but keeps the mark beneath it. Hidden until the capture has loaded.
+   * Assumes the stage pipeline (composer with tone mapping).
+   */
+  interfaceScreen(url: string, { strength = 1, transparent = false } = {}) {
+    const material = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(strength, strength, strength),
+      toneMapped: false,
+      transparent,
+      depthWrite: !transparent,
+      visible: false,
+    });
+    material.clippingPlanes = this.clip;
+    if (transparent) {
+      material.blending = THREE.CustomBlending;
+      material.blendSrcAlpha = THREE.ZeroFactor;
+      material.blendDstAlpha = THREE.OneFactor;
+    }
+    this.disposables.push(material);
+    const show = (capture: THREE.Texture) => {
+      material.map = capture;
+      material.visible = true;
+      material.needsUpdate = true;
+    };
+    let entry = this.captures.get(url);
+    if (!entry) {
+      const created: { texture?: THREE.Texture; waiting: Array<(capture: THREE.Texture) => void> } = { waiting: [] };
+      this.captures.set(url, created);
+      new THREE.TextureLoader().load(url, (capture) => {
+        capture.colorSpace = THREE.SRGBColorSpace;
+        capture.anisotropy = 8;
+        created.texture = this.own(capture);
+        created.waiting.forEach((wake) => wake(capture));
+        created.waiting = [];
+      });
+      entry = created;
+    }
+    if (entry.texture) show(entry.texture);
+    else entry.waiting.push(show);
+    material.customProgramCacheKey = () => (transparent ? "interface-layer" : "interface");
+    material.onBeforeCompile = (shader) => {
+      shader.fragmentShader = `vec3 untoneMap(vec3 c) {
+          vec3 y = clamp(${ACES_OUT_INV} * c, 0.0, 1.0);
+          vec3 a = 0.983729 * y - 1.0;
+          vec3 b = 0.432951 * y - 0.0245786;
+          vec3 k = 0.238081 * y + 0.000090537;
+          vec3 v = (-b - sqrt(max(b * b - 4.0 * a * k, 0.0))) / (2.0 * a);
+          return max(${ACES_IN_INV} * v, 0.0) * 0.6;
+        }
+        ${shader.fragmentShader}`.replace(
+        "#include <map_fragment>",
+        `#ifdef USE_MAP
+          // A slightly sharper mip choice keeps small interface text crisp.
+          vec4 capture = texture2D(map, vMapUv, -0.5);
+          // Shown at 86%, the brightest the tone curve gives below the bloom threshold.
+          vec3 shown = sRGBTransferEOTF(vec4(sRGBTransferOETF(capture).rgb * 0.86, 1.0)).rgb;
+          vec3 hdr = untoneMap(shown);
+          capture.rgb = hdr * min(1.0, 0.985 / max(max(hdr.r, hdr.g), max(hdr.b, 1e-4)));
+          diffuseColor *= capture;
+        #endif`,
+      );
+      if (!transparent) shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment>", "#include <opaque_fragment>\n        gl_FragColor.a = 0.0;");
+    };
+    return material;
   }
 
   /** Per-model materials the kit should still clean up. */
@@ -148,6 +255,23 @@ export class Kit {
     return this.mesh(new THREE.PlaneGeometry(w, h), material);
   }
 
+  /** Many copies of one small mesh (keys, screws, pins) in a single draw call. */
+  instanced(geometry: THREE.BufferGeometry, material: THREE.Material, items: Array<{ p: V3; s?: V3; r?: V3 }>) {
+    this.disposables.push(geometry);
+    const mesh = new THREE.InstancedMesh(geometry, material, items.length);
+    const matrix = new THREE.Matrix4();
+    const rotation = new THREE.Quaternion();
+    const euler = new THREE.Euler();
+    const position = new THREE.Vector3();
+    const scale = new THREE.Vector3();
+    items.forEach(({ p, s = [1, 1, 1], r = [0, 0, 0] }, i) => {
+      mesh.setMatrixAt(i, matrix.compose(position.set(...p), rotation.setFromEuler(euler.set(...r)), scale.set(...s)));
+    });
+    mesh.computeBoundingBox();
+    mesh.computeBoundingSphere();
+    return mesh;
+  }
+
   /** Circuit board with a glowing processor on it. */
   board(w: number, d: number, chip = 0.3) {
     const group = new THREE.Group();
@@ -178,10 +302,11 @@ export class Kit {
    */
   outline<T extends THREE.Mesh>(mesh: T) {
     let source = mesh.geometry;
-    if (source instanceof RoundedBoxGeometry) {
+    if (source instanceof RoundedBoxGeometry || source instanceof THREE.ExtrudeGeometry) {
       source.computeBoundingBox();
       const size = source.boundingBox!.getSize(new THREE.Vector3()).multiplyScalar(1.03);
-      source = this.own(new THREE.BoxGeometry(size.x, size.y, size.z));
+      const middle = source.boundingBox!.getCenter(new THREE.Vector3());
+      source = this.own(new THREE.BoxGeometry(size.x, size.y, size.z).translate(middle.x, middle.y, middle.z));
     }
     const lines = new THREE.LineSegments(this.own(new THREE.EdgesGeometry(source, 35)), this.m.edge);
     lines.raycast = () => {};
@@ -237,18 +362,21 @@ export class Build {
     this.anchors.push({ id, object, point: new THREE.Vector3(...point), side });
   }
 
-  finish(update?: ProductModel["update"]): ProductModel {
-    return { group: this.group, parts: this.parts, anchors: this.anchors, update };
+  finish(update?: ProductModel["update"], view: Pick<ProductModel, "elevation" | "focus"> = {}): ProductModel {
+    return { group: this.group, parts: this.parts, anchors: this.anchors, update, ...view };
   }
 }
 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
+/** How far (eased, 0 to 1) a part is along its own exit at this explode amount. */
+export const partProgress = (part: Pick<Part, "delay">, explode: number) =>
+  easeInOut(THREE.MathUtils.clamp((explode - part.delay * 0.35) / 0.65, 0, 1));
+
 /** Moves every part between its assembled and exploded pose; parts leave in sequence. */
 export function applyExplode(parts: Part[], explode: number) {
   for (const part of parts) {
-    const t = THREE.MathUtils.clamp((explode - part.delay * 0.35) / 0.65, 0, 1);
-    const k = easeInOut(t);
+    const k = partProgress(part, explode);
     part.object.position.copy(part.home).addScaledVector(part.offset, k);
     part.object.rotation.set(
       part.homeRotation.x + part.spin.x * k,

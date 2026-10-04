@@ -42,6 +42,11 @@ export function ProductTheater() {
           products: products.map(({ id, anatomy }) => ({ id, anatomy })),
           labelLayer: labelsRef.current,
           onExplode: (explode) => root.style.setProperty("--explode", explode.toFixed(2)),
+          // The copy steps aside while the camera is in on an interface.
+          onFocus: (focus) => {
+            root.style.setProperty("--focus", focus.toFixed(2));
+            root.classList.toggle("is-focused", focus > 0.5);
+          },
         });
         // Catch up with wherever the page already is.
         triggers.current.forEach((trigger, i) => {
@@ -104,10 +109,12 @@ export function ProductTheater() {
         };
         measure();
 
-        // The parts list writes itself in as the product comes apart.
+        // The parts list writes itself in as the product comes apart (sooner
+        // in the longer chapters that go on to an interface).
+        const listAt = products[i]?.focus ? 0.31 : 0.42;
         gsap
           .timeline({ scrollTrigger: { ...range, scrub: 0.6 } })
-          .fromTo(chapter.querySelectorAll(".theater__parts li"), { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: 0.07, stagger: 0.025, ease: "none" }, 0.42)
+          .fromTo(chapter.querySelectorAll(".theater__parts li"), { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: 0.07, stagger: 0.025, ease: "none" }, listAt)
           .to({}, { duration: 0 }, 1);
 
         return ScrollTrigger.create({
@@ -188,7 +195,12 @@ export function ProductTheater() {
       </div>
 
       {products.map((product, i) => (
-        <article key={product.id} id={product.id} className="theater__chapter" aria-labelledby={`${product.id}-title`}>
+        <article
+          key={product.id}
+          id={product.id}
+          className={`theater__chapter${product.focus ? " theater__chapter--focus" : ""}`}
+          aria-labelledby={`${product.id}-title`}
+        >
           <div className="theater__copy">
             <div className="theater__copy-inner">
               <p className="theater__index">

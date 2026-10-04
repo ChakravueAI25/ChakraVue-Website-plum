@@ -17,7 +17,13 @@ export function gradeUniform() {
   return { uniform, active: () => getGrade() !== null, dispose: onThemeChange(sync) };
 }
 
-/** Full-screen pass for a composer: grades the finished (sRGB) frame. */
+/**
+ * Full-screen pass for a composer: grades the finished (sRGB) frame. Pixels
+ * drawn with alpha 0 are left as they are: product interface screens mark
+ * themselves that way (`Kit.interfaceScreen`) so they keep their true
+ * colours, which no inverse grade could reach. Needs an opaque scene (clear
+ * alpha 1).
+ */
 export const GradeShader = {
   uniforms: { tDiffuse: { value: null }, uGrade: { value: new THREE.Matrix4() } },
   vertexShader: /* glsl */ `
@@ -32,6 +38,7 @@ export const GradeShader = {
     varying vec2 vUv;
     void main() {
       vec4 texel = texture2D(tDiffuse, vUv);
-      gl_FragColor = vec4(clamp((uGrade * vec4(texel.rgb, 1.0)).rgb, 0.0, 1.0), texel.a);
+      vec3 graded = clamp((uGrade * vec4(texel.rgb, 1.0)).rgb, 0.0, 1.0);
+      gl_FragColor = vec4(mix(texel.rgb, graded, clamp(texel.a, 0.0, 1.0)), 1.0);
     }`,
 };

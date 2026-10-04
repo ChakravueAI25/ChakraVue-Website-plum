@@ -7,9 +7,8 @@ import { GradeShader, gradeUniform } from "../../../theme/grade";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { gsap } from "../../gsap";
-import { applyExplode, Kit, type ProductModel, type Quality } from "./kit";
-import { surgicalBriefcase } from "./models/briefcase";
-import { slitLampModule } from "./models/optics";
+import { applyExplode, Kit, type ProductModel, type Quality, type Readout } from "./kit";
+import { slitLampCase, surgicalBriefcase } from "./models/briefcase";
 import { integrationModule } from "./models/module";
 import { aiPoweredEmr } from "./models/systems";
 import { contactShadow } from "./textures";
@@ -30,7 +29,7 @@ import { contactShadow } from "./textures";
 
 const BUILDERS: Record<string, (kit: Kit) => ProductModel> = {
   "surgical-assistant": surgicalBriefcase,
-  "slit-lamp-module": slitLampModule,
+  "slit-lamp-module": slitLampCase,
   "ai-powered-emr": aiPoweredEmr,
   "integrated-devices": integrationModule,
 };
@@ -44,6 +43,8 @@ export type TheaterOptions = {
   reduced?: boolean;
   /** Called with the current explode amount whenever it changes noticeably. */
   onExplode?: (explode: number) => void;
+  /** Called with how far the camera has moved in on a product's interface (0 to 1), in steps of 0.02. */
+  onFocus?: (focus: number) => void;
   /** Inline: where the product's base sits, as a fraction of the canvas height. */
   floor?: number;
 };
@@ -60,7 +61,7 @@ export type Theater = {
   start(): void;
   destroy(): void;
   /** Current (smoothed) state, for tests and debugging. */
-  state(): { active: number; build: number; explode: number; labels: number };
+  state(): { active: number; build: number; explode: number; labels: number; focus: number };
   /** Jump straight to the target pose (tests and debugging). */
   settle(): void;
 };
@@ -77,7 +78,7 @@ const COLOR_OUT = /* glsl */ `
 function measure(model: ProductModel): Framing {
   const pose = (explode: number) => {
     applyExplode(model.parts, explode);
-    model.update?.(explode, 0);
+    model.update?.(explode, 0, 0);
     model.group.updateMatrixWorld(true);
     return new THREE.Box3().setFromObject(model.group);
   };
@@ -92,7 +93,8 @@ function measure(model: ProductModel): Framing {
     base: assembled.min.y,
     top: assembled.max.y,
     radius: a.radius,
-    explodedRadius: Math.max(e.radius, a.radius),
+    // Never closer than the assembled framing, even when a product barely opens out.
+    explodedRadius: Math.max(e.radius, a.radius * 1.05),
   };
 }
 
@@ -387,14 +389,15 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
 
   // --- State --------------------------------------------------------------
   let active = -1;
-  const goal = { build: 0, explode: 0, labels: 0, yaw: -0.6 };
-  const now = { build: 0, explode: 0, labels: 0, yaw: -0.6 };
+  const goal = { build: 0, explode: 0, labels: 0, yaw: -0.6, focus: 0, readouts: 0 };
+  const now = { build: 0, explode: 0, labels: 0, yaw: -0.6, focus: 0, readouts: 0 };
   let userYaw = 0;
   let spin = 0;
   let peek = false;
   let visible = true;
   let started = false;
   let lastReported = -1;
+  let lastFocus = 0;
   let width = 0;
   let height = 0;
 
@@ -428,6 +431,61 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
         const text = el.querySelector<HTMLElement>(".tlabel__text")!;
         return { el, text, anchor, side: anchor.side, width: 0, x: 0, y: 0, dy: 0, shown: false };
       });
+    mountReadouts(index);
+  };
+
+  // --- Readouts: values on an interface, quoted while the camera is in on it ---
+  type Card = { el: HTMLElement; card: HTMLElement; value: HTMLElement; readout: Readout; width: number; played: boolean };
+  let cards: Card[] = [];
+  const mountReadouts = (index: number) => {
+    if (!layer) return;
+    cards = (models[index].focus?.readouts ?? []).map((readout) => {
+      const el = document.createElement("div");
+      el.className = "treadout";
+      el.innerHTML = `<span class="treadout__dot"></span><span class="treadout__line"></span><span class="treadout__card"><em></em><b></b></span>`;
+      el.querySelector("em")!.textContent = readout.label;
+      const value = el.querySelector("b")!;
+      value.textContent = readout.value;
+      layer.appendChild(el);
+      return { el, card: el.querySelector<HTMLElement>(".treadout__card")!, value, readout, width: 0, played: false };
+    });
+  };
+
+  /**
+   * Each card hangs off its point by the offset the model gives (smaller on
+   * narrow screens), kept on screen, and appears in turn; its value
+   * scrambles in each time it shows.
+   */
+  const placeReadouts = (alpha: number) => {
+    const scale = width < 760 ? 0.5 : width < 1200 ? 0.75 : 1;
+    cards.forEach((card, i) => {
+      const shown = THREE.MathUtils.clamp((alpha - i * 0.1) / (1 - (cards.length - 1) * 0.1), 0, 1);
+      if (shown < 0.01) {
+        if (card.played) card.el.style.opacity = "0";
+        if (alpha < 0.01) card.played = false;
+        return;
+      }
+      point.copy(card.readout.point);
+      card.readout.object.localToWorld(point);
+      point.project(camera);
+      const x = (point.x * 0.5 + 0.5) * width;
+      const y = (-point.y * 0.5 + 0.5) * height;
+      if (!card.width) card.width = card.card.offsetWidth;
+      let [dx, dy] = card.readout.card.map((v) => v * scale);
+      dx = dx < 0 ? Math.max(dx, 10 + card.width - x) : Math.min(dx, width - 10 - card.width - x);
+      dy = THREE.MathUtils.clamp(dy, 90 - y, height - 30 - y);
+      card.el.classList.toggle("treadout--left", dx < 0);
+      card.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      card.el.style.setProperty("--dx", `${dx.toFixed(1)}px`);
+      card.el.style.setProperty("--dy", `${dy.toFixed(1)}px`);
+      card.el.style.setProperty("--len", `${Math.hypot(dx, dy).toFixed(1)}px`);
+      card.el.style.setProperty("--ang", `${Math.atan2(dy, dx).toFixed(4)}rad`);
+      card.el.style.opacity = shown.toFixed(3);
+      if (!card.played && shown > 0.4) {
+        card.played = true;
+        gsap.to(card.value, { duration: 0.9, scrambleText: { text: card.readout.value, chars: "0123456789", speed: 0.5 } });
+      }
+    });
   };
 
   const show = (index: number) => {
@@ -466,9 +524,11 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       label.x = (point.x * 0.5 + 0.5) * width;
       label.y = (-point.y * 0.5 + 0.5) * height;
       const reach = REACH + 8 + label.width;
+      // Keep the given side unless it overflows and the other side overflows less.
+      const overflow = { left: Math.max(0, minX - (label.x - reach)), right: Math.max(0, label.x + reach - maxX) };
       let side = label.anchor.side;
-      if (side === "left" && label.x - reach < minX) side = "right";
-      else if (side === "right" && label.x + reach > maxX) side = "left";
+      const other = side === "left" ? "right" : "left";
+      if (overflow[side] > 0 && overflow[other] < overflow[side]) side = other;
       if (side !== label.side) {
         label.el.classList.replace(`tlabel--${label.side}`, `tlabel--${side}`);
         label.side = side;
@@ -515,10 +575,32 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   // --- Frame --------------------------------------------------------------
   const point = new THREE.Vector3();
   const center = new THREE.Vector3();
+  const target = new THREE.Vector3();
+
+  /**
+   * Stage: the product sits right of centre beside the copy on desktop, and
+   * in the upper part of the screen above the copy on phones. While the
+   * camera is in on an interface the copy steps aside, so it eases back to
+   * the centre.
+   */
+  let offsetKey = "";
+  /** Screen room (px) kept clear around a focused interface: the nav above, the rail beside. */
+  const focusRoom = () => (width < 760 ? { side: 10, top: 76, bottom: 24 } : { side: width > 900 ? 120 : 40, top: 104, bottom: 40 });
+  const applyOffset = (focus: number) => {
+    const room = focusRoom();
+    const lower = ((room.top - room.bottom) / 2) * focus;
+    const x = width > 900 ? (width < 1200 ? -0.1 : -0.08) * width * (1 - focus) : 0;
+    const y = (width > 900 ? 0 : 0.16 * height * (1 - focus)) - lower;
+    const key = `${width}x${height}:${x.toFixed(1)},${y.toFixed(1)}`;
+    if (key === offsetKey) return;
+    offsetKey = key;
+    camera.setViewOffset(width, height, x, y, width, height);
+    camera.updateProjectionMatrix();
+  };
 
   const frame = (time: number, deltaMs: number) => {
     if (active < 0 || width < 2 || height < 2) return;
-    for (const key of ["build", "explode", "labels", "yaw"] as const) {
+    for (const key of ["build", "explode", "labels", "yaw", "focus", "readouts"] as const) {
       if (!Number.isFinite(now[key]) || !Number.isFinite(goal[key])) now[key] = goal[key] = key === "build" ? 1 : 0;
     }
     const model = models[active];
@@ -528,11 +610,13 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     now.explode += (goal.explode - now.explode) * k;
     now.labels += (goal.labels - now.labels) * k;
     now.yaw += (goal.yaw - now.yaw) * k;
+    now.focus += (goal.focus - now.focus) * k;
+    now.readouts += (goal.readouts - now.readouts) * k;
     if (!stage && !options.reduced) spin += (deltaMs / 1000) * (peek ? 0.12 : 0.3);
 
     model.group.rotation.y = now.yaw + userYaw + spin;
     applyExplode(model.parts, now.explode);
-    model.update?.(now.explode, time);
+    model.update?.(now.explode, time, now.focus);
     kit.m.edge.opacity = smooth(0.15, 0.6, now.explode) * 0.6;
 
     // Materialise: the clip plane (and its glowing slice) rises through the product.
@@ -554,9 +638,24 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     const radius = THREE.MathUtils.lerp(framing.radius * 1.05, framing.explodedRadius, e);
     const vFov = THREE.MathUtils.degToRad(camera.fov) / 2;
     const hFov = Math.atan(Math.tan(vFov) * camera.aspect);
-    const margin = stage ? (width > 900 ? 1.08 : 1.45) : 0.92;
-    const distance = (radius / Math.sin(Math.min(vFov, hFov))) * margin;
-    const elevation = 0.2;
+    // Narrow desktops and tablets get more room so the product clears the copy
+    // column, and more again when it opens, so the labels fit beside it.
+    const margin = stage ? (width > 900 ? (width < 1200 ? 1.2 : 1.08) + (width < 1400 ? 0.24 : 0.06) * e : 1.45) : 0.92;
+    let distance = (radius / Math.sin(Math.min(vFov, hFov))) * margin;
+    let elevation = model.elevation ?? 0.2;
+    // Focus: move in on the product's interface until it fills the stage, square-on.
+    const f = model.focus ? now.focus : 0;
+    if (stage) applyOffset(f);
+    if (model.focus && f > 0.0005) {
+      const narrow = width < 760;
+      const fit = model.focus.frame(target, narrow);
+      // Fit inside the room the nav, the rail and the cards leave.
+      const room = focusRoom();
+      const fitDistance = Math.max((fit.width / 2 / Math.tan(hFov)) * (width / (width - 2 * room.side)), (fit.height / 2 / Math.tan(vFov)) * (height / (height - room.top - room.bottom)));
+      center.lerp(target, f);
+      distance = THREE.MathUtils.lerp(distance, fitDistance, f);
+      elevation = THREE.MathUtils.lerp(elevation, model.focus.elevation, f);
+    }
     camera.position.set(center.x, center.y + Math.sin(elevation) * distance, center.z + Math.cos(elevation) * distance);
     camera.lookAt(center);
     if (!stage) standOnPodium(framing);
@@ -570,10 +669,16 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     extras.forEach((extra) => extra.update(time, e));
 
     placeLabels(now.labels);
+    placeReadouts(now.readouts);
 
     if (options.onExplode && Math.abs(e - lastReported) > 0.02) {
       lastReported = e;
       options.onExplode(e);
+    }
+    const focusStep = Math.round(f * 50) / 50;
+    if (options.onFocus && focusStep !== lastFocus) {
+      lastFocus = focusStep;
+      options.onFocus(focusStep);
     }
 
     if (gradePass) gradePass.enabled = grade.active();
@@ -596,10 +701,8 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     composer?.setPixelRatio(dpr);
     bloom?.resolution.set(width, height);
     camera.aspect = width / height;
-    // Stage: the product sits right of centre beside the copy on desktop,
-    // and in the upper part of the screen above the copy on phones.
-    if (stage && width > 900) camera.setViewOffset(width, height, -0.08 * width, 0, width, height);
-    else if (stage) camera.setViewOffset(width, height, 0, 0.16 * height, width, height);
+    offsetKey = "";
+    if (stage) applyOffset(models[active]?.focus ? now.focus : 0);
     camera.updateProjectionMatrix();
     if (background) background.material.uniforms.uAspect.value = width / height;
     if (options.reduced || !started) frame(0, 16);
@@ -619,9 +722,21 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       if (!Number.isFinite(progress)) return;
       show(index);
       const p = THREE.MathUtils.clamp(progress, 0, 1);
-      goal.build = smooth(0, 0.12, p) * (last ? 1 : 1 - smooth(0.9, 0.99, p));
-      goal.explode = smooth(0.26, 0.54, p) * (1 - smooth(0.7, 0.86, p));
-      goal.labels = smooth(0.46, 0.56, p) * (1 - smooth(0.68, 0.74, p));
+      if (models[index].focus) {
+        // A longer chapter: open up and name the parts, then move in on the
+        // interface and quote its readings, then step back and close.
+        goal.build = smooth(0, 0.09, p) * (last ? 1 : 1 - smooth(0.92, 0.99, p));
+        goal.explode = smooth(0.18, 0.38, p) * (1 - smooth(0.8, 0.9, p));
+        goal.labels = smooth(0.33, 0.39, p) * (1 - smooth(0.47, 0.51, p));
+        goal.focus = smooth(0.5, 0.6, p) * (1 - smooth(0.74, 0.8, p));
+        goal.readouts = smooth(0.59, 0.63, p) * (1 - smooth(0.72, 0.75, p));
+      } else {
+        goal.build = smooth(0, 0.12, p) * (last ? 1 : 1 - smooth(0.9, 0.99, p));
+        goal.explode = smooth(0.26, 0.54, p) * (1 - smooth(0.7, 0.86, p));
+        goal.labels = smooth(0.46, 0.56, p) * (1 - smooth(0.68, 0.74, p));
+        goal.focus = 0;
+        goal.readouts = 0;
+      }
       goal.yaw = -0.9 + p * 2.0;
       if (options.reduced) {
         Object.assign(now, goal);
@@ -681,7 +796,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     },
 
     state() {
-      return { active, build: now.build, explode: now.explode, labels: now.labels };
+      return { active, build: now.build, explode: now.explode, labels: now.labels, focus: now.focus };
     },
 
     destroy() {

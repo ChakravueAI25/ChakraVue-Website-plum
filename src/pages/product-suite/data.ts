@@ -20,6 +20,11 @@ export type Product = {
    * with the product team before this ships.
    */
   anatomy: Array<{ id: string; label: string }>;
+  /**
+   * Has an interface to read: once the product is open the camera moves in
+   * on it and quotes its readings, so the chapter runs longer.
+   */
+  focus?: boolean;
 };
 
 export const products: Product[] = [
@@ -35,12 +40,14 @@ export const products: Product[] = [
     imageFit: "photo",
     cta: { label: "Enter the system", href: "#" },
     callout: { x: 52, y: 150 },
+    focus: true,
     anatomy: [
-      { id: "case", label: "Carry case" },
-      { id: "display", label: "Display" },
+      { id: "case", label: "Rugged case" },
+      { id: "display", label: "Surgical display" },
+      { id: "overlay", label: "AI guidance overlay" },
       { id: "compute", label: "Compute unit" },
-      { id: "links", label: "Connections" },
-      { id: "microscope", label: "Microscope" },
+      { id: "controls", label: "Keyboard and touchpad" },
+      { id: "io", label: "Ports" },
     ],
   },
   {
@@ -51,16 +58,18 @@ export const products: Product[] = [
     title: "Slit Lamp Module",
     description:
       "An intelligence module for the slit lamp that captures every examination in high fidelity, highlights clinically relevant findings in real time, and files structured records straight into the patient history.",
-    image: `${IMG}/slit-lamp.jpg`,
-    imageFit: "render",
+    image: `${IMG}/slit-lamp-case.webp`,
+    imageFit: "photo",
     cta: { label: "Enter the system", href: "#" },
     callout: { x: 1172, y: 156 },
+    focus: true,
     anatomy: [
-      { id: "illumination", label: "Illumination" },
-      { id: "optics", label: "Optics" },
-      { id: "splitter", label: "Optical path" },
-      { id: "camera", label: "Camera" },
-      { id: "module", label: "AI module" },
+      { id: "case", label: "Rugged case" },
+      { id: "display", label: "Analysis display" },
+      { id: "overlay", label: "AI measurement overlay" },
+      { id: "compute", label: "Compute unit" },
+      { id: "controls", label: "Keyboard and touchpad" },
+      { id: "io", label: "Ports" },
     ],
   },
   {

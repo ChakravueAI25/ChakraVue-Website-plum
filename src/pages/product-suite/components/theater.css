@@ -5,6 +5,7 @@
 
 .theater {
   --explode: 0;
+  --focus: 0;
   position: relative;
   background: #040302;
 }
@@ -46,6 +47,7 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, rgba(4, 3, 2, 0.82) 0%, rgba(4, 3, 2, 0.35) 34%, transparent 52%);
+  opacity: calc(1 - var(--focus));
   pointer-events: none;
 }
 
@@ -64,6 +66,7 @@
   font-size: 18px;
   line-height: 1;
   text-transform: uppercase;
+  opacity: calc(1 - var(--focus));
 }
 
 /* --- Product rail (right edge) ------------------------------------------ */
@@ -169,6 +172,12 @@
   pointer-events: none;
 }
 
+/* Products with an interface to read run longer: after the parts, the
+   camera moves in on the interface (the engine's focus). */
+.theater__chapter--focus {
+  height: 420vh;
+}
+
 /* The first chapter starts on top of the stage rather than below it. */
 .theater__chapter:first-of-type {
   margin-top: -100vh;
@@ -188,6 +197,15 @@
 .theater__copy-inner {
   width: min(430px, 34vw);
   pointer-events: auto;
+}
+
+/* The copy steps aside while the camera is in on an interface. */
+.theater--3d .theater__copy {
+  opacity: calc(1 - var(--focus) * 1.4);
+}
+
+.theater.is-focused .theater__copy-inner {
+  pointer-events: none;
 }
 
 .theater__index {
@@ -351,6 +369,113 @@
   right: 70px;
 }
 
+/* --- Readouts: values on an interface, quoted while the camera is in on it -- */
+
+.treadout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.treadout__dot {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid #ffd2a0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 180, 106, 0.9);
+}
+
+.treadout__dot::after {
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(255, 180, 106, 0.6);
+  border-radius: 50%;
+  content: "";
+  animation: readoutPing 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.treadout__line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--len, 0px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 210, 160, 0.9), rgba(255, 180, 106, 0.35));
+  transform: rotate(var(--ang, 0rad));
+  transform-origin: 0 50%;
+}
+
+.treadout__card {
+  position: absolute;
+  top: var(--dy, 0px);
+  left: var(--dx, 0px);
+  display: grid;
+  gap: 5px;
+  padding: 8px 13px 9px;
+  border: 1px solid rgba(255, 170, 100, 0.42);
+  border-radius: 10px;
+  background: rgba(10, 7, 5, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  translate: 0 -50%;
+  white-space: nowrap;
+}
+
+.treadout--left .treadout__card {
+  translate: -100% -50%;
+}
+
+/* "AI" tag on each reading, with a live dot. */
+.treadout__card em {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255, 236, 225, 0.62);
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.treadout__card em::before {
+  padding: 2px 5px 1px;
+  border-radius: 4px;
+  background: rgba(255, 139, 18, 0.22);
+  color: #ffc285;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  content: "AI";
+}
+
+.treadout__card b {
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+@keyframes readoutPing {
+  0% {
+    opacity: 0.9;
+    scale: 0.6;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.6;
+  }
+}
+
 /* --- Phones: product above, copy docked at the bottom --------------------- */
 
 @media (max-width: 900px) {
@@ -374,6 +499,28 @@
 
   .theater__chapter {
     height: 260vh;
+  }
+
+  .theater__chapter--focus {
+    height: 360vh;
+  }
+
+  .treadout__card {
+    gap: 3px;
+    padding: 5px 8px 6px;
+    border-radius: 8px;
+  }
+
+  .treadout__card em {
+    font-size: 7.5px;
+  }
+
+  .treadout__card em::before {
+    display: none;
+  }
+
+  .treadout__card b {
+    font-size: 12px;
   }
 
   .theater__copy {
