@@ -119,10 +119,10 @@ bundle showing the Doctor App and the Patient App side by side; and
 ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
 decoding title and a self-drawing line icon.
 
-**3D products.** The Surgical Assistant and the Slit Lamp Module are the same
-rugged field case, standing open (`models/briefcase.ts`, modelled on the
-owner's reference photo). They differ only in the interface on the display
-(`models/interfaces.ts`).
+**3D products.** The Surgical Assistant, the Slit Lamp Module and the AI
+Powered EMR are the same rugged field case, standing open
+(`models/briefcase.ts`, modelled on the owner's reference photo). They
+differ only in the interface on the display (`models/interfaces.ts`).
 - **Lid:** a screwed-down faceplate with a port strip, camera, status windows
   and a USB hub around the display.
 - **Base:** an instrument strip (power, panel meter, status windows), the
@@ -158,6 +158,27 @@ owner's reference photo). They differ only in the interface on the display
   readout cards (`.treadout`, each tagged "AI") quote values already on the
   captured screen, scrambling in as they appear. On phones the camera
   frames just the live view. Then it steps back and the case closes.
+- **The EMR's interface** (`models/interfaceSpider.ts`) is a spider of
+  whole screens rather than a stack of layers. The patient dashboard is the
+  main screen (on the display, closed). Exploded, it gathers above the open
+  lid, and the patient overview, patient details, optometry and ophthalmic
+  examination screens travel out from behind it to its four diagonals, so
+  none overlaps another. Each sits on a leg from the main screen, with
+  records streaming along it, and each is captioned on its top-left corner
+  like a window title (`.tlabel--top`; number only below 1200px). On tall
+  stages (phones, portrait tablets) the spider switches to its portrait
+  form, two screens above the dashboard and two below, captioned from
+  below (`ProductModel.layout`; the engine re-measures it). The focus beat
+  frames all five screens; its readout cards quote what the screens show
+  (patient flow, Quick Fill, the autorefractor link, the Slit-Lamp Imaging
+  module). Leader labels and readout cards step clear of each other.
+- **Anonymising EMR captures:** every patient becomes "Chakravue NN" (one
+  number per dashboard card) with a test registration ID
+  (`REG-2026-0000NN`), phone number (`90000000NN`), email and address,
+  repainted in the app's own fonts (Segoe UI, Consolas, Manrope), and every
+  avatar takes the app's own "CH". The patient on the detail screens is card
+  06. The app header reads "ChakraVue AI". Ages, sex, blood groups and visit
+  dates stay as captured.
 - **Cleaning a capture:** paint out chip and GPU names, memory and
   performance readouts, model names (for example the segmentation model)
   and internal detector strings; then lift the overlay into its own image
@@ -178,10 +199,11 @@ owner's reference photo). They differ only in the interface on the display
   (`elevation`) so the deck can be seen.
 
 Integrated Devices is the connectivity module (`models/module.ts`). The
-cases' fallback images and the Surgical Assistant's homepage shot are
-renders of the model, captured with the palette set to "original" (the
-page's CSS grades them). The Slit Lamp Module's homepage panel still shows
-the product's own photographic render.
+cases' fallback images (`surgical-briefcase.webp`, `slit-lamp-case.webp`,
+`emr-case.webp`) and the Surgical Assistant's homepage shot are renders of
+the model, captured with the palette set to "original" (the page's CSS
+grades them) at chapter progress 0.12, assembled. The Slit Lamp Module's
+and the EMR's homepage panels still show their earlier renders.
 
 **Confidentiality.** Public copy and the exploded-view labels name parts only
 generically (Port, Battery, Bluetooth, Compute unit…): no part numbers,
@@ -229,8 +251,8 @@ src/motion/            the motion system
   webgl/theater/       3D products: engine.ts (stage + inline modes),
                        kit.ts (materials, explode parts), models/*.ts
                        (briefcase.ts + computeUnit.ts + interfaceStack.ts +
-                       interfaces.ts + aiEffects.ts,
-                       systems, module), textures.ts
+                       interfaceSpider.ts + interfaces.ts + aiEffects.ts,
+                       module), textures.ts
   motion.css
 src/pages/home/home.css            homepage additions (hero actions, team, blog…)
 src/shared/components/Footer.tsx   new footer

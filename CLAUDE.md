@@ -88,13 +88,25 @@ when you change one.
   - Hero, then a compact (unpinned) lead statement "Intelligence,
     Engineered for the Operating Room.", then the 3D product theater
     (`motion/webgl/theater/`, generic part labels).
-  - Surgical Assistant and Slit Lamp Module (rebuilt 2026-10-02/03 from the
-    owner's references) are the same open rugged field case
-    (`models/briefcase.ts`) with an unbranded developer-kit-style compute
-    unit (`models/computeUnit.ts`). They differ only in the interface on
-    the lid display (`models/interfaces.ts`): the real surgical UI and the
-    real Slit-Lamp Analytics UI, as cleaned captures. The owner asked for the
-    slit lamp to match the surgical case.
+  - Surgical Assistant, Slit Lamp Module and AI Powered EMR (rebuilt
+    2026-10-02/05 from the owner's references) are the same open rugged
+    field case (`models/briefcase.ts`) with an unbranded
+    developer-kit-style compute unit (`models/computeUnit.ts`). They differ
+    only in the interface on the lid display (`models/interfaces.ts`): the
+    real surgical UI, the real Slit-Lamp Analytics UI and the real EMR, as
+    cleaned captures. The owner asked for the slit lamp and the EMR to match
+    the surgical case.
+  - The EMR is a spider (`models/interfaceSpider.ts`): the patient
+    dashboard in the middle, and the patient overview, patient details,
+    optometry and ophthalmic examination screens on legs at its four
+    diagonals. The owner asked for "a spider, not on one another", so every
+    screen can be seen without overlap. It gathers above the lid, and has a
+    portrait form on tall stages. Screens are captioned like window titles.
+  - EMR captures carry patient data, so they're anonymised before they
+    ship: every patient is "Chakravue 01", "02", … with test registration
+    IDs, phones, email and address (the owner's instruction). Any new EMR
+    capture gets the same treatment; never ship a real name, ID, phone,
+    email or address.
   - The interface is a layer stack (`models/interfaceStack.ts`). Exploded,
     its panels, live view and AI overlay lift out of the display and gather
     in front of the case, enlarged and facing the viewer, so the contents

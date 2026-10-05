@@ -1,11 +1,18 @@
+import type { SpiderSpec } from "./interfaceSpider";
 import type { InterfaceSpec } from "./interfaceStack";
 
 /**
- * The two product interfaces shown on the rugged cases, cut into layers
- * (rectangles in capture pixels). Both captures are cleaned before they
- * ship: chip and GPU names, performance figures, model names and internal
- * detector strings are painted out, and the on-video overlay is lifted
- * into its own transparent image so it can rise off the video.
+ * The product interfaces shown on the rugged cases.
+ *
+ * The surgical and slit-lamp interfaces are cut into layers (rectangles in
+ * capture pixels). Both captures are cleaned before they ship: chip and GPU
+ * names, performance figures, model names and internal detector strings
+ * are painted out, and the on-video overlay is lifted into its own
+ * transparent image so it can rise off the video.
+ *
+ * The EMR is a spider of whole screens around its patient dashboard. Its
+ * captures are anonymised before they ship: every patient is "Chakravue
+ * NN" with a test registration ID, phone number, email and address.
  *
  * Layer ids that match the product's anatomy get a numbered label; the
  * rest only name the layer for the readouts and AI effects. Readouts quote
@@ -66,5 +73,22 @@ export const SLIT_LAMP_UI: InterfaceSpec = {
     { layer: "overlay", at: [860, 562], label: "Pupil offset", value: "0.97 mm", card: [180, -70] },
     { layer: "overlay", at: [785, 650], label: "Cataract grade", value: "NS2 · 60%", card: [-170, 70] },
     { layer: "overlay", at: [985, 590], label: "Limbus", value: "13.02 × 9.72 mm", card: [50, 150] },
+  ],
+};
+
+export const EMR_UI: SpiderSpec = {
+  main: { id: "dashboard", image: `${IMG}/emr-dashboard.webp`, size: [1531, 733] },
+  screens: [
+    { id: "overview", image: `${IMG}/emr-overview.webp`, size: [1515, 728], at: { wide: [-0.88, 0.42], tall: [-0.26, 0.43] }, delay: 0.45 },
+    { id: "details", image: `${IMG}/emr-details.webp`, size: [1520, 725], at: { wide: [0.88, 0.42], tall: [0.26, 0.43] }, delay: 0.55 },
+    { id: "optometry", image: `${IMG}/emr-optometry.webp`, size: [1517, 727], at: { wide: [-0.88, -0.42], tall: [-0.26, -0.43] }, delay: 0.65 },
+    { id: "examination", image: `${IMG}/emr-examination.webp`, size: [1452, 697], at: { wide: [0.88, -0.42], tall: [0.26, -0.43] }, delay: 0.75 },
+  ],
+  scale: { wide: 0.6, tall: 0.48 },
+  readouts: [
+    { screen: "dashboard", at: [838, 437], label: "Patient flow", value: "At optometry", card: [-40, -200] },
+    { screen: "details", at: [1200, 30], label: "Quick Fill", value: "Patient details", card: [60, -60] },
+    { screen: "optometry", at: [1040, 668], label: "Device link", value: "Autorefraction", card: [30, 75] },
+    { screen: "examination", at: [930, 300], label: "Clinical module", value: "Slit-Lamp Imaging", card: [-60, 115] },
   ],
 };

@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
-import { Build, partProgress, type Kit, type ProductModel, type V3 } from "../kit";
+import { Build, partProgress, type Focus, type Kit, type ProductModel, type V3 } from "../kit";
 import * as tex from "../textures";
 import { computeUnit, MM } from "./computeUnit";
-import { interfaceStack, type InterfaceSpec } from "./interfaceStack";
-import { SLIT_LAMP_UI, SURGICAL_UI } from "./interfaces";
+import { interfaceSpider } from "./interfaceSpider";
+import { interfaceStack, type Presentation } from "./interfaceStack";
+import { EMR_UI, SLIT_LAMP_UI, SURGICAL_UI } from "./interfaces";
 
 // Shell (scene units: about 1 unit = 34 cm).
 const W = 1.5;
@@ -51,13 +52,29 @@ function roundedRect(w: number, h: number, r: number, path: THREE.Shape | THREE.
  * out to the side, enlarged and turned to the viewer, with its heatsink
  * rising off the module. Data runs along the display cable.
  *
- * The Surgical Assistant and the Slit Lamp Module ship in the same case and
- * differ in the interface they run.
+ * The Surgical Assistant, the Slit Lamp Module and the AI Powered EMR ship
+ * in the same case and differ in the interface they run: the first two as
+ * a stack of layers, the EMR as a spider of screens (`interfaceSpider`).
  */
-export const surgicalBriefcase = (kit: Kit) => ruggedCase(kit, SURGICAL_UI);
-export const slitLampCase = (kit: Kit) => ruggedCase(kit, SLIT_LAMP_UI);
+export const surgicalBriefcase = (kit: Kit) => ruggedCase(kit, (b, display) => interfaceStack(b, SURGICAL_UI, display, SCREEN_W, SCREEN_AT, STACK));
+export const slitLampCase = (kit: Kit) => ruggedCase(kit, (b, display) => interfaceStack(b, SLIT_LAMP_UI, display, SCREEN_W, SCREEN_AT, STACK));
+export const emrCase = (kit: Kit) => ruggedCase(kit, (b, display) => interfaceSpider(b, EMR_UI, display, SCREEN_W, SCREEN_AT, SPIDER));
 
-function ruggedCase(kit: Kit, ui: InterfaceSpec): ProductModel {
+/** The screen on the display: its width and where it sits. */
+const SCREEN_W = 0.97;
+const SCREEN_AT: V3 = [0, 0, 0.0245];
+/**
+ * Where an exploded interface gathers: the stack in front of and above the
+ * case; the spider, which spreads wider, above the open lid, clear of the
+ * case and the compute unit.
+ */
+const STACK: Presentation = { position: [0.1, 1.04, 0.4], scale: 1.85, tilt: 0.3 };
+const SPIDER: Presentation = { position: [0.05, 1.62, 0], scale: 1.3, tilt: 0.3 };
+
+/** The interface a case runs, built onto its display. */
+type CaseScreen = { focus: Focus; update(explode: number, time: number, focus: number): void; layout?(tall: boolean): void };
+
+function ruggedCase(kit: Kit, screenOn: (b: Build, display: THREE.Object3D) => CaseScreen): ProductModel {
   const b = new Build(kit);
   const { m } = kit;
   const clip = m.shell.clippingPlanes;
@@ -73,7 +90,8 @@ function ruggedCase(kit: Kit, ui: InterfaceSpec): ProductModel {
   const plateOf = (modules: tex.PanelModule[]) => own(new THREE.MeshPhysicalMaterial({ map: kit.own(tex.faceplate(H * 2, V * 2, modules)), metalness: 0.5, roughness: 0.42 }));
   const steel = own(new THREE.MeshPhysicalMaterial({ color: "#a9adb4", roughness: 0.32, metalness: 1 }));
   const hole = basic("#040405");
-  const smoked = own(new THREE.MeshPhysicalMaterial({ color: "#060708", metalness: 0.2, roughness: 0.08, clearcoat: 1 }));
+  // Smoked windows: glossy, but never a mirror for the studio light when the lid tips back.
+  const smoked = own(new THREE.MeshPhysicalMaterial({ color: "#060708", metalness: 0.2, roughness: 0.2, clearcoat: 0.5, clearcoatRoughness: 0.3, envMapIntensity: 0.35 }));
   const housing = own(new THREE.MeshPhysicalMaterial({ color: "#2a2d33", metalness: 0.6, roughness: 0.4 }));
   const deckBody = own(new THREE.MeshStandardMaterial({ color: "#2b2d32", roughness: 0.55, metalness: 0.1 }));
   const keycap = own(new THREE.MeshPhysicalMaterial({ color: "#232529", roughness: 0.48, metalness: 0.05, clearcoat: 0.2 }));
@@ -326,7 +344,7 @@ function ruggedCase(kit: Kit, ui: InterfaceSpec): ProductModel {
   for (const part of b.parts) if (part.object.parent === b.group) part.home.z += SHIFT;
 
   // The interface, in its true colours; exploded, it gathers in front of the case.
-  const screen = interfaceStack(b, ui, display, 0.97, [0, 0, 0.0245], { position: [0.1, 1.04, 0.4], scale: 1.85, tilt: 0.3 });
+  const screen = screenOn(b, display);
 
   // --- Cables: rebuilt as the pieces move, so they stretch rather than snap --------
   const packetGeometry = kit.own(new THREE.SphereGeometry(0.012, 12, 8));
@@ -379,6 +397,6 @@ function ruggedCase(kit: Kit, ui: InterfaceSpec): ProductModel {
       }
       packets.forEach((packet, k) => packet.position.copy(displayCable.curve.getPointAt((time * 0.3 + k / 3) % 1)));
     },
-    { elevation: 0.36, focus: screen.focus },
+    { elevation: 0.36, focus: screen.focus, layout: screen.layout },
   );
 }

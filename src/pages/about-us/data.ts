@@ -10,7 +10,11 @@ export type Leader = {
   photoPosition?: string;
   /** Extra zoom for portraits framed with a lot of empty space; defaults to 1. */
   photoZoom?: number;
+  /** Small square headshot for the hero's network of minds. */
+  mind: string;
 };
+
+const mindDir = "/images/about/minds";
 
 const photoDir = "/images/About%20us%20img";
 
@@ -25,6 +29,7 @@ export const leaders: Leader[] = [
       "Every clinical breakthrough starts with connecting the data that already exists. ChakraVue AI exists to make that connection invisible — so devices assist, and clinicians decide.",
     photo: `${photoDir}/51b6f551-7a70-4554-ad82-f4b927c4f1a6.png`,
     photoPosition: "48% 20%",
+    mind: `${mindDir}/ajay-chakravarthy.webp`,
   },
   {
     eyebrow: "Our Co-Founder",
@@ -36,6 +41,7 @@ export const leaders: Leader[] = [
     photo: `${photoDir}/chitra-chakravarthy.png`,
     photoPosition: "50% 14%",
     photoZoom: 1.15,
+    mind: `${mindDir}/chitra-chakravarthy.webp`,
   },
   {
     eyebrow: "Our Founding Executive Officer",
@@ -46,6 +52,7 @@ export const leaders: Leader[] = [
       "We build with clinicians in the room from day one — every model tested against how surgery actually happens, not how a demo looks.",
     photo: `${photoDir}/sumanth-akula.png`,
     photoPosition: "50% 25%",
+    mind: `${mindDir}/sumanth-akula.webp`,
   },
 ];
 
@@ -54,15 +61,17 @@ export type TeamMember = {
   role: string;
   /** Square headshot, pre-cropped so every face shares the same eye line and size. */
   photo: string;
+  /** The same, small, for the hero's network of minds. */
+  mind: string;
 };
 
 const teamDir = "/images/about/team";
 
 export const teamMembers: TeamMember[] = [
-  { name: "N. Sushanth", role: "Technical Strategy Engineer", photo: `${teamDir}/n-sushanth.png` },
-  { name: "Srinidhi Chintaluri", role: "Product Designer", photo: `${teamDir}/srinidhi-chintaluri.png` },
-  { name: "K. Abhinay Srikanth", role: "Android Architect & Security Engineer", photo: `${teamDir}/k-abhinay-srikanth.png` },
-  { name: "A. Karthikeya", role: "Business & Marketing Strategist", photo: `${teamDir}/a-karthikeya.png` },
-  { name: "Ram Kashyap Isikella", role: "Product Engineer", photo: `${teamDir}/ram-kashyap-isikella.png` },
-  { name: "Hrushikesh Patki", role: "Mechanical Engineer", photo: `${teamDir}/hrushikesh-patki.png` },
+  { name: "N. Sushanth", role: "Technical Strategy Engineer", photo: `${teamDir}/n-sushanth.png`, mind: `${mindDir}/n-sushanth.webp` },
+  { name: "Srinidhi Chintaluri", role: "Product Designer", photo: `${teamDir}/srinidhi-chintaluri.png`, mind: `${mindDir}/srinidhi-chintaluri.webp` },
+  { name: "K. Abhinay Srikanth", role: "Android Architect & Security Engineer", photo: `${teamDir}/k-abhinay-srikanth.png`, mind: `${mindDir}/k-abhinay-srikanth.webp` },
+  { name: "A. Karthikeya", role: "Business & Marketing Strategist", photo: `${teamDir}/a-karthikeya.png`, mind: `${mindDir}/a-karthikeya.webp` },
+  { name: "Ram Kashyap Isikella", role: "Product Engineer", photo: `${teamDir}/ram-kashyap-isikella.png`, mind: `${mindDir}/ram-kashyap-isikella.webp` },
+  { name: "Hrushikesh Patki", role: "Mechanical Engineer", photo: `${teamDir}/hrushikesh-patki.png`, mind: `${mindDir}/hrushikesh-patki.webp` },
 ];

@@ -36,7 +36,8 @@ export type Anchor = {
   id: string;
   object: THREE.Object3D;
   point: THREE.Vector3;
-  side: "left" | "right";
+  /** Which way the label leads off the point; "top" and "bottom" are captions just above or below it, with no leader (screens). */
+  side: "left" | "right" | "top" | "bottom";
 };
 
 /** A reading from a product's interface, shown as a card while the camera is in on it. */
@@ -71,6 +72,8 @@ export type ProductModel = {
   /** Camera elevation in radians (default 0.2). Higher shows more of a product's top. */
   elevation?: number;
   focus?: Focus;
+  /** Switches between a product's landscape and portrait arrangement (`tall`: the stage is taller than wide). */
+  layout?: (tall: boolean) => void;
 };
 
 export class Kit {
@@ -139,7 +142,6 @@ export class Kit {
       glowWarm: glow("#ffc27a", 2.1),
       glowSoft: glow("#ff8b12", 1.2),
       deviceScreen: screen(tex.deviceScreen()),
-      emrScreen: screen(tex.emrDashboard(), 1.15),
       /** Amber construction lines that trace the housings in the exploded view. */
       edge: clipped(new THREE.LineBasicMaterial({ color: "#ffb46a", transparent: true, opacity: 0, depthWrite: false })),
     };
@@ -362,7 +364,7 @@ export class Build {
     this.anchors.push({ id, object, point: new THREE.Vector3(...point), side });
   }
 
-  finish(update?: ProductModel["update"], view: Pick<ProductModel, "elevation" | "focus"> = {}): ProductModel {
+  finish(update?: ProductModel["update"], view: Pick<ProductModel, "elevation" | "focus" | "layout"> = {}): ProductModel {
     return { group: this.group, parts: this.parts, anchors: this.anchors, update, ...view };
   }
 }

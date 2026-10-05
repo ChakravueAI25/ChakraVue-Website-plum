@@ -369,6 +369,37 @@
   right: 70px;
 }
 
+/* Captions: a screen's label sits on its top-left corner, like a window title. */
+.tlabel--top .tlabel__dot,
+.tlabel--top .tlabel__line,
+.tlabel--bottom .tlabel__dot,
+.tlabel--bottom .tlabel__line {
+  display: none;
+}
+
+.tlabel--top .tlabel__text {
+  top: -30px;
+  left: 0;
+}
+
+.tlabel--bottom .tlabel__text {
+  top: 6px;
+  left: 0;
+}
+
+/* Below desktop width the screens are small: captions keep only their number (the list names them). */
+@media (max-width: 1199px) {
+  .tlabel--top .tlabel__text b,
+  .tlabel--bottom .tlabel__text b {
+    margin-right: 0;
+  }
+
+  .tlabel--top .tlabel__text span,
+  .tlabel--bottom .tlabel__text span {
+    display: none;
+  }
+}
+
 /* --- Readouts: values on an interface, quoted while the camera is in on it -- */
 
 .treadout {

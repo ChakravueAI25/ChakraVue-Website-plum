@@ -67,27 +67,7 @@ export function interfaceStack(b: Build, spec: InterfaceSpec, display: THREE.Obj
   const height = (width * H) / W;
   const clip = kit.m.shell.clippingPlanes;
 
-  const plateMaterial = kit.interfaceScreen(spec.plate);
-  const plate = b.put(kit.plane(width, height, plateMaterial), at, display);
-  // Glass: only a faint reflection is added, and the screen's mark (alpha) is
-  // kept, so the screen behind keeps its true colours.
-  const glass = kit.own(
-    new THREE.MeshPhysicalMaterial({
-      color: "#000000",
-      roughness: 0.16,
-      clearcoat: 1,
-      transparent: true,
-      opacity: 0.45,
-      depthWrite: false,
-      blending: THREE.CustomBlending,
-      blendSrc: THREE.SrcAlphaFactor,
-      blendDst: THREE.OneFactor,
-      blendSrcAlpha: THREE.ZeroFactor,
-      blendDstAlpha: THREE.OneFactor,
-    }),
-  );
-  glass.clippingPlanes = clip;
-  b.put(kit.plane(width, height, glass), [at[0], at[1], at[2] + 0.0008 * (spec.layers.length + 2)], display);
+  const { plate, dim } = displayScreen(b, spec.plate, display, width, height, at, spec.layers.length + 2);
 
   const stack = b.node([0, 0, 0]);
   const layerMaterial = kit.interfaceScreen(spec.plate);
@@ -143,18 +123,7 @@ export function interfaceStack(b: Build, spec: InterfaceSpec, display: THREE.Obj
 
   const readouts: Readout[] = spec.readouts.map(({ layer, at: pixel, label, value, card }) => ({ object: byId(layer).mesh, point: onLayer(layer, pixel, 0), label, value, card }));
 
-  // Projection lines from the display's corners to the gathered screen's.
-  const corners = [
-    [-1, -1],
-    [1, -1],
-    [1, 1],
-    [-1, 1],
-  ].map(([sx, sy]) => new THREE.Vector3((sx * width) / 2, (sy * height) / 2, 0));
-  const linePositions = new THREE.BufferAttribute(new Float32Array(8 * 3), 3);
-  const lineGeometry = kit.own(new THREE.BufferGeometry().setAttribute("position", linePositions));
-  const lines = b.put(new THREE.LineSegments(lineGeometry, kit.m.edge), [0, 0, 0]);
-  lines.frustumCulled = false;
-
+  const lines = projectionLines(b, plate, stack, width, height);
   const inverse = new THREE.Matrix4();
   const relative = new THREE.Matrix4();
   const from = { position: new THREE.Vector3(), quaternion: new THREE.Quaternion(), scale: new THREE.Vector3() };
@@ -211,7 +180,7 @@ export function interfaceStack(b: Build, spec: InterfaceSpec, display: THREE.Obj
       overlay.mesh.position.z = Math.max(overlay.mesh.position.z, video.mesh.position.z + 0.006);
       for (const { mesh } of layers) mesh.updateMatrix();
       // The display dims as its contents leave it; the overlay breathes.
-      plateMaterial.color.setScalar(1 - 0.8 * k);
+      dim(k);
       const pulse = 0.5 + 0.5 * Math.sin(time * 2.4);
       overlay.material.color.setScalar(1.05 + (0.08 + 0.25 * k) * pulse);
 
@@ -247,14 +216,71 @@ export function interfaceStack(b: Build, spec: InterfaceSpec, display: THREE.Obj
         flowFades.needsUpdate = true;
       }
 
+      lines.update(k, inverse);
+    },
+  };
+}
+
+/**
+ * The interface on the case's display, in its true colours, under glass.
+ * The glass only adds a faint reflection and keeps the screen's mark
+ * (alpha), so the screen behind keeps its colours. `above` is how many
+ * layers the glass must clear. `dim(k)` darkens the display, and its
+ * reflection, as the interface leaves it (k: 0 to 1), so the emptied
+ * display never catches the studio light as the lid tips back.
+ */
+export function displayScreen(b: Build, image: string, display: THREE.Object3D, width: number, height: number, at: V3, above: number) {
+  const { kit } = b;
+  const material = kit.interfaceScreen(image);
+  const plate = b.put(kit.plane(width, height, material), at, display);
+  const glass = kit.own(
+    new THREE.MeshPhysicalMaterial({
+      color: "#000000",
+      roughness: 0.16,
+      clearcoat: 1,
+      transparent: true,
+      opacity: 0.45,
+      depthWrite: false,
+      blending: THREE.CustomBlending,
+      blendSrc: THREE.SrcAlphaFactor,
+      blendDst: THREE.OneFactor,
+      blendSrcAlpha: THREE.ZeroFactor,
+      blendDstAlpha: THREE.OneFactor,
+    }),
+  );
+  glass.clippingPlanes = kit.m.shell.clippingPlanes;
+  b.put(kit.plane(width, height, glass), [at[0], at[1], at[2] + 0.0008 * above], display);
+  return {
+    plate,
+    dim(k: number) {
+      material.color.setScalar(1 - 0.8 * k);
+      glass.opacity = 0.45 * (1 - 0.9 * k);
+    },
+  };
+}
+
+/** Projection lines from the display's corners to the gathered screen's (`inverse`: the model group's inverse world matrix). */
+export function projectionLines(b: Build, plate: THREE.Object3D, stack: THREE.Object3D, width: number, height: number) {
+  const corners = [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ].map(([sx, sy]) => new THREE.Vector3((sx * width) / 2, (sy * height) / 2, 0));
+  const positions = new THREE.BufferAttribute(new Float32Array(8 * 3), 3);
+  const lines = b.put(new THREE.LineSegments(b.kit.own(new THREE.BufferGeometry().setAttribute("position", positions)), b.kit.m.edge), [0, 0, 0]);
+  lines.frustumCulled = false;
+  const point = new THREE.Vector3();
+  return {
+    update(k: number, inverse: THREE.Matrix4) {
       stack.updateMatrixWorld(true);
       corners.forEach((corner, i) => {
         point.copy(corner).applyMatrix4(plate.matrixWorld).applyMatrix4(inverse);
-        linePositions.setXYZ(i * 2, point.x, point.y, point.z);
+        positions.setXYZ(i * 2, point.x, point.y, point.z);
         point.copy(corner).applyMatrix4(stack.matrixWorld).applyMatrix4(inverse);
-        linePositions.setXYZ(i * 2 + 1, point.x, point.y, point.z);
+        positions.setXYZ(i * 2 + 1, point.x, point.y, point.z);
       });
-      linePositions.needsUpdate = true;
+      positions.needsUpdate = true;
       lines.visible = k > 0.01;
     },
   };

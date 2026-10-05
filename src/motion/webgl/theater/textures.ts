@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
 /**
- * Screens, circuit boards and interface layers, drawn in code so the models
- * need no image assets (the two rugged cases' displays load captures of
- * the real interfaces instead; see `models/interfaceStack.ts`).
+ * Screens and circuit boards, drawn in code so the models need no image
+ * assets (the rugged cases' displays load captures of the real interfaces
+ * instead; see `models/interfaces.ts`).
  * Everything is abstract UI (shapes, bars, retina imagery): no invented
  * clinical data or copy.
  */
@@ -98,28 +98,6 @@ function retina(g: CanvasRenderingContext2D, cx: number, cy: number, r: number, 
   g.restore();
 }
 
-/** Overlay rings and crosshair, the "guidance" drawn over the live view. */
-function overlay(g: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
-  g.strokeStyle = WARM;
-  g.lineWidth = 3;
-  g.setLineDash([10, 12]);
-  g.beginPath();
-  g.arc(cx, cy, r * 0.62, 0, Math.PI * 2);
-  g.stroke();
-  g.setLineDash([]);
-  g.strokeStyle = AMBER;
-  g.lineWidth = 2;
-  g.beginPath();
-  g.arc(cx, cy, r * 0.9, -0.4, 0.9);
-  g.stroke();
-  g.beginPath();
-  g.moveTo(cx - r * 0.12, cy);
-  g.lineTo(cx + r * 0.12, cy);
-  g.moveTo(cx, cy - r * 0.12);
-  g.lineTo(cx, cy + r * 0.12);
-  g.stroke();
-}
-
 function background(g: CanvasRenderingContext2D, w: number, h: number) {
   const bg = g.createLinearGradient(0, 0, 0, h);
   bg.addColorStop(0, "#15100c");
@@ -134,78 +112,6 @@ export const deviceScreen = () =>
     retina(g, 120, 160, 110, 21);
     panel(g, 260, 30, 220, 260, 12);
     bars(g, 285, 60, 170, 9, seeded(5), 24);
-  });
-
-export const emrDashboard = () =>
-  texture(1600, 900, (g, w, h) => {
-    background(g, w, h);
-    const rnd = seeded(17);
-    panel(g, 40, 40, 300, 820, 18);
-    bars(g, 70, 90, 230, 24, rnd, 30);
-    panel(g, 370, 40, 760, 470, 18);
-    retina(g, 560, 275, 190, 2);
-    retina(g, 940, 275, 190, 4);
-    overlay(g, 940, 275, 190);
-    panel(g, 370, 540, 760, 320, 18);
-    g.strokeStyle = AMBER;
-    g.lineWidth = 4;
-    g.beginPath();
-    for (let x = 0; x <= 700; x += 20) g.lineTo(400 + x, 720 - Math.sin(x / 60) * 70 - rnd() * 40);
-    g.stroke();
-    panel(g, 1160, 40, 400, 820, 18);
-    for (let i = 0; i < 6; i++) {
-      g.fillStyle = i === 2 ? AMBER : "rgba(255, 190, 130, 0.35)";
-      g.beginPath();
-      g.arc(1200, 110 + i * 130, 10, 0, Math.PI * 2);
-      g.fill();
-      bars(g, 1230, 100 + i * 130, 290, 2, rnd, 24);
-    }
-  });
-
-export type LayerKind = "imaging" | "devices" | "notes" | "timeline" | "insight";
-
-/** One translucent sheet of the EMR, pulled forward in the exploded view. */
-export const emrLayer = (kind: LayerKind) =>
-  texture(1024, 600, (g, w, h) => {
-    g.clearRect(0, 0, w, h);
-    panel(g, 6, 6, w - 12, h - 12, 26, "rgba(28, 16, 8, 0.72)");
-    const rnd = seeded(kind.length * 13);
-    g.fillStyle = WARM;
-    g.font = "30px Audiowide, Arial, sans-serif";
-    g.fillText(kind === "devices" ? "DEVICE OUTPUT" : kind.toUpperCase(), 48, 70);
-    if (kind === "imaging") {
-      [0, 1, 2, 3].forEach((i) => retina(g, 170 + i * 230, 330, 95, 30 + i));
-    } else if (kind === "devices") {
-      for (let row = 0; row < 3; row++) {
-        g.strokeStyle = row === 1 ? AMBER : "rgba(255, 190, 130, 0.6)";
-        g.lineWidth = 4;
-        g.beginPath();
-        for (let x = 0; x <= 880; x += 16) g.lineTo(60 + x, 170 + row * 140 - Math.sin(x / (30 + row * 12)) * 38 - rnd() * 16);
-        g.stroke();
-      }
-    } else if (kind === "notes") {
-      for (let col = 0; col < 2; col++) bars(g, 60 + col * 470, 130, 400, 14, rnd, 30);
-    } else if (kind === "timeline") {
-      g.strokeStyle = "rgba(255, 190, 130, 0.6)";
-      g.lineWidth = 4;
-      g.beginPath();
-      g.moveTo(60, 320);
-      g.lineTo(964, 320);
-      g.stroke();
-      for (let i = 0; i < 8; i++) {
-        const x = 90 + i * 120;
-        g.fillStyle = i === 5 ? AMBER : WARM;
-        g.beginPath();
-        g.arc(x, 320, i === 5 ? 18 : 11, 0, Math.PI * 2);
-        g.fill();
-        panel(g, x - 45, i % 2 ? 360 : 190, 90, 90, 10);
-      }
-    } else {
-      retina(g, 260, 330, 180, 9);
-      overlay(g, 260, 330, 180);
-      panel(g, 520, 140, 440, 380, 18);
-      bars(g, 550, 180, 380, 10, rnd, 32);
-    }
   });
 
 /** Dark board with amber traces. Used as both colour and glow, so the traces light up. */

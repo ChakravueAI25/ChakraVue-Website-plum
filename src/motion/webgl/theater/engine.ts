@@ -8,9 +8,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { gsap } from "../../gsap";
 import { applyExplode, Kit, type ProductModel, type Quality, type Readout } from "./kit";
-import { slitLampCase, surgicalBriefcase } from "./models/briefcase";
+import { emrCase, slitLampCase, surgicalBriefcase } from "./models/briefcase";
 import { integrationModule } from "./models/module";
-import { aiPoweredEmr } from "./models/systems";
 import { contactShadow } from "./textures";
 
 /**
@@ -30,7 +29,7 @@ import { contactShadow } from "./textures";
 const BUILDERS: Record<string, (kit: Kit) => ProductModel> = {
   "surgical-assistant": surgicalBriefcase,
   "slit-lamp-module": slitLampCase,
-  "ai-powered-emr": aiPoweredEmr,
+  "ai-powered-emr": emrCase,
   "integrated-devices": integrationModule,
 };
 
@@ -396,6 +395,8 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   let peek = false;
   let visible = true;
   let started = false;
+  /** Whether the stage is taller than wide (products with a portrait arrangement use it). */
+  let tall = false;
   let lastReported = -1;
   let lastFocus = 0;
   let width = 0;
@@ -407,7 +408,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     el: HTMLElement;
     text: HTMLElement;
     anchor: ProductModel["anchors"][number];
-    side: "left" | "right";
+    side: ProductModel["anchors"][number]["side"];
     width: number;
     x: number;
     y: number;
@@ -435,7 +436,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   };
 
   // --- Readouts: values on an interface, quoted while the camera is in on it ---
-  type Card = { el: HTMLElement; card: HTMLElement; value: HTMLElement; readout: Readout; width: number; played: boolean };
+  type Card = { el: HTMLElement; card: HTMLElement; value: HTMLElement; readout: Readout; width: number; height: number; played: boolean };
   let cards: Card[] = [];
   const mountReadouts = (index: number) => {
     if (!layer) return;
@@ -447,17 +448,18 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       const value = el.querySelector("b")!;
       value.textContent = readout.value;
       layer.appendChild(el);
-      return { el, card: el.querySelector<HTMLElement>(".treadout__card")!, value, readout, width: 0, played: false };
+      return { el, card: el.querySelector<HTMLElement>(".treadout__card")!, value, readout, width: 0, height: 0, played: false };
     });
   };
 
   /**
    * Each card hangs off its point by the offset the model gives (smaller on
-   * narrow screens), kept on screen, and appears in turn; its value
-   * scrambles in each time it shows.
+   * narrow screens), kept on screen and clear of the cards before it, and
+   * appears in turn; its value scrambles in each time it shows.
    */
   const placeReadouts = (alpha: number) => {
     const scale = width < 760 ? 0.5 : width < 1200 ? 0.75 : 1;
+    const taken: Array<{ left: number; right: number; top: number; bottom: number }> = [];
     cards.forEach((card, i) => {
       const shown = THREE.MathUtils.clamp((alpha - i * 0.1) / (1 - (cards.length - 1) * 0.1), 0, 1);
       if (shown < 0.01) {
@@ -471,9 +473,19 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       const x = (point.x * 0.5 + 0.5) * width;
       const y = (-point.y * 0.5 + 0.5) * height;
       if (!card.width) card.width = card.card.offsetWidth;
+      if (!card.height) card.height = card.card.offsetHeight;
       let [dx, dy] = card.readout.card.map((v) => v * scale);
       dx = dx < 0 ? Math.max(dx, 10 + card.width - x) : Math.min(dx, width - 10 - card.width - x);
       dy = THREE.MathUtils.clamp(dy, 90 - y, height - 30 - y);
+      // Step below (or, with no room, above) any card it would cover.
+      const left = dx < 0 ? x + dx - card.width : x + dx;
+      for (const box of taken) {
+        const top = y + dy - card.height / 2;
+        if (left > box.right + 8 || left + card.width < box.left - 8 || top > box.bottom + 8 || top + card.height < box.top - 8) continue;
+        dy = box.bottom + 8 + card.height / 2 - y;
+        if (y + dy + card.height / 2 > height - 10) dy = box.top - 8 - card.height / 2 - y;
+      }
+      taken.push({ left, right: left + card.width, top: y + dy - card.height / 2, bottom: y + dy + card.height / 2 });
       card.el.classList.toggle("treadout--left", dx < 0);
       card.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
       card.el.style.setProperty("--dx", `${dx.toFixed(1)}px`);
@@ -483,7 +495,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       card.el.style.opacity = shown.toFixed(3);
       if (!card.played && shown > 0.4) {
         card.played = true;
-        gsap.to(card.value, { duration: 0.9, scrambleText: { text: card.readout.value, chars: "0123456789", speed: 0.5 } });
+        gsap.to(card.value, { duration: 0.9, scrambleText: { text: card.readout.value, chars: /\d/.test(card.readout.value) ? "0123456789" : "upperAndLowerCase", speed: 0.5 } });
       }
     });
   };
@@ -523,29 +535,38 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       point.project(camera);
       label.x = (point.x * 0.5 + 0.5) * width;
       label.y = (-point.y * 0.5 + 0.5) * height;
+      label.shown = point.z < 1;
+      let side = label.anchor.side;
+      if (side === "top" || side === "bottom") {
+        // A caption: it stays with its screen (which may have changed layout).
+        if (side !== label.side) label.el.classList.replace(`tlabel--${label.side}`, `tlabel--${side}`);
+        label.side = side;
+        continue;
+      }
       const reach = REACH + 8 + label.width;
       // Keep the given side unless it overflows and the other side overflows less.
       const overflow = { left: Math.max(0, minX - (label.x - reach)), right: Math.max(0, label.x + reach - maxX) };
-      let side = label.anchor.side;
       const other = side === "left" ? "right" : "left";
       if (overflow[side] > 0 && overflow[other] < overflow[side]) side = other;
       if (side !== label.side) {
         label.el.classList.replace(`tlabel--${label.side}`, `tlabel--${side}`);
         label.side = side;
       }
-      label.shown = point.z < 1;
     }
-    for (const side of ["left", "right"] as const) {
-      let previous = -Infinity;
-      labels
-        .filter((label) => label.side === side && label.shown)
-        .sort((a, b) => a.y - b.y)
-        .forEach((label) => {
-          const y = THREE.MathUtils.clamp(Math.max(label.y, previous + GAP), 70, maxY);
-          label.dy = y - label.y;
-          previous = y;
-        });
-    }
+    // Labels with leaders, top to bottom: each steps down until its pill is
+    // clear of every pill already placed, on either side.
+    const placed: Array<{ y: number; left: number; right: number }> = [];
+    labels
+      .filter((label) => (label.side === "left" || label.side === "right") && label.shown)
+      .sort((a, b) => a.y - b.y)
+      .forEach((label) => {
+        const left = label.side === "right" ? label.x + REACH + 8 : label.x - REACH - 8 - label.width;
+        let y = label.y;
+        for (const pill of placed) if (left < pill.right + 8 && left + label.width > pill.left - 8 && y < pill.y + GAP) y = pill.y + GAP;
+        y = THREE.MathUtils.clamp(y, 70, maxY);
+        label.dy = y - label.y;
+        placed.push({ y, left, right: left + label.width });
+      });
     for (const label of labels) {
       const { el, x, y, dy } = label;
       const angle = Math.atan2(dy, REACH) * (label.side === "left" ? -1 : 1);
@@ -701,6 +722,16 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     composer?.setPixelRatio(dpr);
     bloom?.resolution.set(width, height);
     camera.aspect = width / height;
+    // Products with a portrait arrangement switch to it on tall stages, and are framed again.
+    const isTall = width < height;
+    if (isTall !== tall) {
+      tall = isTall;
+      models.forEach((model, i) => {
+        if (!model.layout) return;
+        model.layout(tall);
+        framings[i] = measure(model);
+      });
+    }
     offsetKey = "";
     if (stage) applyOffset(models[active]?.focus ? now.focus : 0);
     camera.updateProjectionMatrix();
