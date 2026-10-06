@@ -137,7 +137,8 @@ when you change one.
     request.
 - **About Us:** hero "The Technology Is Only as Strong as the Minds Behind
   It." over a canvas network of minds (`about-us/components/minds.ts`), then
-  the leaders and the team.
+  the leaders and the team. Each card links to the person's LinkedIn profile
+  (`linkedin` in `about-us/data.ts`). Hrushikesh Patki has none yet.
 - **Services:** FEA and tobacco cessation only. The hero reads "Research,
   Intelligence, and Technology Working Toward Better Health."
 - **Footer** (`shared/components/Footer.tsx`, `footer.css`, plus the emblem

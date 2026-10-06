@@ -3,6 +3,7 @@ import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
 import type { Leader } from "../data";
 import { BrandText } from "../../../shared/components/BrandText";
+import { LinkedInLink } from "./LinkedInLink";
 
 type LeaderStatementProps = Leader & {
   /** Alternates which side the heading vs. the quote card sit on. */
@@ -18,6 +19,7 @@ export function LeaderStatement({
   photo,
   photoPosition = "50% 50%",
   photoZoom = 1,
+  linkedin,
   reverse = false,
 }: LeaderStatementProps) {
   const ref = useRef<HTMLElement>(null);
@@ -44,6 +46,7 @@ export function LeaderStatement({
       )
       .fromTo(root.querySelector(".founder__photo img"), { "--reveal-scale": 1.4 }, { "--reveal-scale": 1, duration: 1.9 }, 0.2)
       .from(root.querySelector(".founder__divider"), { scaleX: 0, transformOrigin: "0% 50%", duration: 1.1 }, 0.7)
+      .from(root.querySelector(".in-link"), { y: 10, autoAlpha: 0, duration: 0.8, clearProps: "transform,opacity,visibility" }, 0.65)
       .from(root.querySelector(".founder__mark"), { scale: 0, rotation: -40, autoAlpha: 0, duration: 0.9, ease: "back.out(2.2)" }, 0.85);
   });
 
@@ -80,6 +83,7 @@ export function LeaderStatement({
             <p className="founder__role" data-split="fade" data-delay="0.5">
               <BrandText text={role} />
             </p>
+            {linkedin && <LinkedInLink href={linkedin} name={name} label className="founder__linkedin" />}
             <span className="founder__divider" aria-hidden="true" />
             <span className="founder__mark" aria-hidden="true">
               &ldquo;

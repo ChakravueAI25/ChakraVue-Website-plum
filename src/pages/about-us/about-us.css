@@ -470,6 +470,97 @@
 }
 
 /* --------------------------------------------------------------------------
+   LinkedIn links (LinkedInLink.tsx): a labelled pill on the leader cards,
+   the glyph alone in the team grid
+   -------------------------------------------------------------------------- */
+
+.in-link {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: #ffb46a;
+  text-decoration: none;
+}
+
+.in-link__glyph {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 180, 106, 0.4);
+  border-radius: 50%;
+  background: rgba(255, 139, 18, 0.06);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.in-link__glyph svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.in-link:hover .in-link__glyph,
+.in-link:focus-visible .in-link__glyph {
+  border-color: #ff8b12;
+  background: #ff8b12;
+  color: #0b0a08;
+}
+
+.in-link:focus-visible {
+  outline: none;
+}
+
+.in-link:focus-visible .in-link__glyph {
+  box-shadow: 0 0 0 3px rgba(255, 180, 106, 0.35);
+}
+
+/* Leader cards: glyph and word in one pill, under the role. */
+.in-link--label {
+  margin-top: 18px;
+  padding: 4px 16px 4px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.3s ease;
+}
+
+.in-link--label .in-link__glyph {
+  width: 28px;
+  height: 28px;
+}
+
+.in-link--label .in-link__glyph svg {
+  width: 12px;
+  height: 12px;
+}
+
+.in-link__text {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.in-link--label:hover,
+.in-link--label:focus-visible {
+  border-color: rgba(255, 180, 106, 0.5);
+}
+
+/* Pinned to the foot of the card, so the links line up along a row whether
+   the role above runs to one line or two. */
+.team-member__linkedin {
+  margin-top: auto;
+}
+
+.team-member__role:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+/* --------------------------------------------------------------------------
    Responsive
    -------------------------------------------------------------------------- */
 

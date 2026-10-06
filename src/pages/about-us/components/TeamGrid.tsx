@@ -3,6 +3,7 @@ import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
 import type { TeamMember } from "../data";
 import { teamMembers } from "../data";
+import { LinkedInLink } from "./LinkedInLink";
 
 export function TeamGrid() {
   const ref = useRef<HTMLElement>(null);
@@ -38,7 +39,7 @@ export function TeamGrid() {
   );
 }
 
-function TeamMemberCard({ name, role, photo }: TeamMember) {
+function TeamMemberCard({ name, role, photo, linkedin }: TeamMember) {
   return (
     <li className="team-member" data-reveal="pop">
       <div className="team-member__photo">
@@ -46,6 +47,7 @@ function TeamMemberCard({ name, role, photo }: TeamMember) {
       </div>
       <h4 className="team-member__name">{name}</h4>
       <p className="team-member__role">{role}</p>
+      {linkedin && <LinkedInLink href={linkedin} name={name} className="team-member__linkedin" />}
     </li>
   );
 }

@@ -217,6 +217,10 @@ adding products.
   together.
 - Leader cards swing in, with the portrait wiping up inside them.
 - The team portraits pop in.
+- Each leader card has a "LinkedIn" pill under the role, and each team card
+  has the LinkedIn glyph at its foot (`about-us/components/LinkedInLink.tsx`).
+  Profiles opened in a new tab are set in `about-us/data.ts` (`linkedin`).
+  Anyone without a profile simply shows no link (Hrushikesh Patki, for now).
 
 **Blog.** The doorway light flickers on, and scrolling walks you toward it.
 
