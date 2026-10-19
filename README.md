@@ -42,7 +42,10 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
 - **Text.** Headlines rise line by line out of masks, labels decode from random
   glyphs, and paragraphs drift in. Blocks enter in staggered groups.
 - **Header.** Hides as you read down, returns when you scroll up (or reach for
-  the top). Nav labels roll letter by letter on hover.
+  the top). Nav labels roll letter by letter on hover. Up to 960px wide the
+  bar holds the brand and a menu button, which opens every page in a
+  full-screen menu (numbered links, then phone and email). Escape, a link or
+  the button closes it; the page behind stays still while it's open.
 - **Logo marquee.** Speeds up and leans with scroll velocity, follows scroll
   direction, and slows under the pointer.
 - **Footer (new).** The same on every page, kept short: Explore on the left
@@ -90,8 +93,10 @@ sections animate in as they arrive. In order:
   measured off the laid-out cards, so they follow any screen size. The ring
   opens, the products arrive from their corners and their links draw in.
   Hovering a product lights its link and quiets the rest; the diagram tilts
-  slightly with the pointer. Below 900px the ring sits above a 2×2 grid of
-  products, without links.
+  slightly with the pointer. Below 900px the same diagram stands upright:
+  the statement on top, then two products, the ring (the mark at its
+  centre) and two more, every screen facing the ring and linked into it.
+  The scroll fade is desktop-only, so phones never dim the products.
 - "Intelligence, Engineered for the Operating Room." follows the hero as a
   compact band that lights as it passes (not pinned).
 - **3D product theater** (replaces the four podium sections). A studio stage

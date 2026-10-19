@@ -663,6 +663,10 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     // column, and more again when it opens, so the labels fit beside it.
     const margin = stage ? (width > 900 ? (width < 1200 ? 1.2 : 1.08) + (width < 1400 ? 0.24 : 0.06) * e : 1.45) : 0.92;
     let distance = (radius / Math.sin(Math.min(vFov, hFov))) * margin;
+    // On portrait stages a small product would pull the camera so close that
+    // the platform (radius 1.86) spills past the screen's sides; hold it back
+    // far enough to keep the whole platform in view.
+    if (stage && height > width) distance = Math.max(distance, 2.02 / Math.tan(hFov));
     let elevation = model.elevation ?? 0.2;
     // Focus: move in on the product's interface until it fills the stage, square-on.
     const f = model.focus ? now.focus : 0;

@@ -64,7 +64,8 @@
 }
 
 .contact-info__value {
-  margin-top: 8px;
+  /* Flush with its label (a <dd> is indented by default). */
+  margin: 8px 0 0;
   font-family: var(--font-body);
   font-size: 18px;
   line-height: 1.5;

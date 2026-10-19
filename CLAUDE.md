@@ -89,7 +89,9 @@ when you change one.
     old artwork (ChakraVue at the centre, four products around it, linked
     in) but built live: "We Add Intelligence to Your Devices." inside the
     ring, each product card showing its own screen, data travelling along
-    the links. Then a compact (unpinned) lead statement "Intelligence,
+    the links. On tablets and phones (≤900px) the diagram stands upright
+    (statement, two products, ring, two products, all linked); the owner
+    asked for the phone hero to be as good as desktop (2026-10-19). Then a compact (unpinned) lead statement "Intelligence,
     Engineered for the Operating Room.", then the 3D product theater
     (`motion/webgl/theater/`, generic part labels).
   - Product stills must never show ratings: the Integrated Devices photo
@@ -157,6 +159,9 @@ when you change one.
   - A large faint logo centred behind them, then the "ChakraVue AI"
     wordmark, which is solid so the logo never shows through it.
   - No call-to-action block.
+- **Phone menu** (`Header.tsx`, `.menu` in `global.css`): up to 960px the
+  six links don't fit, so the bar is the brand plus a menu button that opens
+  a full-screen menu. Before 2026-10-19 phones only showed two links.
 - **Cursor:** the standard system cursor, with grab/grabbing on 3D models.
   `PointerFX.tsx` only adds a small tag ("View", "Drag") beside the pointer
   over `[data-cursor]`, plus magnetic buttons and card spotlights. The owner

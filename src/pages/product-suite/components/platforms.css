@@ -394,6 +394,17 @@
     display: none;
   }
 
+  /* Phones: only three platforms, so they wrap and all show at once,
+     instead of the last one hiding off the edge of a scroller. */
+  @media (max-width: 760px) {
+    .plat-list {
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0 0 6px;
+      overflow: visible;
+    }
+  }
+
   .plat-list button {
     flex: 0 0 auto;
     grid-template-columns: auto auto;

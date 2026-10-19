@@ -178,6 +178,221 @@ button {
   transform: translateX(-50%) scaleX(1);
 }
 
+/* --- Phone menu (Header.tsx) ----------------------------------------------
+   Up to 960px the six links no longer fit beside the brand, so the bar
+   holds the brand and a menu button, and the button opens every page in a
+   full-screen menu. */
+
+.header__toggle {
+  display: none;
+}
+
+.menu {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .header__nav,
+  .header--scrolled .header__nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 20px;
+  }
+
+  .header__nav-group {
+    display: none;
+  }
+
+  .header__brand {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  /* Two bars that cross into a close mark. */
+  .header__toggle {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -8px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .header__toggle-bar {
+    position: absolute;
+    width: 22px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      translate 0.4s var(--ease-out),
+      rotate 0.4s var(--ease-out),
+      width 0.4s var(--ease-out);
+  }
+
+  .header__toggle-bar:first-child {
+    translate: 0 -4px;
+  }
+
+  .header__toggle-bar:last-child {
+    width: 14px;
+    translate: 4px 4px;
+  }
+
+  .header--menu .header__toggle-bar:first-child {
+    translate: 0 0;
+    rotate: 45deg;
+  }
+
+  .header--menu .header__toggle-bar:last-child {
+    width: 22px;
+    translate: 0 0;
+    rotate: -45deg;
+  }
+
+  .header__toggle:focus-visible {
+    outline: 1px dashed rgba(255, 180, 106, 0.8);
+    outline-offset: 2px;
+  }
+
+  /* With the menu open the bar sits clear over it, never tucked away. */
+  .header--menu {
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transform: none !important;
+  }
+
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 104px 24px max(28px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    background-color: #050304;
+    background-image:
+      radial-gradient(70% 45% at 100% 0%, rgba(255, 110, 24, 0.22), transparent 70%),
+      radial-gradient(60% 40% at 0% 100%, rgba(228, 20, 16, 0.12), transparent 70%);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.4s ease,
+      visibility 0s linear 0.4s;
+  }
+
+  .menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease;
+  }
+
+  .menu__nav {
+    display: grid;
+  }
+
+  /* Each link rises in after the one above it. */
+  .menu__link,
+  .menu__foot {
+    opacity: 0;
+    translate: 0 18px;
+    transition:
+      opacity 0.5s ease,
+      translate 0.6s var(--ease-out),
+      color 0.25s ease;
+  }
+
+  .menu.is-open .menu__link,
+  .menu.is-open .menu__foot {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(0.08s + var(--i) * 0.05s);
+  }
+
+  .menu__link {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255, 236, 220, 0.1);
+    color: #fff;
+    font-family: var(--font-display);
+  }
+
+  .menu__index {
+    color: #ff8b12;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .menu__label {
+    font-size: clamp(22px, 6.4vw, 30px);
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .menu__arrow {
+    color: rgba(255, 236, 220, 0.4);
+    font-size: 18px;
+    transition:
+      translate 0.3s var(--ease-out),
+      color 0.25s ease;
+  }
+
+  .menu__link.is-active,
+  .menu__link:active {
+    color: #ffd29a;
+  }
+
+  .menu__link.is-active .menu__arrow,
+  .menu__link:active .menu__arrow {
+    color: #ffb46a;
+    translate: 4px 0;
+  }
+
+  .menu__link:focus-visible {
+    outline: 1px dashed rgba(255, 180, 106, 0.8);
+    outline-offset: -1px;
+  }
+
+  .menu__foot {
+    display: grid;
+    gap: 16px;
+    padding-top: 32px;
+  }
+
+  .menu__foot a {
+    display: grid;
+    gap: 4px;
+    color: rgba(255, 236, 225, 0.85);
+    font-family: var(--font-body);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  .menu__foot small {
+    color: #ff8b12;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* The page behind stays put while the menu is open (touch scrolling
+     included, which Lenis doesn't own). */
+  html.is-menu-open,
+  html.is-menu-open body {
+    overflow: hidden;
+  }
+}
+
 /* Shared: "Institute creates data…" statement band */
 .insight-statement {
   position: relative;
@@ -934,33 +1149,6 @@ p {
     width: min(100% - 36px, 560px);
   }
 
-  /* The mobile bar only ever shows links on one side (see below), so the
-     symmetric grid that centers the brand on desktop has nothing to balance
-     against — fall back to a plain flex row instead of faking a center. */
-  .header__nav,
-  .header--scrolled .header__nav {
-    display: flex;
-    justify-content: center;
-    column-gap: 10px;
-    padding: 16px;
-    font-size: 11px;
-  }
-
-  .header__nav-group {
-    display: flex;
-    gap: 10px;
-  }
-
-  .header__brand {
-    font-size: 15px;
-  }
-
-  /* Keep the first two links so the pill stays compact on small screens. */
-  .header__nav-group--start a:nth-child(n + 3),
-  .header__nav-group--end {
-    display: none;
-  }
-
   .hero h1 {
     font-size: 30px;
     line-height: 38px;
@@ -1034,6 +1222,15 @@ p {
 
   .core-copy {
     min-height: 480px;
+    padding: 72px 22px 64px;
+  }
+
+  /* Phones: a narrower, more open measure, lifted off the bright glow. */
+  .core-copy h2 + p {
+    max-width: 32ch;
+    font-size: 15px;
+    line-height: 1.6;
+    text-shadow: 0 1px 16px rgba(0, 0, 0, 0.6);
   }
 
   .value-card {

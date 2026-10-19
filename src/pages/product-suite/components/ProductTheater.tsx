@@ -93,16 +93,18 @@ export function ProductTheater() {
         const range = { trigger: chapter, start: "top top", end: last ? "bottom bottom" : "bottom top" };
         const copy = copies[i];
         // The copy fades once the parts list is read, finishing before it
-        // could scroll up into the eyebrow: soon after it lets go on desktop,
-        // where it sits just below the eyebrow, later on phones, where it's
-        // docked at the bottom and the numbered chips still need its list.
+        // could scroll up into the eyebrow (desktop) or across the product
+        // above it (phones, where it's docked at the bottom).
         let fadeStart = 1;
         let fadeEnd = 1;
         const measure = () => {
           if (!copy) return;
           const span = chapter.offsetHeight;
           const release = 1 - window.innerHeight / span;
-          const room = gsap.utils.clamp(0, 220, copy.offsetTop - (eyebrow ? eyebrow.offsetTop + eyebrow.offsetHeight : 0) - 12);
+          // Phones dock the copy right under the product, so it has to be
+          // gone within a short lift, before it reaches the model.
+          const lift = window.matchMedia("(max-width: 900px)").matches ? 70 : 220;
+          const room = gsap.utils.clamp(0, lift, copy.offsetTop - (eyebrow ? eyebrow.offsetTop + eyebrow.offsetHeight : 0) - 12);
           fadeEnd = release + room / span;
           fadeStart = Math.max(0.6, fadeEnd - 0.06);
           if (fadeEnd <= fadeStart) fadeEnd = fadeStart + 0.04;

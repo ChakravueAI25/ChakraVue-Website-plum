@@ -31,8 +31,9 @@ function openChapter(event: MouseEvent<HTMLAnchorElement>, id: string) {
  * along them. Hovering a product lights its link and quiets the others.
  *
  * The links are measured off the laid-out cards (drawLinks below), so the
- * same drawing serves the wide layout (products at the four corners) and
- * the stacked one (the ring above, the products in a grid under it).
+ * same drawing serves the wide layout (products at the four corners, the
+ * statement inside the ring) and the phone one (the statement on top, then
+ * two products, the ring and two more, each screen facing the ring).
  */
 export function SuiteHero() {
   const ref = useRef<HTMLElement>(null);
@@ -56,7 +57,7 @@ export function SuiteHero() {
     gsap
       .timeline()
       .from(root.querySelectorAll(".ps-hub__ring"), { scale: 0.9, autoAlpha: 0, duration: 0.9, stagger: 0.06, ease: "cv.out" })
-      .from(root.querySelector(".ps-hub__logo"), { scale: 0.8, autoAlpha: 0, duration: 0.7, ease: "cv.out" }, 0.1)
+      .from(root.querySelectorAll(".ps-hub__logo, .ps-hub__core"), { scale: 0.8, autoAlpha: 0, duration: 0.7, ease: "cv.out" }, 0.1)
       .from(root.querySelector(".ps-hub__actions"), { y: 12, autoAlpha: 0, duration: 0.6, ease: "cv.out" }, 0.4)
       .from(
         nodes,
@@ -75,12 +76,15 @@ export function SuiteHero() {
       .from(root.querySelectorAll(".ps-link__port"), { scale: 0, autoAlpha: 0, transformOrigin: "50% 50%", duration: 0.4, stagger: 0.06, ease: "back.out(2.4)" }, 0.6)
       .add(() => root.classList.add("is-live"), 0.9);
 
-    // Scrolling on, the whole diagram settles back and fades.
-    gsap.to(field, {
-      yPercent: 8,
-      autoAlpha: 0.3,
-      ease: "none",
-      scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
+    // Scrolling on, the whole diagram settles back and fades. Wide screens
+    // only: on phones the products are read while scrolling, so they stay lit.
+    gsap.matchMedia().add("(min-width: 901px)", () => {
+      gsap.to(field, {
+        yPercent: 8,
+        autoAlpha: 0.3,
+        ease: "none",
+        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
+      });
     });
 
     if (!finePointer) return;
@@ -119,25 +123,28 @@ export function SuiteHero() {
             <circle className="ps-hub__ring ps-hub__ring--ticks" r="91" />
             <circle className="ps-hub__ring ps-hub__ring--orbit" r="99" />
           </svg>
-          <div className="ps-hub__copy">
-            <Logo className="ps-hub__logo" />
-            <p className="section-label ps-hub__eyebrow" data-scramble>
-              Product Suite
-            </p>
-            <h1 id="ps-hero-title" className="ps-hub__title" data-split>
-              We Add <em>Intelligence</em> to Your Devices.
-            </h1>
-            <p className="ps-hub__lede" data-split="fade" data-delay="0.15">
-              Four clinical systems, one <BrandText text="ChakraVue AI" /> intelligence connecting them.
-            </p>
-            <div className="ps-hub__actions">
-              <a className="ps-btn ps-btn--primary" href="#surgical-assistant" onClick={(event) => openChapter(event, "surgical-assistant")} data-magnetic="0.2">
-                Explore the suite <span aria-hidden="true">↓</span>
-              </a>
-              <Link className="ps-btn ps-btn--ghost" href="/contact-us">
-                Talk to us
-              </Link>
-            </div>
+          {/* Phones: the mark sits at the centre of the ring, the statement above. */}
+          <Logo className="ps-hub__core" />
+        </div>
+
+        <div className="ps-hub__copy">
+          <Logo className="ps-hub__logo" />
+          <p className="section-label ps-hub__eyebrow" data-scramble>
+            Product Suite
+          </p>
+          <h1 id="ps-hero-title" className="ps-hub__title" data-split>
+            We Add <em>Intelligence</em> to Your Devices.
+          </h1>
+          <p className="ps-hub__lede" data-split="fade" data-delay="0.15">
+            Four clinical systems, one <BrandText text="ChakraVue AI" /> intelligence connecting them.
+          </p>
+          <div className="ps-hub__actions">
+            <a className="ps-btn ps-btn--primary" href="#surgical-assistant" onClick={(event) => openChapter(event, "surgical-assistant")} data-magnetic="0.2">
+              Explore the suite <span aria-hidden="true">↓</span>
+            </a>
+            <Link className="ps-btn ps-btn--ghost" href="/contact-us">
+              Talk to us
+            </Link>
           </div>
         </div>
 
@@ -233,17 +240,19 @@ function drawLinks(root: HTMLElement) {
       const sw = screen.offsetWidth;
       const sh = screen.offsetHeight;
       // Leave from the side of the screen that faces the ring: its inner
-      // edge when beside the ring, its top edge when below it.
-      const below = at.y > cy + r * 0.6;
+      // edge when the screen is beside the ring (wide screens), its bottom
+      // or top edge when it sits above or below it (phones).
+      const beside = at.x + sw < cx - r || at.x > cx + r;
       let ax: number;
       let ay: number;
       let ox: number;
       let oy: number;
-      if (below) {
+      if (!beside) {
+        const above = at.y + sh / 2 < cy;
         ax = at.x + sw / 2;
-        ay = at.y;
+        ay = above ? at.y + sh : at.y;
         ox = 0;
-        oy = -1;
+        oy = above ? 1 : -1;
       } else {
         const left = at.x + sw / 2 < cx;
         ax = left ? at.x + sw : at.x;

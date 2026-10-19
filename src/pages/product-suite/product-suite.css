@@ -137,12 +137,22 @@
   }
 }
 
+/* The statement shares the ring's grid cell and sits inside it: 76% of the
+   ring's width (the ring is min(100%, 580px, 100svh - 200px), at least 380px). */
 .ps-hub__copy {
   position: relative;
+  z-index: 2;
   display: grid;
+  grid-area: hub;
+  place-self: center;
   justify-items: center;
-  width: 76%;
+  width: max(289px, min(76%, 441px, calc(76svh - 152px)));
   text-align: center;
+}
+
+/* The mark at the centre of the ring is for phones (below). */
+.ps-hub__core {
+  display: none;
 }
 
 /* The mark as supplied, never turned: it only fades and scales in. */
@@ -180,6 +190,7 @@
   font-family: var(--font-body);
   font-size: clamp(12.5px, 0.95vw, 14.5px);
   line-height: 1.6;
+  text-wrap: balance;
 }
 
 .ps-hub__actions {
@@ -579,7 +590,7 @@
 /* Small laptops and landscape tablets: a little tighter inside the ring. */
 @media (max-width: 1200px) {
   .ps-hub__copy {
-    width: 82%;
+    width: max(312px, min(82%, 476px, calc(82svh - 164px)));
   }
 
   .ps-btn {
@@ -593,8 +604,9 @@
   }
 }
 
-/* Narrower screens: the ring on top, the products in a grid beneath it.
-   The links would cross the cards here, so they're left out. */
+/* Tablets and phones: the same diagram, stood upright. The statement comes
+   first; then two products, the ring with the mark at its centre, and two
+   more, every screen facing the ring and linked into it. */
 @media (max-width: 900px) {
   .ps-hero {
     min-height: 0;
@@ -605,72 +617,112 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto;
     grid-template-areas:
-      "hub hub"
+      "copy copy"
       "a b"
+      "hub hub"
       "c d";
-    gap: 36px 22px;
+    gap: 0 22px;
   }
 
-  .ps-hero__links {
+  .ps-hub__copy {
+    grid-area: copy;
+    width: 100%;
+    max-width: 560px;
+    margin-bottom: 52px;
+  }
+
+  .ps-hub__logo {
     display: none;
   }
 
+  .ps-hub__title {
+    font-size: clamp(28px, 6vw, 44px);
+  }
+
+  .ps-hub__lede {
+    max-width: 38ch;
+    font-size: clamp(13px, 2vw, 15px);
+  }
+
   .ps-hub {
-    width: min(100%, 540px);
+    width: clamp(124px, 26vw, 200px);
     min-width: 0;
-    margin-bottom: 8px;
+    margin: 30px 0;
+  }
+
+  .ps-hub__core {
+    position: relative;
+    display: block;
+    width: 46%;
+    height: auto;
+    aspect-ratio: 1000 / 968;
+  }
+
+  /* The top pair sit on the ring, labels above their screens; the bottom
+     pair hang from it, labels below. Left cards read from the left edge,
+     right cards from the right, mirroring each other as on desktop. */
+  .ps-node--01,
+  .ps-node--02 {
+    align-self: end;
   }
 
   .ps-node--03,
   .ps-node--04 {
     align-self: start;
   }
+
+  .ps-node--01 .ps-node__meta,
+  .ps-node--02 .ps-node__meta {
+    order: -1;
+  }
+
+  .ps-node__meta,
+  .ps-node--02 .ps-node__meta,
+  .ps-node--04 .ps-node__meta {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .ps-node__meta b,
+  .ps-node--02 .ps-node__meta b,
+  .ps-node--04 .ps-node__meta b {
+    grid-row: auto;
+    grid-column: auto;
+  }
 }
 
-/* Phones: the statement no longer fits inside a circle, so the rings sit
-   behind it, larger, and the products shrink to a compact grid. */
+/* Phones: everything a size smaller, and nothing wider than the screen. */
 @media (max-width: 760px) {
   .ps-hero {
-    padding: 104px 18px 44px;
+    padding: 100px 18px 44px;
   }
 
   .ps-hero__field {
-    gap: 28px 14px;
+    column-gap: 14px;
   }
 
-  .ps-hub {
-    width: 100%;
-    aspect-ratio: auto;
-    padding: 34px 0 30px;
-  }
-
-  .ps-hub::before {
-    inset: 50% auto auto 50%;
-    width: 128vw;
-    aspect-ratio: 1;
-    translate: -50% -50%;
-    background: radial-gradient(circle, rgba(4, 3, 3, 0.9) 0%, rgba(4, 3, 3, 0.7) 50%, transparent 70%);
-  }
-
-  .ps-hub__rings {
-    inset: 50% auto auto 50%;
-    width: 112vw;
-    height: auto;
-    aspect-ratio: 1;
-    translate: -50% -50%;
+  .ps-hero__floor {
     opacity: 0.55;
   }
 
   .ps-hub__copy {
-    width: 100%;
+    margin-bottom: 40px;
   }
 
   .ps-hub__title {
-    font-size: clamp(26px, 7.6vw, 34px);
+    font-size: clamp(27px, 7.8vw, 34px);
+  }
+
+  .ps-hub__lede {
+    max-width: 30ch;
+  }
+
+  .ps-hub {
+    margin: 24px 0;
   }
 
   .ps-node__link {
-    gap: 12px;
+    gap: 10px;
   }
 
   .ps-node__screen {
@@ -679,31 +731,31 @@
 
   .ps-node__screen::after {
     inset: 6px;
-    opacity: 0.45;
+    background-size: 9px 1px, 1px 9px, 9px 1px, 1px 9px, 9px 1px, 1px 9px, 9px 1px, 1px 9px;
+    opacity: 0.5;
   }
 
   .ps-node__status {
-    display: none;
+    bottom: 7px;
+    left: 8px;
+    gap: 5px;
+    padding: 4px 7px;
+    font-size: 7.5px;
+    letter-spacing: 0.12em;
   }
 
-  .ps-node__meta,
-  .ps-node--02 .ps-node__meta,
-  .ps-node--04 .ps-node__meta {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-    text-align: left;
+  .ps-node__status::before {
+    width: 5px;
+    height: 5px;
   }
 
-  .ps-node__meta b,
-  .ps-node--02 .ps-node__meta b,
-  .ps-node--04 .ps-node__meta b {
-    grid-row: auto;
-    grid-column: auto;
+  .ps-node__meta b {
     font-size: 11px;
   }
 
   .ps-node__meta strong {
     font-size: 12px;
+    line-height: 1.35;
   }
 
   .ps-node__meta small {

@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRoute } from "../../app/router";
 import { reduceMotion } from "../../motion/env";
 import { gsap, ScrollTrigger } from "../../motion/gsap";
+import { lockScroll } from "../../motion/lenis";
 import { RollText } from "../../motion/RollText";
+import { contactDetails } from "../../pages/contact/data";
 import { navItems } from "../data/content";
 import { Link } from "./Link";
 import { Logo } from "../../brand/Logo";
@@ -12,10 +14,17 @@ type HeaderProps = {
   visible?: boolean;
 };
 
+/** The phone menu names the last item for what it is, as the footer does. */
+const menuItems = navItems.map((item) => ({ ...item, label: item.label === "More" ? "Privacy Policy" : item.label }));
+const menuContacts = contactDetails.filter((detail) => detail.href && detail.label !== "LinkedIn");
+
 export function Header({ visible = true }: HeaderProps) {
   const path = useRoute();
   const ref = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -57,6 +66,34 @@ export function Header({ visible = true }: HeaderProps) {
     };
   }, []);
 
+  // A new page always arrives with the menu closed.
+  useEffect(() => setOpen(false), [path]);
+
+  // While the menu is open the page behind it stays still, Escape closes
+  // it, and focus moves into it (and back to the button afterwards).
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    root.classList.add("is-menu-open");
+    lockScroll(true);
+    menuRef.current?.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    // The menu is phone-only: widening the window past it closes it.
+    const wide = window.matchMedia("(min-width: 961px)");
+    const onWide = () => wide.matches && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    wide.addEventListener("change", onWide);
+    return () => {
+      root.classList.remove("is-menu-open");
+      lockScroll(false);
+      window.removeEventListener("keydown", onKey);
+      wide.removeEventListener("change", onWide);
+      toggleRef.current?.focus({ preventScroll: true });
+    };
+  }, [open]);
+
   const renderItem = (item: (typeof navItems)[number]) => (
     <Link
       href={item.href}
@@ -70,15 +107,64 @@ export function Header({ visible = true }: HeaderProps) {
   );
 
   return (
-    <header ref={ref} className={`header${visible ? "" : " header--hidden"}${scrolled ? " header--scrolled" : ""}`}>
-      <nav className="header__nav" aria-label="Primary navigation">
-        <div className="header__nav-group header__nav-group--start">{navItems.slice(0, 3).map(renderItem)}</div>
-        <Link href="/" className="header__brand" aria-label="ChakraVue AI home" data-magnetic="0.18">
-          <Logo className="header__logo" />
-          ChakraVue AI
-        </Link>
-        <div className="header__nav-group header__nav-group--end">{navItems.slice(3).map(renderItem)}</div>
-      </nav>
-    </header>
+    <>
+      <header ref={ref} className={`header${visible ? "" : " header--hidden"}${scrolled ? " header--scrolled" : ""}${open ? " header--menu" : ""}`}>
+        <nav className="header__nav" aria-label="Primary navigation">
+          <div className="header__nav-group header__nav-group--start">{navItems.slice(0, 3).map(renderItem)}</div>
+          <Link href="/" className="header__brand" aria-label="ChakraVue AI home" data-magnetic="0.18">
+            <Logo className="header__logo" />
+            ChakraVue AI
+          </Link>
+          <div className="header__nav-group header__nav-group--end">{navItems.slice(3).map(renderItem)}</div>
+          <button
+            ref={toggleRef}
+            type="button"
+            className="header__toggle"
+            aria-expanded={open}
+            aria-controls="site-menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span className="header__toggle-bar" aria-hidden="true" />
+            <span className="header__toggle-bar" aria-hidden="true" />
+          </button>
+        </nav>
+      </header>
+
+      {/* Phones and narrow tablets: every page in one full-screen menu. */}
+      <div ref={menuRef} id="site-menu" className={`menu${open ? " is-open" : ""}`} aria-hidden={!open} inert={!open}>
+        <nav className="menu__nav" aria-label="Menu">
+          {menuItems.map((item, i) => {
+            const current = item.href === path;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`menu__link${current ? " is-active" : ""}`}
+                aria-current={current ? "page" : undefined}
+                style={{ "--i": i } as CSSProperties}
+                onClick={() => setOpen(false)}
+              >
+                <span className="menu__index" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="menu__label">{item.label}</span>
+                <span className="menu__arrow" aria-hidden="true">
+                  →
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="menu__foot" style={{ "--i": menuItems.length } as CSSProperties}>
+          {menuContacts.map(({ label, value, href }) => (
+            <a key={label} href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}>
+              <small>{label}</small>
+              {value}
+            </a>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
