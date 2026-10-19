@@ -224,9 +224,10 @@ export function FeaVisual() {
             <g clipPath="url(#feaJawClip)">
               <rect className="fea__scan fea__scan--jaw" x="0" y="0" width="400" height="60" fill="url(#feaMesh2)" />
             </g>
-            <g className="fea__load" style={loadStyle(268, 146)}>
-              <line x1="268" y1="84" x2="268" y2="138" />
-              <path d="M258 130 L268 146 L278 130 Z" />
+            {/* The bite load sits on the fixed side, over the molars behind the plate. */}
+            <g className="fea__load" style={loadStyle(132, 146)}>
+              <line x1="132" y1="84" x2="132" y2="138" />
+              <path d="M122 130 L132 146 L142 130 Z" />
             </g>
           </svg>
         )}

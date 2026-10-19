@@ -8,155 +8,545 @@
 }
 
 /* --------------------------------------------------------------------------
-   Hero — artwork with its labels baked in, plus invisible jump links
+   Hero — ChakraVue AI at the centre, its statement inside the ring, and the
+   four products around it, linked in (SuiteHero.tsx)
    -------------------------------------------------------------------------- */
 
 .ps-hero {
+  --gap: clamp(24px, 3vw, 56px);
   position: relative;
-  padding-bottom: 68px;
-  background: #000;
-}
-
-/* Its entrance (opening out from the centre ring) is driven by SuiteHero.tsx. */
-.ps-hero__stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4096 / 2286;
+  display: grid;
+  min-height: max(760px, 100svh);
+  padding: 118px max(32px, 4vw) 56px;
   overflow: hidden;
-  background: #000;
+  isolation: isolate;
+  background-color: #030202;
+  background-image:
+    radial-gradient(34% 44% at 50% 52%, rgba(255, 110, 24, 0.16), transparent 70%),
+    radial-gradient(60% 46% at 50% 118%, rgba(255, 110, 24, 0.24), transparent 72%);
 }
 
-/* Everything drawn on the artwork moves as one piece, so the overlay,
-   pulses and hotspots stay registered to it while it leans and drifts. */
-.ps-hero__layer {
+/* A faint floor grid running to the horizon under the diagram. */
+.ps-hero__floor {
+  position: absolute;
+  right: -25%;
+  bottom: -6%;
+  left: -25%;
+  z-index: -1;
+  height: 52%;
+  background-image:
+    linear-gradient(rgba(255, 139, 18, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 139, 18, 0.16) 1px, transparent 1px);
+  background-position: center bottom;
+  background-size: 64px 64px;
+  transform: perspective(700px) rotateX(64deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: radial-gradient(60% 100% at 50% 100%, #000 15%, transparent 78%);
+  mask-image: radial-gradient(60% 100% at 50% 100%, #000 15%, transparent 78%);
+  pointer-events: none;
+}
+
+/* The products sit at the four corners, the ring between them. The links
+   are drawn over the same box, so the field tilts and drifts as one. */
+.ps-hero__field {
+  position: relative;
+  display: grid;
+  /* The products narrow before the ring does. */
+  grid-template-columns: min(330px, 22vw) minmax(0, 1fr) min(330px, 22vw);
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "a hub b"
+    "c hub d";
+  gap: 28px var(--gap);
+}
+
+.ps-hero__links {
   position: absolute;
   inset: 0;
-  will-change: transform;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
 
-.ps-hero__art {
+.ps-hero__nodes {
+  display: contents;
+}
+
+/* --- The ring -------------------------------------------------------------- */
+
+.ps-hub {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-area: hub;
+  place-self: center;
+  place-items: center;
+  width: min(100%, 580px, calc(100svh - 200px));
+  min-width: 380px;
+  aspect-ratio: 1;
+}
+
+/* Dark inside the ring, so the statement reads over the floor and links. */
+.ps-hub::before {
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(4, 3, 3, 0.94) 0%, rgba(4, 3, 3, 0.9) 62%, rgba(255, 110, 24, 0.07) 100%);
+  content: "";
+}
+
+.ps-hub__rings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ps-hub__ring {
+  fill: none;
+  /* A centred viewBox turns about its own centre with origin 0 0. */
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+
+.ps-hub__ring--glow {
+  stroke: #ffb46a;
+  stroke-width: 0.7;
+  filter: drop-shadow(0 0 2px rgba(255, 139, 18, 0.9)) drop-shadow(0 0 9px rgba(255, 110, 20, 0.55));
+}
+
+.ps-hub__ring--ticks {
+  stroke: rgba(255, 180, 106, 0.32);
+  stroke-dasharray: 0.35 2.2;
+  stroke-width: 2.4;
+  animation: psSpin 140s linear infinite;
+}
+
+.ps-hub__ring--orbit {
+  stroke: rgba(255, 180, 106, 0.38);
+  stroke-dasharray: 1 6;
+  stroke-width: 0.5;
+  animation: psSpin 90s linear infinite reverse;
+}
+
+@keyframes psSpin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.ps-hub__copy {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: 76%;
+  text-align: center;
+}
+
+/* The mark as supplied, never turned: it only fades and scales in. */
+.ps-hub__logo {
+  width: clamp(44px, 4.2vw, 60px);
+  height: auto;
+  aspect-ratio: 1000 / 968;
+  margin-bottom: 14px;
+}
+
+.ps-hub__eyebrow {
+  margin: 0;
+}
+
+.ps-hub__title {
+  margin: 14px 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: 400;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+
+.ps-hub__title em {
+  color: #fbd896;
+  font-style: normal;
+  text-shadow: 0 0 26px rgba(251, 216, 150, 0.4);
+}
+
+.ps-hub__lede {
+  max-width: 32ch;
+  margin: 14px 0 0;
+  color: rgba(255, 236, 225, 0.68);
+  font-family: var(--font-body);
+  font-size: clamp(12.5px, 0.95vw, 14.5px);
+  line-height: 1.6;
+}
+
+.ps-hub__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.ps-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+  transition:
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+}
+
+.ps-btn--primary {
+  background: var(--amber);
+  box-shadow: 0 16px 36px rgba(255, 110, 20, 0.28);
+  color: #140b04;
+}
+
+/* A lighter fill rises through the button on hover. */
+.ps-btn--primary::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #ffd29a;
+  content: "";
+  transform: translateY(101%);
+  transition: transform 0.5s var(--ease-out);
+}
+
+.ps-btn--primary:hover::before,
+.ps-btn--primary:focus-visible::before {
+  transform: translateY(0);
+}
+
+.ps-btn--ghost {
+  border: 1px solid rgba(255, 236, 220, 0.4);
+  background: rgba(10, 5, 2, 0.3);
+  color: #fff;
+}
+
+.ps-btn--ghost:hover,
+.ps-btn--ghost:focus-visible {
+  border-color: #fff;
+}
+
+/* --- The products ------------------------------------------------------------ */
+
+.ps-node {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  transition:
+    opacity 0.45s ease,
+    filter 0.45s ease;
+}
+
+.ps-node--01 {
+  grid-area: a;
+  align-self: start;
+}
+
+.ps-node--02 {
+  grid-area: b;
+  align-self: start;
+}
+
+.ps-node--03 {
+  grid-area: c;
+  align-self: end;
+}
+
+.ps-node--04 {
+  grid-area: d;
+  align-self: end;
+}
+
+.ps-node__link {
+  display: grid;
+  gap: 16px;
+  transition: translate 0.5s var(--ease-out);
+}
+
+/* Each product's own screen, framed like a monitor with viewfinder corners. */
+.ps-node__screen {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid rgba(255, 180, 106, 0.28);
+  border-radius: 14px;
+  background: #0b0908;
+  box-shadow:
+    0 0 0 6px rgba(255, 139, 18, 0.04),
+    0 28px 60px rgba(0, 0, 0, 0.55);
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.ps-node__screen img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: scale 0.9s var(--ease-out);
 }
 
-.ps-hero__flow {
+.ps-node__screen::before {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.55));
+  content: "";
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 1.2s ease;
 }
 
-.ps-hero__stage.is-live .ps-hero__flow {
+.ps-node__screen::after {
+  position: absolute;
+  inset: 9px;
+  z-index: 1;
+  background:
+    linear-gradient(#ffb46a, #ffb46a) left top / 14px 1px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) left top / 1px 14px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) right top / 14px 1px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) right top / 1px 14px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) left bottom / 14px 1px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) left bottom / 1px 14px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) right bottom / 14px 1px no-repeat,
+    linear-gradient(#ffb46a, #ffb46a) right bottom / 1px 14px no-repeat;
+  content: "";
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* A scan line passes down each screen in turn once the hero is live. */
+.ps-node__scan {
+  position: absolute;
+  top: -30%;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 30%;
+  background: linear-gradient(180deg, transparent, rgba(255, 180, 106, 0.14) 80%, rgba(255, 214, 160, 0.6) 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ps-hero.is-live:not(.is-still) .ps-node__scan {
   opacity: 1;
+  animation: psScan 6s cubic-bezier(0.55, 0, 0.45, 1) var(--scan-delay, 0s) infinite;
 }
 
-.ps-hero__orbit {
-  fill: none;
-  stroke: rgba(255, 170, 100, 0.4);
-  stroke-width: 1.4;
-  stroke-dasharray: 2 16;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: psOrbit 60s linear infinite;
+.ps-node--02 {
+  --scan-delay: 1.5s;
 }
 
-@keyframes psOrbit {
-  to {
-    transform: rotate(360deg);
+.ps-node--03 {
+  --scan-delay: 3s;
+}
+
+.ps-node--04 {
+  --scan-delay: 4.5s;
+}
+
+@keyframes psScan {
+  0% {
+    translate: 0 0;
+  }
+  45%,
+  100% {
+    translate: 0 440%;
   }
 }
 
-.ps-hero__packet {
-  fill: #ffe0b8;
-  filter: drop-shadow(0 0 8px rgba(255, 139, 18, 1)) drop-shadow(0 0 18px rgba(255, 110, 20, 0.7));
-}
-
-.ps-hero__packet--orbit {
-  fill: #ffc98e;
-}
-
-/* Where each device connects: a softly pulsing port. */
-.ps-hero__pulse {
+.ps-node__status {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  border-radius: 50%;
-  background: #ffcf96;
-  box-shadow: 0 0 12px 2px rgba(255, 139, 18, 0.85);
-  pointer-events: none;
-}
-
-.ps-hero__pulse::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border: 1px solid rgba(255, 190, 120, 0.8);
-  border-radius: 50%;
-  animation: portPulse 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-
-@keyframes portPulse {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(4.2);
-  }
-}
-
-@media (max-width: 760px) {
-  .ps-hero__pulse {
-    width: 6px;
-    height: 6px;
-    margin: -3px 0 0 -3px;
-  }
-}
-
-/* Hovering a product dims the rest of the artwork around it. */
-.ps-hero__focus {
-  position: absolute;
-  inset: 0;
-  visibility: hidden;
-  opacity: 0;
-  background: radial-gradient(circle 24vw at var(--fx) var(--fy), transparent 0%, transparent 45%, rgba(0, 0, 0, 0.62) 100%);
-  pointer-events: none;
-}
-
-/* Fade the artwork into the page below. */
-.ps-hero__stage::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 14%;
-  background: linear-gradient(180deg, transparent, #000);
-  pointer-events: none;
-}
-
-/* Clickable area over each label in the artwork; nothing visible is drawn,
-   only a soft outline when reached by keyboard. */
-.ps-hotspot {
-  position: absolute;
+  bottom: 14px;
+  left: 16px;
   z-index: 2;
-  width: 17%;
-  height: 14%;
-  margin: -1% 0 0 -1%;
-  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(10, 6, 4, 0.62);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-.ps-hotspot:focus-visible {
-  outline: 1px dashed rgba(255, 170, 90, 0.7);
-  outline-offset: 4px;
+.ps-node__status::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffb46a;
+  box-shadow: 0 0 8px rgba(255, 139, 18, 0.9);
+  content: "";
+  animation: psBlink 2.4s ease-in-out infinite;
 }
 
-.ps-hero__list {
+@keyframes psBlink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.ps-node__meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 14px;
+  align-items: baseline;
+}
+
+.ps-node__meta b {
+  grid-row: span 2;
+  color: #ff8b12;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.ps-node__meta strong {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(13px, 1.05vw, 16px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.ps-node__meta small {
+  color: rgba(255, 236, 225, 0.6);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+}
+
+/* The right-hand products mirror the left: number on the outside edge. */
+.ps-node--02 .ps-node__meta,
+.ps-node--04 .ps-node__meta {
+  grid-template-columns: minmax(0, 1fr) auto;
+  text-align: right;
+}
+
+.ps-node--02 .ps-node__meta b,
+.ps-node--04 .ps-node__meta b {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+/* Hovering or focusing a product: it lifts and lights, the rest go quiet. */
+.ps-node.is-hot .ps-node__link {
+  translate: 0 -4px;
+}
+
+.ps-node.is-hot .ps-node__screen {
+  border-color: #ffb46a;
+  box-shadow:
+    0 0 0 6px rgba(255, 139, 18, 0.1),
+    0 0 44px rgba(255, 110, 20, 0.3),
+    0 28px 60px rgba(0, 0, 0, 0.55);
+}
+
+.ps-node.is-hot .ps-node__screen img {
+  scale: 1.04;
+}
+
+.ps-hero.has-focus .ps-node:not(.is-hot) {
+  opacity: 0.42;
+  filter: saturate(0.4);
+}
+
+.ps-node__link:focus-visible {
+  outline: none;
+}
+
+.ps-node__link:focus-visible .ps-node__screen {
+  outline: 1px dashed rgba(255, 180, 106, 0.8);
+  outline-offset: 5px;
+}
+
+/* --- The links: data travelling from each product into the ring ----------- */
+
+.ps-link {
+  transition: opacity 0.45s ease;
+}
+
+.ps-link__base {
+  fill: none;
+  stroke: rgba(255, 170, 100, 0.34);
+  stroke-width: 1.2;
+  transition:
+    stroke 0.4s ease,
+    stroke-width 0.4s ease;
+}
+
+.ps-link__flow {
+  fill: none;
+  stroke: #ffe0b8;
+  stroke-dasharray: 28px calc(var(--len, 400) * 1px);
+  stroke-linecap: round;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px rgba(255, 139, 18, 0.95)) drop-shadow(0 0 10px rgba(255, 110, 20, 0.6));
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.ps-hero.is-live .ps-link__flow {
+  opacity: 1;
+  animation: psFlow 2.8s linear infinite;
+}
+
+@keyframes psFlow {
+  from {
+    stroke-dashoffset: 28px;
+  }
+  to {
+    stroke-dashoffset: calc(var(--len, 400) * -1px);
+  }
+}
+
+.ps-link__port {
+  fill: #ffcf96;
+  filter: drop-shadow(0 0 5px rgba(255, 139, 18, 0.9));
+}
+
+.ps-link__dock {
+  fill: #ffb46a;
+  opacity: 0.85;
+}
+
+.ps-hero.has-focus .ps-link:not(.is-hot) {
+  opacity: 0.25;
+}
+
+.ps-link.is-hot .ps-link__base {
+  stroke: rgba(255, 196, 130, 0.85);
+  stroke-width: 1.6;
+}
+
+.ps-hero.is-live .ps-link.is-hot .ps-link__flow {
+  animation-duration: 1.3s;
+}
+
+.ps-hero.is-still .ps-link__flow {
   display: none;
 }
 
@@ -186,63 +576,138 @@
    Responsive
    -------------------------------------------------------------------------- */
 
-@media (max-width: 900px) {
-  .ps-hero {
-    padding-bottom: 40px;
+/* Small laptops and landscape tablets: a little tighter inside the ring. */
+@media (max-width: 1200px) {
+  .ps-hub__copy {
+    width: 82%;
   }
 
-  .ps-hero__stage {
-    margin-top: 70px;
+  .ps-btn {
+    padding: 12px 18px;
+    font-size: 11px;
   }
 
-  .ps-hero__list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin: 8px 0 0;
-    padding: 0 18px;
-    list-style: none;
-  }
-
-  .ps-hero__list a {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    gap: 6px;
-    padding: 14px 16px;
-    border: 1px solid rgba(255, 150, 80, 0.25);
-    border-radius: 14px;
-    background: linear-gradient(160deg, rgba(255, 110, 30, 0.1), rgba(20, 14, 12, 0.9) 60%);
-    font-family: var(--font-ui);
-    transition: border-color 0.3s ease;
-  }
-
-  .ps-hero__list a:active,
-  .ps-hero__list a:hover {
-    border-color: rgba(255, 170, 90, 0.7);
-  }
-
-  .ps-hero__list span {
-    color: #ff7a1a;
-    font-size: 12px;
-  }
-
-  .ps-hero__list strong {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .ps-hero__list small {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 12px;
-    line-height: 1.35;
+  .ps-node__status {
+    bottom: 10px;
+    left: 12px;
   }
 }
 
-@media (max-width: 480px) {
-  .ps-hero__list {
+/* Narrower screens: the ring on top, the products in a grid beneath it.
+   The links would cross the cards here, so they're left out. */
+@media (max-width: 900px) {
+  .ps-hero {
+    min-height: 0;
+    padding: 112px 28px 56px;
+  }
+
+  .ps-hero__field {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    grid-template-areas:
+      "hub hub"
+      "a b"
+      "c d";
+    gap: 36px 22px;
+  }
+
+  .ps-hero__links {
+    display: none;
+  }
+
+  .ps-hub {
+    width: min(100%, 540px);
+    min-width: 0;
+    margin-bottom: 8px;
+  }
+
+  .ps-node--03,
+  .ps-node--04 {
+    align-self: start;
+  }
+}
+
+/* Phones: the statement no longer fits inside a circle, so the rings sit
+   behind it, larger, and the products shrink to a compact grid. */
+@media (max-width: 760px) {
+  .ps-hero {
+    padding: 104px 18px 44px;
+  }
+
+  .ps-hero__field {
+    gap: 28px 14px;
+  }
+
+  .ps-hub {
+    width: 100%;
+    aspect-ratio: auto;
+    padding: 34px 0 30px;
+  }
+
+  .ps-hub::before {
+    inset: 50% auto auto 50%;
+    width: 128vw;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: radial-gradient(circle, rgba(4, 3, 3, 0.9) 0%, rgba(4, 3, 3, 0.7) 50%, transparent 70%);
+  }
+
+  .ps-hub__rings {
+    inset: 50% auto auto 50%;
+    width: 112vw;
+    height: auto;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    opacity: 0.55;
+  }
+
+  .ps-hub__copy {
+    width: 100%;
+  }
+
+  .ps-hub__title {
+    font-size: clamp(26px, 7.6vw, 34px);
+  }
+
+  .ps-node__link {
+    gap: 12px;
+  }
+
+  .ps-node__screen {
+    border-radius: 10px;
+  }
+
+  .ps-node__screen::after {
+    inset: 6px;
+    opacity: 0.45;
+  }
+
+  .ps-node__status {
+    display: none;
+  }
+
+  .ps-node__meta,
+  .ps-node--02 .ps-node__meta,
+  .ps-node--04 .ps-node__meta {
     grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    text-align: left;
+  }
+
+  .ps-node__meta b,
+  .ps-node--02 .ps-node__meta b,
+  .ps-node--04 .ps-node__meta b {
+    grid-row: auto;
+    grid-column: auto;
+    font-size: 11px;
+  }
+
+  .ps-node__meta strong {
+    font-size: 12px;
+  }
+
+  .ps-node__meta small {
+    font-size: 10.5px;
+    line-height: 1.4;
   }
 }

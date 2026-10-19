@@ -202,9 +202,61 @@ function mandibleGeometry(steps: number, around: number) {
   });
 }
 
+/* Bone and enamel tones, so the solid model reads against the light viewport. */
+const BONE = new THREE.Color("#c4ab82");
+const ENAMEL = new THREE.Color("#f3eee2");
+const CAVITY = new THREE.Color("#5c4a35");
+
+/**
+ * Vertex colours for the jaw: enamel along the crest with darker gaps
+ * between the teeth, a dark line down the fracture, and bone that darkens
+ * underneath and on the inner (tongue) side, like ambient occlusion.
+ */
+function shadeMandible(geometry: THREE.BufferGeometry, steps: number, around: number) {
+  const normal = geometry.getAttribute("normal");
+  const position = geometry.getAttribute("position");
+  const colours = new Float32Array(position.count * 3);
+  const c = new THREE.Color();
+  for (let j = 0; j <= steps; j++) {
+    const t = j / steps;
+    const m = Math.abs(t - 0.5) * 2;
+    for (let i = 0; i <= around; i++) {
+      const k = j * (around + 1) + i;
+      const sa = Math.sin((i / around) * Math.PI * 2);
+      // Teeth: enamel crowns on the crest, with the gaps between them dark.
+      const crest = smoothstep(0.55, 0.95, sa) * (1 - smoothstep(0.5, 0.62, m));
+      const gap = 1 - Math.abs(Math.sin(t * Math.PI * 30)) ** 0.6;
+      c.copy(BONE).lerp(ENAMEL, crest * (1 - gap) * 0.9);
+      c.lerp(CAVITY, crest * smoothstep(0.55, 1, gap) * 0.55);
+      // Occlusion: darker facing down and facing into the arch.
+      const ny = normal.getY(k);
+      const px = position.getX(k);
+      const pz = position.getZ(k) + 0.4;
+      const len = Math.hypot(px, pz) || 1;
+      const inward = Math.max(0, -(normal.getX(k) * px + normal.getZ(k) * pz) / len);
+      c.multiplyScalar((0.62 + 0.38 * smoothstep(-0.8, 0.5, ny)) * (1 - 0.22 * inward));
+      // The fracture line.
+      const groove = Math.max(0, 1 - Math.abs(t - FRACTURE_T) / 0.008);
+      c.lerp(CAVITY, groove * 0.85);
+      colours.set([c.r, c.g, c.b], k * 3);
+    }
+  }
+  geometry.setAttribute("color", new THREE.BufferAttribute(colours, 3));
+}
+
+/** One flat tone for the parts without a section grid (the coronoid blades). */
+function paint(geometry: THREE.BufferGeometry, colour: THREE.Color) {
+  const count = geometry.getAttribute("position").count;
+  const colours = new Float32Array(count * 3);
+  for (let k = 0; k < count; k++) colours.set([colour.r, colour.g, colour.b], k * 3);
+  geometry.setAttribute("color", new THREE.BufferAttribute(colours, 3));
+}
+
 function buildMandible(bone: THREE.Material, metal: THREE.Material, dark: THREE.Material, wireMat: THREE.LineBasicMaterial): Model {
   const group = new THREE.Group();
-  const body = new THREE.Mesh(mandibleGeometry(520, 96), bone);
+  const bodyGeometry = mandibleGeometry(520, 96);
+  shadeMandible(bodyGeometry, 520, 96);
+  const body = new THREE.Mesh(bodyGeometry, bone);
   group.add(body);
 
   // Coronoid processes: a tapered blade rising in front of each condyle.
@@ -220,6 +272,7 @@ function buildMandible(bone: THREE.Material, metal: THREE.Material, dark: THREE.
       const p = curve.getPointAt(v);
       out.set(p.x + Math.cos(a) * 0.16 * taper, p.y, p.z + Math.sin(a) * 0.5 * taper);
     });
+    paint(geo, BONE.clone().multiplyScalar(0.9));
     const blade = new THREE.Mesh(geo, bone);
     group.add(blade);
   }
@@ -265,9 +318,12 @@ function buildMandible(bone: THREE.Material, metal: THREE.Material, dark: THREE.
   const wire = new THREE.LineSegments(new THREE.WireframeGeometry(mandibleGeometry(150, 24)), wireMat);
   group.add(wire);
 
+  // The bite load presses on the molars of the fixed side, just behind the
+  // fracture, its tip resting on the crest (not out on the cheek face).
   const load = arrow();
-  const molar = at(0.66, 1.25);
-  load.position.copy(molar.p).add(new THREE.Vector3(0, 0.25, 0));
+  const molarT = FRACTURE_T - 0.06;
+  const mi = Math.round(molarT * 520);
+  load.position.copy(JAW.getPointAt(molarT)).addScaledVector(f.N[mi], section(molarT).height + 0.3);
   load.scale.setScalar(0.45);
   group.add(load);
 
@@ -315,7 +371,9 @@ export function createFeaViewport(canvas: HTMLCanvasElement) {
 
   const metal = new THREE.MeshPhysicalMaterial({ color: "#c9ced2", metalness: 0.85, roughness: 0.32, clearcoat: 0.2 });
   const dark = new THREE.MeshStandardMaterial({ color: "#3d4348", roughness: 0.6, metalness: 0.4 });
-  const bone = new THREE.MeshPhysicalMaterial({ color: "#d4c6ae", roughness: 0.82, metalness: 0, envMapIntensity: 0.45, sheen: 0.25, sheenColor: new THREE.Color("#fff0da") });
+  // Tone comes from the vertex colours (shadeMandible). No sheen: it lit the
+  // silhouette white, so the jaw melted into the light viewport.
+  const bone = new THREE.MeshPhysicalMaterial({ color: "#ffffff", vertexColors: true, roughness: 0.72, metalness: 0, envMapIntensity: 0.3, clearcoat: 0.08, clearcoatRoughness: 0.6 });
   const wireMat = new THREE.LineBasicMaterial({ color: "#202a30", transparent: true, opacity: 0, depthWrite: false });
 
   // A soft contact shadow under the model.

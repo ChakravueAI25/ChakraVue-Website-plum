@@ -3,7 +3,7 @@ const IMG = "/images/product-suite";
 export type Product = {
   id: string;
   index: string;
-  /** Short name used in the hero callouts. */
+  /** Short name, used on the hero and the product rail. */
   label: string;
   tagline: string;
   title: string;
@@ -12,8 +12,6 @@ export type Product = {
   /** "photo" fills the card; "render" is a smaller cut-out from the hero shot and is shown contained. */
   imageFit: "photo" | "render";
   cta: { label: string; href: string };
-  /** Top-left of the product's label baked into the hero artwork, in 1440×814 frame coordinates. */
-  callout: { x: number; y: number };
   /**
    * What the 3D exploded view labels, in order (the ids match anchors in the
    * models). Drawn from each product's own description; confirm the names
@@ -39,7 +37,6 @@ export const products: Product[] = [
     image: `${IMG}/surgical-briefcase.webp`,
     imageFit: "photo",
     cta: { label: "Enter the system", href: "#" },
-    callout: { x: 52, y: 150 },
     focus: true,
     anatomy: [
       { id: "case", label: "Rugged case" },
@@ -61,7 +58,6 @@ export const products: Product[] = [
     image: `${IMG}/slit-lamp-case.webp`,
     imageFit: "photo",
     cta: { label: "Enter the system", href: "#" },
-    callout: { x: 1172, y: 156 },
     focus: true,
     anatomy: [
       { id: "case", label: "Rugged case" },
@@ -83,7 +79,6 @@ export const products: Product[] = [
     image: `${IMG}/emr-case.webp`,
     imageFit: "photo",
     cta: { label: "Enter the system", href: "#" },
-    callout: { x: 52, y: 522 },
     focus: true,
     anatomy: [
       { id: "case", label: "Rugged case" },
@@ -106,7 +101,6 @@ export const products: Product[] = [
     image: `${IMG}/integration-module.webp`,
     imageFit: "render",
     cta: { label: "Enter the system", href: "#" },
-    callout: { x: 1197, y: 502 },
     anatomy: [
       { id: "enclosure", label: "Enclosure" },
       { id: "port", label: "Port" },

@@ -1,172 +1,310 @@
-import { useRef, type CSSProperties } from "react";
-import { finePointer } from "../../../motion/env";
+import { useLayoutEffect, useRef, type MouseEvent } from "react";
+import { Logo } from "../../../brand/Logo";
+import { BrandText } from "../../../shared/components/BrandText";
+import { Link } from "../../../shared/components/Link";
+import { finePointer, reduceMotion } from "../../../motion/env";
 import { gsap } from "../../../motion/gsap";
+import { scrollToY } from "../../../motion/lenis";
 import { useMotion } from "../../../motion/useMotion";
 import { products } from "../data";
 
-const ART_W = 1440;
-const ART_H = 814;
+/** What each product's screen shows in the hero, and the status on it. */
+const SCREENS: Record<string, { image: string; status: string; alt: string }> = {
+  "surgical-assistant": { image: "surgical-assistant", status: "Live view", alt: "The Surgical Assistant's live view of an eye during surgery" },
+  "slit-lamp-module": { image: "slit-lamp-module", status: "Analysis", alt: "The Slit Lamp Module's view of an eye under examination" },
+  "ai-powered-emr": { image: "ai-powered-emr", status: "Records", alt: "The AI Powered EMR's patient dashboard, with test patients" },
+  "integrated-devices": { image: "integrated-devices", status: "Linked", alt: "The Integrated Devices connectivity module" },
+};
+
+/** Land on a product's chapter in the theater just after it has built up. */
+function openChapter(event: MouseEvent<HTMLAnchorElement>, id: string) {
+  const chapter = document.getElementById(id);
+  if (!chapter) return;
+  event.preventDefault();
+  scrollToY(chapter.getBoundingClientRect().top + window.scrollY + chapter.offsetHeight * 0.06);
+}
 
 /**
- * Points on the artwork, as fractions of the frame (measured off hero.jpeg):
- * `focus` centres the spotlight on a device and its label, `port` is where
- * that device's leader line leaves it, and `ring` is where the line meets
- * the central ChakraVue ring.
+ * The Product Suite hero: ChakraVue AI at the centre, the page's statement
+ * inside its ring, and the four products around it, each showing its own
+ * screen. Links run from every product into the ring, and data travels
+ * along them. Hovering a product lights its link and quiets the others.
+ *
+ * The links are measured off the laid-out cards (drawLinks below), so the
+ * same drawing serves the wide layout (products at the four corners) and
+ * the stacked one (the ring above, the products in a grid under it).
  */
-const GEOMETRY: Record<string, { focus: [number, number]; port: [number, number]; ring: [number, number] }> = {
-  "surgical-assistant": { focus: [0.22, 0.26], port: [0.3375, 0.3], ring: [0.419, 0.4005] },
-  "slit-lamp-module": { focus: [0.76, 0.27], port: [0.636, 0.285], ring: [0.569, 0.394] },
-  "ai-powered-emr": { focus: [0.2, 0.67], port: [0.385, 0.76], ring: [0.4515, 0.634] },
-  "integrated-devices": { focus: [0.79, 0.68], port: [0.598, 0.749], ring: [0.536, 0.634] },
-};
-/** The same frame in the SVG overlay's units (the artwork's own aspect ratio). */
-const VB = { w: 2000, h: 1116 };
-const RING = { x: 990, y: 530, r: 228 };
-
 export function SuiteHero() {
   const ref = useRef<HTMLElement>(null);
 
+  // The links are drawn with or without motion (they simply don't travel
+  // when motion is reduced). A layout effect, so they exist before the
+  // entrance below animates them.
+  useLayoutEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    return drawLinks(root);
+  }, []);
+
   useMotion(ref, (root) => {
-    const stage = root.querySelector<HTMLElement>(".ps-hero__stage");
-    const layer = root.querySelector<HTMLElement>(".ps-hero__layer");
-    const focus = root.querySelector<HTMLElement>(".ps-hero__focus");
-    if (!stage || !layer) return;
+    const field = root.querySelector<HTMLElement>(".ps-hero__field");
+    const nodes = gsap.utils.toArray<HTMLElement>(".ps-node", root);
+    if (!field) return;
 
-    // Opens outward from the ChakraVue ring at the centre of the artwork:
-    // the intelligence at the middle, then the devices it reaches.
+    // The ring opens first, then the products arrive from their corners and
+    // their links draw into the ring; then data starts to flow.
     gsap
-      .timeline({ delay: 0.1 })
-      .fromTo(
-        stage,
-        { clipPath: "circle(0% at 49.5% 47.5%)" },
-        { clipPath: "circle(120% at 49.5% 47.5%)", duration: 2.2, ease: "cv.inOut", clearProps: "clipPath" },
+      .timeline()
+      .from(root.querySelectorAll(".ps-hub__ring"), { scale: 0.9, autoAlpha: 0, duration: 0.9, stagger: 0.06, ease: "cv.out" })
+      .from(root.querySelector(".ps-hub__logo"), { scale: 0.8, autoAlpha: 0, duration: 0.7, ease: "cv.out" }, 0.1)
+      .from(root.querySelector(".ps-hub__actions"), { y: 12, autoAlpha: 0, duration: 0.6, ease: "cv.out" }, 0.4)
+      .from(
+        nodes,
+        {
+          x: (i) => (i % 2 ? 40 : -40),
+          y: (i) => (i < 2 ? -20 : 20),
+          autoAlpha: 0,
+          duration: 0.8,
+          stagger: 0.06,
+          ease: "cv.out",
+          clearProps: "transform,opacity,visibility",
+        },
+        0.15,
       )
-      .from(root.querySelector(".ps-hero__art"), { scale: 1.3, duration: 2.8 }, 0)
-      .from(root.querySelectorAll(".ps-hero__pulse"), { autoAlpha: 0, scale: 0, duration: 0.8, stagger: 0.12, ease: "back.out(2)" }, 1.5)
-      .add(() => stage.classList.add("is-live"), 1.6);
+      .from(root.querySelectorAll(".ps-link__base"), { strokeDashoffset: (_, el: SVGPathElement) => el.getTotalLength(), duration: 0.6, stagger: 0.06, ease: "power2.inOut" }, 0.45)
+      .from(root.querySelectorAll(".ps-link__port"), { scale: 0, autoAlpha: 0, transformOrigin: "50% 50%", duration: 0.4, stagger: 0.06, ease: "back.out(2.4)" }, 0.6)
+      .add(() => root.classList.add("is-live"), 0.9);
 
-    // Drifts away as you scroll into the page.
-    gsap.to(layer, {
-      yPercent: 12,
-      autoAlpha: 0.35,
+    // Scrolling on, the whole diagram settles back and fades.
+    gsap.to(field, {
+      yPercent: 8,
+      autoAlpha: 0.3,
       ease: "none",
       scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
     });
 
     if (!finePointer) return;
 
-    // Mouse: the artwork leans with the pointer, and hovering a product
-    // spotlights it by dimming everything else.
-    const xTo = gsap.quickTo(layer, "x", { duration: 1.2, ease: "power3" });
-    const yTo = gsap.quickTo(layer, "y", { duration: 1.2, ease: "power3" });
+    // The diagram tilts a little toward the pointer, in one piece, so the
+    // links stay attached to the cards.
+    const rx = gsap.quickTo(field, "rotationX", { duration: 1.2, ease: "power3" });
+    const ry = gsap.quickTo(field, "rotationY", { duration: 1.2, ease: "power3" });
+    gsap.set(field, { transformPerspective: 2200 });
     const onMove = (event: PointerEvent) => {
-      const box = stage.getBoundingClientRect();
-      xTo(-((event.clientX - box.left) / box.width - 0.5) * 22);
-      yTo(-((event.clientY - box.top) / box.height - 0.5) * 14);
+      const box = root.getBoundingClientRect();
+      ry(((event.clientX - box.left) / box.width - 0.5) * 4);
+      rx(-((event.clientY - box.top) / box.height - 0.5) * 3);
     };
     const onLeave = () => {
-      xTo(0);
-      yTo(0);
+      rx(0);
+      ry(0);
     };
-    const hotspots = [...root.querySelectorAll<HTMLElement>(".ps-hotspot")];
-    const onEnter = (event: Event) => {
-      const geometry = GEOMETRY[(event.currentTarget as HTMLElement).dataset.product ?? ""];
-      if (!geometry || !focus) return;
-      const [x, y] = geometry.focus;
-      gsap.to(focus, { "--fx": `${x * 100}%`, "--fy": `${y * 100}%`, autoAlpha: 1, duration: 0.7, ease: "power3.out", overwrite: true });
-    };
-    const onExit = () => focus && gsap.to(focus, { autoAlpha: 0, duration: 0.6, overwrite: true });
-
-    stage.addEventListener("pointermove", onMove);
-    stage.addEventListener("pointerleave", onLeave);
-    hotspots.forEach((spot) => {
-      spot.addEventListener("pointerenter", onEnter);
-      spot.addEventListener("pointerleave", onExit);
-    });
+    root.addEventListener("pointermove", onMove);
+    root.addEventListener("pointerleave", onLeave);
     return () => {
-      stage.removeEventListener("pointermove", onMove);
-      stage.removeEventListener("pointerleave", onLeave);
-      hotspots.forEach((spot) => {
-        spot.removeEventListener("pointerenter", onEnter);
-        spot.removeEventListener("pointerleave", onExit);
-      });
+      root.removeEventListener("pointermove", onMove);
+      root.removeEventListener("pointerleave", onLeave);
     };
   });
 
   return (
-    <section ref={ref} className="ps-hero" aria-label="ChakraVue AI product suite overview">
-      <div className="ps-hero__stage">
-        <div className="ps-hero__layer">
-          {/* The artwork already carries the product labels, leader lines and
-              centre ring. The overlay only adds light moving along them: data
-              travelling from each device into ChakraVue, and a slow orbit
-              around the ring. */}
-          <img
-            className="ps-hero__art"
-            src="/images/product-suite/hero.jpeg"
-            alt="ChakraVue AI at the centre of a surgical microscope, slit lamp, EMR workstation and diagnostic devices"
-            fetchPriority="high"
-          />
+    <section ref={ref} className="ps-hero" aria-labelledby="ps-hero-title">
+      <div className="ps-hero__floor" aria-hidden="true" />
+      <div className="ps-hero__field">
+        <svg className="ps-hero__links" aria-hidden="true" />
 
-          <svg className="ps-hero__flow" viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <circle className="ps-hero__orbit" cx={RING.x} cy={RING.y} r={RING.r} />
-            <circle className="ps-hero__packet ps-hero__packet--orbit" r="4">
-              <animateMotion
-                dur="7s"
-                repeatCount="indefinite"
-                path={`M ${RING.x - RING.r},${RING.y} a ${RING.r},${RING.r} 0 1,1 ${RING.r * 2},0 a ${RING.r},${RING.r} 0 1,1 ${-RING.r * 2},0`}
-              />
-            </circle>
-            {products.map((product, i) => {
-              const { port, ring } = GEOMETRY[product.id];
-              const path = `M ${port[0] * VB.w},${port[1] * VB.h} L ${ring[0] * VB.w},${ring[1] * VB.h}`;
-              return (
-                <circle key={product.id} className="ps-hero__packet" r="5">
-                  <animateMotion dur="2.4s" begin={`${-i * 0.6}s`} repeatCount="indefinite" path={path} />
-                  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="2.4s" begin={`${-i * 0.6}s`} repeatCount="indefinite" />
-                </circle>
-              );
-            })}
+        <div className="ps-hub">
+          <svg className="ps-hub__rings" viewBox="-100 -100 200 200" aria-hidden="true">
+            <circle className="ps-hub__ring ps-hub__ring--glow" r="96" />
+            <circle className="ps-hub__ring ps-hub__ring--ticks" r="91" />
+            <circle className="ps-hub__ring ps-hub__ring--orbit" r="99" />
           </svg>
-
-          {products.map((product) => {
-            const [x, y] = GEOMETRY[product.id].port;
-            return <span key={product.id} className="ps-hero__pulse" style={{ left: `${x * 100}%`, top: `${y * 100}%` }} aria-hidden="true" />;
-          })}
-
-          <div className="ps-hero__focus" style={{ "--fx": "50%", "--fy": "50%" } as CSSProperties} aria-hidden="true" />
-
-          {products.map((product) => (
-            <a
-              key={product.id}
-              href={`#${product.id}`}
-              className="ps-hotspot"
-              data-product={product.id}
-              data-cursor="View"
-              style={{
-                left: `${(product.callout.x / ART_W) * 100}%`,
-                top: `${(product.callout.y / ART_H) * 100}%`,
-              }}
-            >
-              <span className="sr-only">
-                {product.label}: {product.tagline}
-              </span>
-            </a>
-          ))}
+          <div className="ps-hub__copy">
+            <Logo className="ps-hub__logo" />
+            <p className="section-label ps-hub__eyebrow" data-scramble>
+              Product Suite
+            </p>
+            <h1 id="ps-hero-title" className="ps-hub__title" data-split>
+              We Add <em>Intelligence</em> to Your Devices.
+            </h1>
+            <p className="ps-hub__lede" data-split="fade" data-delay="0.15">
+              Four clinical systems, one <BrandText text="ChakraVue AI" /> intelligence connecting them.
+            </p>
+            <div className="ps-hub__actions">
+              <a className="ps-btn ps-btn--primary" href="#surgical-assistant" onClick={(event) => openChapter(event, "surgical-assistant")} data-magnetic="0.2">
+                Explore the suite <span aria-hidden="true">↓</span>
+              </a>
+              <Link className="ps-btn ps-btn--ghost" href="/contact-us">
+                Talk to us
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <ul className="ps-hero__list">
-        {products.map((product) => (
-          <li key={product.id} data-reveal>
-            <a href={`#${product.id}`}>
-              <span>-{product.index}</span>
-              <strong>{product.label}</strong>
-              <small>{product.tagline}</small>
-            </a>
-          </li>
-        ))}
-      </ul>
+        <ul className="ps-hero__nodes" role="list">
+          {products.map((product) => {
+            const screen = SCREENS[product.id];
+            return (
+              <li key={product.id} className={`ps-node ps-node--${product.index}`}>
+                <a className="ps-node__link" href={`#${product.id}`} data-product={product.id} data-cursor="View" onClick={(event) => openChapter(event, product.id)}>
+                  <span className="ps-node__screen">
+                    <img src={`/images/product-suite/hero/${screen.image}.webp`} alt={screen.alt} width="720" height="450" fetchPriority="high" />
+                    <span className="ps-node__scan" aria-hidden="true" />
+                    <span className="ps-node__status" aria-hidden="true">
+                      {screen.status}
+                    </span>
+                  </span>
+                  <span className="ps-node__meta">
+                    <b>{product.index}</b>
+                    <strong>{product.label}</strong>
+                    <small>{product.tagline}</small>
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </section>
   );
+}
+
+const SVG = "http://www.w3.org/2000/svg";
+
+/**
+ * Draws a link from each product's screen into the ring: it leaves the
+ * screen's edge facing the ring and arrives on the ring travelling inward.
+ * Positions come from layout offsets (not screen boxes), so the pointer
+ * tilt and scroll drift never pull them out of register. Redrawn on resize.
+ */
+function drawLinks(root: HTMLElement) {
+  const svg = root.querySelector<SVGSVGElement>(".ps-hero__links");
+  const field = root.querySelector<HTMLElement>(".ps-hero__field");
+  const hub = root.querySelector<HTMLElement>(".ps-hub");
+  const links = [...root.querySelectorAll<HTMLAnchorElement>(".ps-node__link")];
+  if (!svg || !field || !hub) return () => undefined;
+
+  /** Offset of an element within the field, walking up its offset parents. */
+  const within = (el: HTMLElement) => {
+    let x = 0;
+    let y = 0;
+    let node: HTMLElement | null = el;
+    while (node && node !== field) {
+      x += node.offsetLeft;
+      y += node.offsetTop;
+      node = node.offsetParent as HTMLElement | null;
+    }
+    return { x, y };
+  };
+
+  const groups = links.map((link) => {
+    const g = document.createElementNS(SVG, "g");
+    g.setAttribute("class", "ps-link");
+    g.dataset.product = link.dataset.product;
+    const base = document.createElementNS(SVG, "path");
+    base.setAttribute("class", "ps-link__base");
+    const flow = document.createElementNS(SVG, "path");
+    flow.setAttribute("class", "ps-link__flow");
+    const port = document.createElementNS(SVG, "circle");
+    port.setAttribute("class", "ps-link__port");
+    port.setAttribute("r", "3.5");
+    const dock = document.createElementNS(SVG, "circle");
+    dock.setAttribute("class", "ps-link__dock");
+    dock.setAttribute("r", "3");
+    g.append(base, flow, port, dock);
+    svg.append(g);
+    return { link, g, base, flow, port, dock };
+  });
+
+  const draw = () => {
+    const w = field.offsetWidth;
+    const h = field.offsetHeight;
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    // The rings fill the hub (SVG has no layout offsets of its own).
+    const hubAt = within(hub);
+    const r = (hub.offsetWidth / 2) * 0.96;
+    const cx = hubAt.x + hub.offsetWidth / 2;
+    const cy = hubAt.y + hub.offsetHeight / 2;
+
+    groups.forEach(({ link, base, flow, port, dock }, i) => {
+      const screen = link.querySelector<HTMLElement>(".ps-node__screen");
+      if (!screen) return;
+      const at = within(screen);
+      const sw = screen.offsetWidth;
+      const sh = screen.offsetHeight;
+      // Leave from the side of the screen that faces the ring: its inner
+      // edge when beside the ring, its top edge when below it.
+      const below = at.y > cy + r * 0.6;
+      let ax: number;
+      let ay: number;
+      let ox: number;
+      let oy: number;
+      if (below) {
+        ax = at.x + sw / 2;
+        ay = at.y;
+        ox = 0;
+        oy = -1;
+      } else {
+        const left = at.x + sw / 2 < cx;
+        ax = left ? at.x + sw : at.x;
+        ay = at.y + sh * 0.5;
+        ox = left ? 1 : -1;
+        oy = 0;
+      }
+      const dx = ax - cx;
+      const dy = ay - cy;
+      const d = Math.hypot(dx, dy) || 1;
+      const ex = cx + (dx / d) * r;
+      const ey = cy + (dy / d) * r;
+      const reach = Math.max(40, Math.hypot(ex - ax, ey - ay) * 0.45);
+      const path = `M ${ax.toFixed(1)} ${ay.toFixed(1)} C ${(ax + ox * reach).toFixed(1)} ${(ay + oy * reach).toFixed(1)} ${(ex + (dx / d) * reach * 0.7).toFixed(1)} ${(ey + (dy / d) * reach * 0.7).toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+      base.setAttribute("d", path);
+      flow.setAttribute("d", path);
+      const length = base.getTotalLength();
+      base.style.strokeDasharray = `${length}`;
+      flow.style.setProperty("--len", `${length}`);
+      flow.style.animationDelay = `${-i * 0.7}s`;
+      port.setAttribute("cx", ax.toFixed(1));
+      port.setAttribute("cy", ay.toFixed(1));
+      dock.setAttribute("cx", ex.toFixed(1));
+      dock.setAttribute("cy", ey.toFixed(1));
+    });
+  };
+
+  // Hovering (or focusing) a product lights its own link.
+  const light = (id: string | null) => {
+    root.classList.toggle("has-focus", !!id);
+    groups.forEach(({ link, g }) => {
+      const on = link.dataset.product === id;
+      g.classList.toggle("is-hot", on);
+      link.parentElement?.classList.toggle("is-hot", on);
+    });
+  };
+  const handlers = groups.map(({ link }) => {
+    const on = () => light(link.dataset.product ?? null);
+    const off = () => light(null);
+    link.addEventListener("pointerenter", on);
+    link.addEventListener("pointerleave", off);
+    link.addEventListener("focus", on);
+    link.addEventListener("blur", off);
+    return { link, on, off };
+  });
+
+  draw();
+  const resizer = new ResizeObserver(draw);
+  resizer.observe(field);
+  // Images and the web font change the cards' size once they load.
+  document.fonts?.ready.then(draw).catch(() => undefined);
+  if (reduceMotion) root.classList.add("is-live", "is-still");
+
+  return () => {
+    resizer.disconnect();
+    handlers.forEach(({ link, on, off }) => {
+      link.removeEventListener("pointerenter", on);
+      link.removeEventListener("pointerleave", off);
+      link.removeEventListener("focus", on);
+      link.removeEventListener("blur", off);
+    });
+    groups.forEach(({ g }) => g.remove());
+  };
 }

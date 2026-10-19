@@ -81,9 +81,17 @@ sections animate in as they arrive. In order:
 - **Blog.** The three latest posts, linking to the blog.
 
 **Product Suite**
-- The hero opens outward from the ChakraVue ring, with data pulses travelling
-  along each device's leader line into the ring.
-- Hovering a product spotlights it.
+- **Hero** (`SuiteHero.tsx`): ChakraVue AI at the centre, with the page's
+  statement "We Add Intelligence to Your Devices." inside its ring, and the
+  four products at the corners, each showing its own screen
+  (`public/images/product-suite/hero/`: the surgical live view, the slit-lamp
+  eye, the anonymised EMR dashboard, and a render of the module). Links run
+  from every screen into the ring and data travels along them; they are
+  measured off the laid-out cards, so they follow any screen size. The ring
+  opens, the products arrive from their corners and their links draw in.
+  Hovering a product lights its link and quiets the rest; the diagram tilts
+  slightly with the pointer. Below 900px the ring sits above a 2×2 grid of
+  products, without links.
 - "Intelligence, Engineered for the Operating Room." follows the hero as a
   compact band that lights as it passes (not pinned).
 - **3D product theater** (replaces the four podium sections). A studio stage
@@ -106,7 +114,10 @@ sections animate in as they arrive. In order:
     collar grooves, taper, apex), and the mandible is a bone section swept
     along the jaw with a four-screw box plate across the fracture. They sit in
     a neutral solver viewport with no contour plot. Drag to turn; switch
-    Solid/Mesh and axial/oblique load. The SVG drawings are the fallback.
+    Solid/Mesh and axial/oblique load. The jaw is vertex-shaded (bone,
+    enamel crowns with dark gaps, the fracture line, occlusion underneath)
+    so it reads against the light viewport, and the bite load sits on the
+    molars of the fixed side, beside the plate. The SVG drawings are the fallback.
   - *Tobacco cessation:* a phone-style chat plays out, with voice answers,
     transcripts and meaning matching.
 - **Case studies, "Why work with us" and a contact call to action.** The

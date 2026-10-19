@@ -85,9 +85,16 @@ when you change one.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**
-  - Hero, then a compact (unpinned) lead statement "Intelligence,
+  - Hero (rebuilt 2026-10-19, `SuiteHero.tsx`): the same structure as the
+    old artwork (ChakraVue at the centre, four products around it, linked
+    in) but built live: "We Add Intelligence to Your Devices." inside the
+    ring, each product card showing its own screen, data travelling along
+    the links. Then a compact (unpinned) lead statement "Intelligence,
     Engineered for the Operating Room.", then the 3D product theater
     (`motion/webgl/theater/`, generic part labels).
+  - Product stills must never show ratings: the Integrated Devices photo
+    used to show the battery's rating and was re-rendered from the 3D
+    model (2026-10-19).
   - Surgical Assistant, Slit Lamp Module and AI Powered EMR (rebuilt
     2026-10-02/05 from the owner's references) are the same open rugged
     field case (`models/briefcase.ts`) with an unbranded
