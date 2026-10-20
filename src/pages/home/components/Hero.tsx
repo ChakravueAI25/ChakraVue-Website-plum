@@ -15,7 +15,8 @@ type HeroProps = {
 
 /**
  * The original sunset hero, working as a company homepage hero: the
- * headline, one line on what ChakraVue does, the two next steps, and a
+ * headline ("Analogue to AI."), one line on what that means for a patient,
+ * the two ways to experience it (online or in person), and a
  * direct way into each product along the horizon.
  */
 export function Hero({ onIntroDone }: HeroProps) {
@@ -112,18 +113,19 @@ export function Hero({ onIntroDone }: HeroProps) {
       <div className="section__inner hero__content">
         <div className="hero__copy">
           <h1>
-            Add <em>Intelligence</em> To Your Practice
+            Analogue to <em>AI</em>.
           </h1>
           <p className="hero__lead">
-            ChakraVue AI develops intelligent software, device integrations and clinical systems for ophthalmic healthcare.
+            We give the tools doctors already trust a new lease of life — so your eye surgeon sees more, misses less, and your records never get
+            lost.
           </p>
           <div className="hero__actions">
-            <Link href="/product-suite" className="hero__btn hero__btn--primary" data-magnetic="0.2">
-              Explore products
+            <Link href="/experience" className="hero__btn hero__btn--primary" data-magnetic="0.2">
+              Experience it online
               <span aria-hidden="true">→</span>
             </Link>
-            <Link href="/contact-us" className="hero__btn hero__btn--ghost">
-              Contact us
+            <Link href="/experience#visit" className="hero__btn hero__btn--ghost">
+              Book a visit
             </Link>
           </div>
         </div>

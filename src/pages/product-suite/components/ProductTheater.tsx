@@ -212,7 +212,7 @@ export function ProductTheater() {
                 {product.title}
               </h3>
               <p className="theater__desc" data-split="fade" data-delay="0.12" data-start="top 85%">
-                {product.description}
+                {product.detail}
               </p>
               <ol className="theater__parts" aria-label={`Inside the ${product.title}`}>
                 {product.anatomy.map((part, k) => (

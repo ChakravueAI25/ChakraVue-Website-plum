@@ -37,9 +37,9 @@ export function CoreIdea() {
           The Core Idea
         </p>
         <h2 data-split>
-          We don&apos;t replace the device
+          We don&apos;t replace your doctor&apos;s equipment.
           <br />
-          We extend what it can do.
+          We give it a new lease of life.
         </h2>
         <p data-split="fade" data-delay="0.2">
           {clinicalCopy}

@@ -5,7 +5,7 @@ import { gsap, ScrollTrigger } from "../../motion/gsap";
 import { lockScroll } from "../../motion/lenis";
 import { RollText } from "../../motion/RollText";
 import { contactDetails } from "../../pages/contact/data";
-import { navItems } from "../data/content";
+import { experienceCta, navItems } from "../data/content";
 import { Link } from "./Link";
 import { Logo } from "../../brand/Logo";
 
@@ -14,8 +14,7 @@ type HeaderProps = {
   visible?: boolean;
 };
 
-/** The phone menu names the last item for what it is, as the footer does. */
-const menuItems = navItems.map((item) => ({ ...item, label: item.label === "More" ? "Privacy Policy" : item.label }));
+const menuItems = navItems;
 const menuContacts = contactDetails.filter((detail) => detail.href && detail.label !== "LinkedIn");
 
 export function Header({ visible = true }: HeaderProps) {
@@ -115,7 +114,12 @@ export function Header({ visible = true }: HeaderProps) {
             <Logo className="header__logo" />
             ChakraVue AI
           </Link>
-          <div className="header__nav-group header__nav-group--end">{navItems.slice(3).map(renderItem)}</div>
+          <div className="header__nav-group header__nav-group--end">
+            {navItems.slice(3).map(renderItem)}
+            <Link href={experienceCta.href} className="header__cta" data-magnetic="0.2">
+              {experienceCta.label}
+            </Link>
+          </div>
           <button
             ref={toggleRef}
             type="button"
@@ -156,7 +160,16 @@ export function Header({ visible = true }: HeaderProps) {
             );
           })}
         </nav>
-        <div className="menu__foot" style={{ "--i": menuItems.length } as CSSProperties}>
+        <Link
+          href={experienceCta.href}
+          className="menu__cta"
+          style={{ "--i": menuItems.length } as CSSProperties}
+          onClick={() => setOpen(false)}
+        >
+          {experienceCta.label}
+          <span aria-hidden="true">→</span>
+        </Link>
+        <div className="menu__foot" style={{ "--i": menuItems.length + 1 } as CSSProperties}>
           {menuContacts.map(({ label, value, href }) => (
             <a key={label} href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}>
               <small>{label}</small>

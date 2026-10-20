@@ -7,7 +7,10 @@ export type Product = {
   label: string;
   tagline: string;
   title: string;
+  /** Plain words a patient can picture (home page). */
   description: string;
+  /** The technical description, kept for doctors on the Product Suite page. */
+  detail: string;
   image: string;
   /** "photo" fills the card; "render" is a smaller cut-out from the hero shot and is shown contained. */
   imageFit: "photo" | "render";
@@ -33,6 +36,8 @@ export const products: Product[] = [
     tagline: "Intraoperative visual intelligence",
     title: "Surgical Assistant",
     description:
+      "During eye surgery it records the same view the surgeon sees, and afterwards helps the surgeon review and learn from every case. Live guidance, like a second pair of trained eyes, is coming after regulatory approval.",
+    detail:
       "A surgical assistance system that augments the surgeon’s field of view with real-time visual overlays, guidance, and procedural information while capturing structured data for surgical analysis.",
     image: `${IMG}/surgical-briefcase.webp`,
     imageFit: "photo",
@@ -54,6 +59,8 @@ export const products: Product[] = [
     tagline: "Intelligent ophthalmic examination",
     title: "Slit Lamp Module",
     description:
+      "It fits the examination lamp every eye clinic already has, and remembers every detail of your eye so the next visit can be compared with the last.",
+    detail:
       "An intelligence module for the slit lamp that captures every examination in high fidelity, highlights clinically relevant findings in real time, and files structured records straight into the patient history.",
     image: `${IMG}/slit-lamp-case.webp`,
     imageFit: "photo",
@@ -75,6 +82,8 @@ export const products: Product[] = [
     tagline: "Clinical data and workflow intelligence",
     title: "AI Powered EMR",
     description:
+      "One file for a patient — photos, readings and the doctor’s notes together — free for small clinics and optical stores.",
+    detail:
       "An electronic medical record built around ophthalmic workflows that brings imaging, device output and clinical notes into one timeline, surfacing the insight each consultation needs.",
     image: `${IMG}/emr-case.webp`,
     imageFit: "photo",
@@ -97,6 +106,8 @@ export const products: Product[] = [
     tagline: "Legacy equipment, connected",
     title: "Integrated Devices",
     description:
+      "A small box that plugs into the machines a clinic already owns and sends their printouts straight into the patient’s file. Nothing is thrown away.",
+    detail:
       "A connectivity module for the equipment you already own. It captures data from existing devices over a wired or wireless link and routes it into your EMR or EHR in real time, with no replacement hardware and no manual transcription.",
     image: `${IMG}/integration-module.webp`,
     imageFit: "render",

@@ -178,6 +178,55 @@ button {
   transform: translateX(-50%) scaleX(1);
 }
 
+/* "Experience it": a compact pill at the end of the right-hand group. The
+   group gets a fourth, content-sized slot, so both groups stay equal and
+   the brand stays exactly mid-page. */
+.header__nav-group--end {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+}
+
+.header__nav a.header__cta {
+  margin-left: clamp(4px, 0.8vw, 12px);
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 180, 106, 0.6);
+  border-radius: 999px;
+  background: rgba(255, 139, 18, 0.1);
+  color: #ffd29a;
+  font-size: 0.86em;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.header__nav a.header__cta::after {
+  display: none;
+}
+
+/* Small laptops: equal slots get too narrow for "Contact Us" beside the
+   pill, so the right-hand links size to their text and share the space. */
+@media (max-width: 1200px) {
+  .header__nav-group--end {
+    grid-template-columns: repeat(3, auto) auto;
+    justify-content: space-evenly;
+    column-gap: 14px;
+  }
+
+  .header__brand {
+    font-size: 20px;
+  }
+
+  .header__nav a.header__cta {
+    margin-left: 0;
+    padding: 8px 12px;
+    font-size: 0.8em;
+  }
+}
+
+.header__nav a.header__cta:hover,
+.header__nav a.header__cta:focus-visible {
+  border-color: #ffb46a;
+  background: var(--amber);
+  color: #140b04;
+}
+
 /* --- Phone menu (Header.tsx) ----------------------------------------------
    Up to 960px the six links no longer fit beside the brand, so the bar
    holds the brand and a menu button, and the button opens every page in a
@@ -362,9 +411,41 @@ button {
     outline-offset: -1px;
   }
 
+  .menu__cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 28px;
+    padding: 18px 22px;
+    border-radius: 999px;
+    background: #ff8b12;
+    color: #140b04;
+    font-family: var(--font-display);
+    font-size: 15px;
+    text-transform: uppercase;
+    opacity: 0;
+    translate: 0 18px;
+    transition:
+      opacity 0.5s ease,
+      translate 0.6s var(--ease-out);
+  }
+
+  .menu.is-open .menu__cta {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(0.08s + var(--i) * 0.05s);
+  }
+
+  .menu__cta:focus-visible {
+    outline: 1px dashed rgba(255, 180, 106, 0.8);
+    outline-offset: 3px;
+  }
+
   .menu__foot {
     display: grid;
     gap: 16px;
+    /* Takes the free space, so the call to action stays under the links. */
+    margin-top: auto;
     padding-top: 32px;
   }
 

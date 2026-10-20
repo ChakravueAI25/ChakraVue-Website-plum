@@ -62,6 +62,18 @@ when you change one.
   softened (`hot` 1.02, bloom 0.24 once lit). The owner asked twice for
   less brightness, so don't brighten it.
   `sessionStorage.cv-intro-seen = "1"` skips it.
+- **"Analogue to AI" (Milestone 1, 2026-10-20):** the site now speaks to lay
+  people. Home hero reads "Analogue to AI." with "Experience it online" and
+  "Book a visit"; lay copy is in data files (`product-suite/data.ts`
+  `description` is lay, `detail` keeps the technical text for the Product
+  Suite page). New `/experience` page (sign-up + book a visit, both falling
+  back to a Gmail draft until `VITE_EXPERIENCE_API` exists; never a fake
+  "done"). Nav: Product Suite, Experience, Services | About Us, Blog,
+  Contact Us + "Experience it" pill; "More" dropped, Privacy is in the
+  footer. Every public sentence is in `COPY.md` for approval. The Surgical
+  Assistant must never be described as guiding surgery today: "helps the
+  surgeon review and learn"; live guidance "coming after regulatory
+  approval".
 - **Home**, in order:
   - Hero (`pages/home/components/Hero.tsx`):
     - Sunset gradient plus the WebGL particle landscape
@@ -158,7 +170,8 @@ when you change one.
     the right (the address from the Contact page data).
   - A large faint logo centred behind them, then the "ChakraVue AI"
     wordmark, which is solid so the logo never shows through it.
-  - No call-to-action block.
+  - No call-to-action block; the only call to action is one line under
+    Reach us, "Visit the Experience Centre" → /experience#visit.
 - **Phone menu** (`Header.tsx`, `.menu` in `global.css`): up to 960px the
   six links don't fit, so the bar is the brand plus a menu button that opens
   a full-screen menu. Before 2026-10-19 phones only showed two links.

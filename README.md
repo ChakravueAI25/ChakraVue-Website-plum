@@ -42,14 +42,19 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
 - **Text.** Headlines rise line by line out of masks, labels decode from random
   glyphs, and paragraphs drift in. Blocks enter in staggered groups.
 - **Header.** Hides as you read down, returns when you scroll up (or reach for
-  the top). Nav labels roll letter by letter on hover. Up to 960px wide the
+  the top). Nav labels roll letter by letter on hover. Six links: Product
+  Suite, Experience, Services | brand | About Us, Blog, Contact Us, then a
+  compact "Experience it" pill (`experienceCta` in `shared/data/content.ts`).
+  Privacy Policy lives in the footer only. Up to 960px wide the
   bar holds the brand and a menu button, which opens every page in a
-  full-screen menu (numbered links, then phone and email). Escape, a link or
+  full-screen menu (numbered links, the "Experience it" button, then phone
+  and email). Escape, a link or
   the button closes it; the page behind stays still while it's open.
 - **Logo marquee.** Speeds up and leans with scroll velocity, follows scroll
   direction, and slows under the pointer.
 - **Footer (new).** The same on every page, kept short: Explore on the left
-  (two short columns), Reach us in the middle and Office on the right, over
+  (two short columns), Reach us in the middle (ending with the one call to
+  action, "Visit the Experience Centre" → /experience#visit) and Office on the right, over
   the large faint mark centred behind them, then the wordmark, which rises
   letter by letter.
 - **Film grain.** A faint moving grain over the glows (desktop only).
@@ -64,8 +69,10 @@ sections animate in as they arrive. In order:
   supplied and never turned, is centred behind the copy, as large as fits
   between the nav and the horizon: cream glyphs deepening to amber toward the
   horizon, softer behind the words (which carry a soft shadow), with a glint
-  of light travelling round the ring. Headline, one-line summary, "Explore products"
-  and "Contact us", and shortcuts to the four products on the lit ground.
+  of light travelling round the ring. Headline "Analogue to AI.", a one-line
+  summary in plain words, "Experience it online" (→ /experience) and "Book a
+  visit" (→ /experience#visit), and shortcuts to the four products on the lit
+  ground.
 - **Featured in** marquee (homepage only).
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
@@ -107,6 +114,31 @@ sections animate in as they arrive. In order:
   Each chapter's copy fades as it hands over, so it never slides across the
   label or the product. With reduced motion or no WebGL it becomes a plain list
   with the photographs.
+
+**Experience (new).** `/experience`, `src/pages/experience/` (all copy in
+`data.ts`). Every visitor gets two ways to experience ChakraVue AI.
+Conventional and unpinned.
+- **Hero** "See it for yourself." with two cards: Online (→ `#signin`) and In
+  person (→ `#visit`).
+- **Sign in / sign up** (`#signin`, `SignInForm.tsx`): name, one "email or
+  phone" field (either is accepted), role, and an optional referral code
+  pre-filled from `?ref=` (QR codes on VR viewers and event material). Beside
+  it, the four products the ID opens.
+- **Book a visit** (`#visit`, `VisitForm.tsx`): name, date (today onwards),
+  morning or afternoon, number of visitors, role, what to see (the four
+  products or Everything), phone. Beside it the Experience Centre's address
+  and opening hours (a placeholder, tagged "To confirm"), then the map
+  (`ContactMap` with a label and src).
+- **Submitting** (`shared/submit.ts`): both forms POST JSON to
+  `VITE_EXPERIENCE_API + /signup` or `/visit`. With no API set, or if it
+  fails, they open a pre-filled Gmail draft as the Contact form does, and say
+  so plainly ("Nothing is sent until you do"), with a link in case the
+  browser blocked the tab. The "your ChakraVue ID is on its way" message only
+  appears when the backend actually accepted the request.
+- **Closing band** "Analogue to AI." with three before → after pairs; each
+  old thing dims as its new form lights.
+- A fresh page load on `/experience#visit` scrolls to the form once the
+  curtain opens (in-site links are handled by the router).
 
 **Services (new, replaces "What We Do" in the nav).** `/services`,
 `src/pages/services/`.
@@ -351,6 +383,14 @@ original mix back:
 so the browser mustn't fake them.
 
 ## Copy to confirm
+
+**Copy register.** `COPY.md` at the repo root lists every public sentence
+added or changed for the "Analogue to AI" milestone, with its file, for
+line-by-line approval. Lay copy lives in data files (`shared/data/content.ts`,
+`product-suite/data.ts` `description`, `experience/data.ts`); the Product Suite
+page keeps the technical wording for doctors (`detail`). The Surgical
+Assistant's lay copy says it helps the surgeon review and learn; live
+guidance is "coming after regulatory approval".
 
 Services and platforms: all text is condensed from the briefs supplied
 (FEA, osteotomy and integrated-devices PDFs and the contribution report).

@@ -4,7 +4,13 @@ import { useMotion } from "../../../motion/useMotion";
 import { mapEmbedSrc, mapLabel } from "../data";
 import { BrandText } from "../../../shared/components/BrandText";
 
-export function ContactMap() {
+type ContactMapProps = {
+  /** Defaults to the office. */
+  label?: string;
+  src?: string;
+};
+
+export function ContactMap({ label = mapLabel, src = mapEmbedSrc }: ContactMapProps = {}) {
   const ref = useRef<HTMLDivElement>(null);
 
   // The map unrolls from the top edge down as it scrolls into view.
@@ -27,13 +33,13 @@ export function ContactMap() {
       <div className="contact-map__header">
         <span className="contact-map__pin" aria-hidden="true" />
         <p className="contact-map__label">
-          <BrandText text={mapLabel} />
+          <BrandText text={label} />
         </p>
       </div>
       <iframe
         className="contact-map__frame"
-        src={mapEmbedSrc}
-        title={`${mapLabel} — office location`}
+        src={src}
+        title={`${label} — location`}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />

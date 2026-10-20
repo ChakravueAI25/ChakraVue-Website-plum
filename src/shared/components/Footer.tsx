@@ -10,7 +10,7 @@ import "./footer.css";
 import { Logo } from "../../brand/Logo";
 
 const WORDMARK = "ChakraVue AI";
-const exploreLinks = navItems.map((item) => ({ ...item, label: item.label === "More" ? "Privacy Policy" : item.label }));
+const exploreLinks = navItems;
 const reachLinks = contactDetails.filter((detail) => detail.href);
 
 /**
@@ -83,6 +83,9 @@ export function Footer() {
                 </a>
               );
             })}
+            <Link href="/experience#visit" className="footer__visit">
+              Visit the Experience Centre <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
         <div className="footer__col footer__col--office">
