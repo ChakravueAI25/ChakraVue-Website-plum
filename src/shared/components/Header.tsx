@@ -15,6 +15,8 @@ type HeaderProps = {
 };
 
 const menuItems = navItems;
+/** Links left of the brand; the rest (and "Experience it") sit right of it. */
+const START_LINKS = 4;
 const menuContacts = contactDetails.filter((detail) => detail.href && detail.label !== "LinkedIn");
 
 export function Header({ visible = true }: HeaderProps) {
@@ -79,8 +81,8 @@ export function Header({ visible = true }: HeaderProps) {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
-    // The menu is phone-only: widening the window past it closes it.
-    const wide = window.matchMedia("(min-width: 961px)");
+    // The menu is for phones and tablets: widening the window past it closes it.
+    const wide = window.matchMedia("(min-width: 1181px)");
     const onWide = () => wide.matches && setOpen(false);
     window.addEventListener("keydown", onKey);
     wide.addEventListener("change", onWide);
@@ -109,13 +111,13 @@ export function Header({ visible = true }: HeaderProps) {
     <>
       <header ref={ref} className={`header${visible ? "" : " header--hidden"}${scrolled ? " header--scrolled" : ""}${open ? " header--menu" : ""}`}>
         <nav className="header__nav" aria-label="Primary navigation">
-          <div className="header__nav-group header__nav-group--start">{navItems.slice(0, 3).map(renderItem)}</div>
+          <div className="header__nav-group header__nav-group--start">{navItems.slice(0, START_LINKS).map(renderItem)}</div>
           <Link href="/" className="header__brand" aria-label="ChakraVue AI home" data-magnetic="0.18">
             <Logo className="header__logo" />
             ChakraVue AI
           </Link>
           <div className="header__nav-group header__nav-group--end">
-            {navItems.slice(3).map(renderItem)}
+            {navItems.slice(START_LINKS).map(renderItem)}
             <Link href={experienceCta.href} className="header__cta" data-magnetic="0.2">
               {experienceCta.label}
             </Link>

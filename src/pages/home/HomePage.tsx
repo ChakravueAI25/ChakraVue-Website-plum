@@ -2,20 +2,21 @@ import { useEffect, useState } from "react";
 import { reduceMotion } from "../../motion/env";
 import { usePageMotion } from "../../motion/useMotion";
 import { Header } from "../../shared/components/Header";
+import { JoinChakraVue } from "../../shared/components/JoinChakraVue";
 import { BrandStrip } from "./components/BrandStrip";
 import { CoreIdea } from "./components/CoreIdea";
 import { Hero } from "./components/Hero";
+import { HospitalDay } from "./components/HospitalDay";
 import { InsightBand } from "./components/InsightBand";
 import { LatestPosts } from "./components/LatestPosts";
 import { ProductShowcase } from "./components/ProductShowcase";
 import { TeamTeaser } from "./components/TeamTeaser";
-import { ValueCards } from "./components/ValueCards";
 import "./home.css";
 
 /**
  * The homepage, structured as a company site: what we do (hero), who has
- * featured us, what we believe, the products, the idea, how it works, the
- * team, and the latest writing, then the contact footer.
+ * featured us, what we believe, the products, Join ChakraVue AI, the idea,
+ * a day in the hospital, the team, and the latest writing, then the footer.
  */
 export function HomePage() {
   // As before, the nav only appears once the headline has landed.
@@ -36,8 +37,9 @@ export function HomePage() {
       <BrandStrip />
       <InsightBand />
       <ProductShowcase />
+      <JoinChakraVue variant="band" />
       <CoreIdea />
-      <ValueCards />
+      <HospitalDay />
       <TeamTeaser />
       <LatestPosts />
     </main>

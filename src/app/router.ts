@@ -8,6 +8,7 @@ const LABELS: Record<string, string> = {
   "/": "ChakraVue AI",
   "/product-suite": "Product Suite",
   "/experience": "Experience",
+  "/hospital-system": "Hospital System",
   "/services": "Services",
   "/about-us": "About Us",
   "/blog": "Blog",

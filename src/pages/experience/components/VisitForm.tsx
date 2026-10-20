@@ -1,17 +1,20 @@
 import { useState, type FormEvent } from "react";
 import { BrandText } from "../../../shared/components/BrandText";
+import { FormOutcome } from "../../../shared/components/FormOutcome";
+import { roleOptions } from "../../../shared/data/content";
 import { submitOrCompose, type SubmitResult } from "../../../shared/submit";
-import { roleOptions, visit } from "../data";
-import { FormOutcome } from "./SignInForm";
+import { visit } from "../data";
 
-/** Today in the visitor's own time zone, as yyyy-mm-dd (the date input's min). */
-function today() {
+/** The first bookable day (yyyy-mm-dd): today in the visitor's time zone, or the opening day if that's later. */
+function firstDay() {
   const now = new Date();
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  return today > visit.opens ? today : visit.opens;
 }
 
 /**
- * Book a visit to the Experience Centre: day, morning or afternoon, how
+ * Request an invitation to the Experience Centre (by invitation only, from
+ * its opening day): day, morning or afternoon, how
  * many are coming, who they are, what they'd like to see, and a phone
  * number to confirm on. POSTs to /visit, with the same Gmail hand-off.
  */
@@ -40,7 +43,7 @@ export function VisitForm() {
       "/visit",
       { name, date, slot, visitors, role, see, phone },
       {
-        subject: `Experience Centre visit request: ${date}, ${slot}`,
+        subject: `Experience Centre invitation request: ${date}, ${slot}`,
         body: [
           `Name: ${name}`,
           `Date: ${date}`,
@@ -72,7 +75,7 @@ export function VisitForm() {
       <div className="xp-form__row">
         <label className="contact-form__field">
           <span>Date*</span>
-          <input type="date" name="date" min={today()} required />
+          <input type="date" name="date" min={firstDay()} required />
         </label>
         <label className="contact-form__field">
           <span>Time of day*</span>

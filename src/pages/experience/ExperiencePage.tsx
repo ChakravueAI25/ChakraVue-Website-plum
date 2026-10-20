@@ -5,13 +5,12 @@ import { scrollToTarget } from "../../motion/lenis";
 import { useMotion, usePageMotion } from "../../motion/useMotion";
 import { BrandText } from "../../shared/components/BrandText";
 import { Header } from "../../shared/components/Header";
+import { JoinChakraVue } from "../../shared/components/JoinChakraVue";
 import { Link } from "../../shared/components/Link";
 import { ContactMap } from "../contact/components/ContactMap";
 import "../contact/contact.css";
-import { SignInForm } from "./components/SignInForm";
 import { VisitForm } from "./components/VisitForm";
-import { products } from "../product-suite/data";
-import { beforeAfter, centre, hero, paths, tryOnline } from "./data";
+import { beforeAfter, centre, hero, paths } from "./data";
 import "./experience.css";
 
 /**
@@ -23,7 +22,7 @@ export function ExperiencePage() {
   const ref = useRef<HTMLElement>(null);
   usePageMotion();
 
-  // Arriving from outside the site on /experience#visit (or #signin): the
+  // Arriving from outside the site on /experience#visit (or #join): the
   // router handles in-site links; a fresh page load lands here.
   useEffect(() => {
     const hash = window.location.hash;
@@ -77,23 +76,7 @@ export function ExperiencePage() {
         </div>
       </section>
 
-      <section id="signin" className="xp-block section">
-        <div className="section__inner xp-split">
-          <SignInForm />
-          <aside className="xp-side" data-reveal>
-            <p className="xp-form__eyebrow">{tryOnline.eyebrow}</p>
-            <h2 className="xp-side__title">{tryOnline.title}</h2>
-            <ol className="xp-side__list">
-              {products.map((product) => (
-                <li key={product.id}>
-                  <span>{product.index}</span>
-                  {product.title}
-                </li>
-              ))}
-            </ol>
-          </aside>
-        </div>
-      </section>
+      <JoinChakraVue variant="page" id="join" />
 
       <section id="visit" className="xp-block xp-block--visit section">
         <div className="section__inner xp-split">
@@ -106,7 +89,7 @@ export function ExperiencePage() {
             <p className="xp-centre__host">{centre.host}</p>
             <address className="xp-centre__address">{centre.address}</address>
             <p className="xp-centre__hours">
-              {centre.hours} <span className="xp-confirm">To confirm</span>
+              {centre.hours}
             </p>
           </aside>
         </div>

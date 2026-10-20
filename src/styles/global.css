@@ -144,10 +144,10 @@ button {
    above .header__nav) and split them into three equal slots, each link
    centered in its slot — matching the evenly spaced rhythm of the design. */
 .header__nav-group {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  justify-items: center;
+  display: flex;
   align-items: center;
+  justify-content: space-evenly;
+  gap: clamp(12px, 1.4vw, 24px);
 }
 
 .header__nav a:not(.header__brand) {
@@ -178,15 +178,9 @@ button {
   transform: translateX(-50%) scaleX(1);
 }
 
-/* "Experience it": a compact pill at the end of the right-hand group. The
-   group gets a fourth, content-sized slot, so both groups stay equal and
-   the brand stays exactly mid-page. */
-.header__nav-group--end {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
-}
-
+/* "Experience it": a compact pill at the end of the right-hand group. Both
+   groups take equal outer columns, so the brand stays exactly mid-page. */
 .header__nav a.header__cta {
-  margin-left: clamp(4px, 0.8vw, 12px);
   padding: 9px 16px;
   border: 1px solid rgba(255, 180, 106, 0.6);
   border-radius: 999px;
@@ -200,26 +194,6 @@ button {
   display: none;
 }
 
-/* Small laptops: equal slots get too narrow for "Contact Us" beside the
-   pill, so the right-hand links size to their text and share the space. */
-@media (max-width: 1200px) {
-  .header__nav-group--end {
-    grid-template-columns: repeat(3, auto) auto;
-    justify-content: space-evenly;
-    column-gap: 14px;
-  }
-
-  .header__brand {
-    font-size: 20px;
-  }
-
-  .header__nav a.header__cta {
-    margin-left: 0;
-    padding: 8px 12px;
-    font-size: 0.8em;
-  }
-}
-
 .header__nav a.header__cta:hover,
 .header__nav a.header__cta:focus-visible {
   border-color: #ffb46a;
@@ -227,8 +201,20 @@ button {
   color: #140b04;
 }
 
+/* Narrower laptops: a slightly smaller brand leaves the links their room. */
+@media (max-width: 1360px) {
+  .header__brand {
+    font-size: 20px;
+  }
+
+  .header__nav a.header__cta {
+    padding: 8px 12px;
+    font-size: 0.8em;
+  }
+}
+
 /* --- Phone menu (Header.tsx) ----------------------------------------------
-   Up to 960px the six links no longer fit beside the brand, so the bar
+   Up to 1180px the seven links no longer fit beside the brand, so the bar
    holds the brand and a menu button, and the button opens every page in a
    full-screen menu. */
 
@@ -240,7 +226,7 @@ button {
   display: none;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1180px) {
   .header__nav,
   .header--scrolled .header__nav {
     display: flex;

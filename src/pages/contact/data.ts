@@ -38,14 +38,15 @@ export const mapEmbedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(
 
 export const whoAreYouOptions = ["Investors", "Working Professionals", "Student", "Others"];
 
+/** The product and page names used across the site. */
 export const interestOptions = [
-  "AI Surgical Assistant",
-  "EMR Dashboard",
-  "VR/AR Gaming Environment",
-  "AI Powered Optical Camera",
-  "Dental Solutions",
-  "Partnership / Collaboration",
-  "Our Future Vision",
-  "Training Solutions",
+  "Surgical Assistant",
+  "Slit Lamp Module",
+  "AI Powered EMR / Hospital System",
+  "Integrated Devices",
+  "ChakraVue App",
+  "Dental Implant Planning",
+  "Partnership",
   "Investment",
+  "Training",
 ];

@@ -1,11 +1,12 @@
 import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, MotionPathPlugin, useGSAP);
 
 // One easing family for the whole site so every move feels like the same hand.
 // "cv.out" is a long, soft expo-style settle; "cv.inOut" is for things that

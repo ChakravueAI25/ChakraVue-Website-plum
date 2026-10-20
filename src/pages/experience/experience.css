@@ -219,26 +219,6 @@
   cursor: progress;
 }
 
-.xp-form__status:empty {
-  display: none;
-}
-
-.xp-form__status {
-  padding: 16px 18px;
-  border: 1px solid rgba(255, 180, 106, 0.35);
-  border-radius: 14px;
-  background: rgba(255, 139, 18, 0.07);
-  color: #fff3e7;
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.xp-form__status a {
-  color: #ffb46a;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
 /* --- Each form beside a short panel (what you can try; where to come) --- */
 
 .xp-split {
@@ -305,17 +285,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   color: #fff;
   font-size: 14px;
-}
-
-/* Marks copy waiting on the owner. */
-.xp-confirm {
-  padding: 4px 9px;
-  border: 1px dashed rgba(255, 180, 106, 0.6);
-  border-radius: 999px;
-  color: #ffb46a;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 /* --- Closing band: before → after ---------------------------------------- */

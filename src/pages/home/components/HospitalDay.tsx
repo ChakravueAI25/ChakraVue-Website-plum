@@ -1,14 +1,17 @@
 import { useRef, type CSSProperties } from "react";
 import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
-import { valueCards } from "../../../shared/data/content";
+import { hospitalDay } from "../../../shared/data/content";
+import { BrandText } from "../../../shared/components/BrandText";
+import { Link } from "../../../shared/components/Link";
 
 /**
- * How it works: the four stages as one process. A signal of light runs
- * from Capture to Assist as the section scrolls through, lighting each stage
- * it reaches; once it has arrived, data keeps flowing along the line.
+ * A day in the hospital: six steps through a visit, kiosk to follow-up, as
+ * one line. A signal of light runs along it as the section scrolls through,
+ * lighting each step it reaches; once it has arrived, data keeps flowing.
+ * Links to the Hospital System page.
  */
-export function ValueCards() {
+export function HospitalDay() {
   const ref = useRef<HTMLElement>(null);
 
   useMotion(ref, (root) => {
@@ -48,30 +51,37 @@ export function ValueCards() {
   return (
     <section ref={ref} className="hsteps section" aria-labelledby="hsteps-title">
       <div className="section__inner">
-        <header className="hsec-head hsec-head--center">
-          <h2 className="section-label" data-scramble>
-            How it works
-          </h2>
-          <h3 id="hsteps-title" className="hsec-title" data-split>
-            From the instrument to the decision.
-          </h3>
+        <header className="hsec-head">
+          <div>
+            <h2 className="section-label" data-scramble>
+              A day in the hospital
+            </h2>
+            <h3 id="hsteps-title" className="hsec-title" data-split>
+              Running in a hospital today.
+            </h3>
+          </div>
+          <Link href="/hospital-system" className="hsec-link">
+            See the hospital system <span aria-hidden="true">→</span>
+          </Link>
         </header>
 
-        <ol className="hsteps__list">
-          {valueCards.map((card, i) => (
+        <ol className="hsteps__list" style={{ "--count": hospitalDay.length } as CSSProperties}>
+          {hospitalDay.map((card, i) => (
             <li key={card.step} className="hsteps__step" style={{ "--i": i } as CSSProperties}>
               <span className="hsteps__node">
                 <span data-scramble="digits" data-delay="0.25">
                   {card.step}
                 </span>
               </span>
-              {i < valueCards.length - 1 && (
+              {i < hospitalDay.length - 1 && (
                 <span className="hsteps__link" aria-hidden="true">
                   <i />
                 </span>
               )}
               <h4 className="hsteps__title">{card.title}</h4>
-              <p className="hsteps__body">{card.body}</p>
+              <p className="hsteps__body">
+                <BrandText text={card.body} />
+              </p>
             </li>
           ))}
         </ol>

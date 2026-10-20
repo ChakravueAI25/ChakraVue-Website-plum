@@ -1,15 +1,5 @@
 import { products } from "../product-suite/data";
 
-/** Who's signing up or visiting. Shared by both forms (and the sign-up backend). */
-export const roleOptions = [
-  "Patient or visitor",
-  "Eye doctor or resident",
-  "Hospital or clinic owner",
-  "Equipment maker or partner",
-  "Student",
-  "Investor",
-];
-
 export const hero = {
   title: "See it for yourself.",
   lead: "Two ways to experience ChakraVue AI: try it online, or come and see it working in a hospital.",
@@ -22,38 +12,25 @@ export const paths = [
     tag: "Online",
     title: "Try it in your browser",
     body: "Sign in and try the products in your browser. It takes about ten minutes, and you need nothing but this screen.",
-    action: { label: "Sign in or sign up", href: "#signin" },
+    action: { label: "Get my ChakraVue ID", href: "#join" },
   },
   {
     id: "in-person",
     tag: "In person",
     title: "Visit the Experience Centre",
-    body: "Come to the ChakraVue Experience Centre at Spark Eye Care Hospital, Secunderabad, and see the products at work with our team.",
-    action: { label: "Book a visit", href: "#visit" },
+    body: "See the products at work with our team at the ChakraVue Experience Centre, Spark Eye Care Hospital, Secunderabad. By invitation only, from 1 November 2026.",
+    action: { label: "Request an invitation", href: "#visit" },
   },
 ];
 
-export const signIn = {
-  eyebrow: "Online",
-  title: "Get your ChakraVue AI ID.",
-  lead: "Tell us who you are and we'll send you a ChakraVue ID. Use it to sign in and try the products in your browser.",
-  submit: "Send my ChakraVue ID",
-  /** {name} and {contact} are filled in. */
-  sent: "Thank you, {name}. Your ChakraVue ID is on its way to {contact}. Use it to sign in and try the products in your browser.",
-};
-
-/** Beside the sign-up form: what the ID opens. */
-export const tryOnline = {
-  eyebrow: "With your ID",
-  title: "Try all four products in your browser.",
-};
-
 export const visit = {
   eyebrow: "In person",
-  title: "Book a visit to the Experience Centre.",
-  lead: "Pick a day and a time of day. We'll call you to confirm, and have the products you want to see ready when you arrive.",
-  submit: "Request my visit",
-  sent: "Thank you. We've received your request for {date}, {slot}. We'll call {phone} to confirm.",
+  title: "Request an invitation to the Experience Centre.",
+  lead: "The Experience Centre opens on 1 November 2026, by invitation only. Pick a day and a time of day; we'll call you to confirm your invitation, and have the products you want to see ready when you arrive.",
+  submit: "Request my invitation",
+  sent: "Thank you. We've received your request for {date}, {slot}. We'll call {phone} to confirm your invitation.",
+  /** The first day visits can be booked for (yyyy-mm-dd). */
+  opens: "2026-11-01",
   slots: ["Morning", "Afternoon"],
   /** What to see: the four products, or everything. */
   interests: [...products.map((product) => product.title), "Everything"],
@@ -65,8 +42,8 @@ export const centre = {
   host: "Spark Eye Care Hospital, Secunderabad",
   address:
     "First Floor, Vijetha Sanjeevani Apartments, Opposite Gandhi Hospital, Metro Pillar No 1034, Musheerabad, Secunderabad, Telangana 500080",
-  /** Placeholder: confirm the opening hours with the owner before launch. */
-  hours: "Opening hours to be confirmed",
+  /** Supplied by the owner (2026-10-20). Daily hours are still to come. */
+  hours: "Opens 1 November 2026 · By invitation only",
   mapLabel: "ChakraVue Experience Centre, Spark Eye Care Hospital",
   // The building name alone is what the no-key embed geocodes precisely (see contact/data.ts).
   mapSrc: `https://maps.google.com/maps?q=${encodeURIComponent("Vijetha Sanjeevani Apartments, Musheerabad, Secunderabad, Telangana")}&z=17&output=embed`,

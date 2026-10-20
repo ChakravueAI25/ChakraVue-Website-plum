@@ -6,6 +6,7 @@ import { BlogPage } from "../pages/blog/BlogPage";
 import { ContactPage } from "../pages/contact/ContactPage";
 import { ExperiencePage } from "../pages/experience/ExperiencePage";
 import { HomePage } from "../pages/home/HomePage";
+import { HospitalSystemPage } from "../pages/hospital-system/HospitalSystemPage";
 import { PrivacyPage } from "../pages/privacy/PrivacyPage";
 import { ProductSuitePage } from "../pages/product-suite/ProductSuitePage";
 import { ServicesPage } from "../pages/services/ServicesPage";
@@ -16,6 +17,7 @@ const routes: Record<string, ComponentType> = {
   "/": HomePage,
   "/product-suite": ProductSuitePage,
   "/experience": ExperiencePage,
+  "/hospital-system": HospitalSystemPage,
   "/services": ServicesPage,
   "/about-us": AboutUsPage,
   "/blog": BlogPage,

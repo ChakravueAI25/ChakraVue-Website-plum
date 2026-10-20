@@ -1,0 +1,311 @@
+/* ==========================================================================
+   "The Box opens" (BoxStory.tsx). Colours are written in Ember and graded to
+   Plum at runtime; the dull "cacophony" greys warm to amber via .is-tuned
+   (class changes, never inline colours, so the palette grade applies).
+   ========================================================================== */
+
+.bx {
+  --dull: #5f5752;
+  --dull-fill: #15110f;
+  --warm: #ffb46a;
+  --hot: #ff8b12;
+  position: relative;
+  padding: clamp(22px, 2.4vw, 34px);
+  border: 1px solid rgba(255, 214, 170, 0.12);
+  border-radius: 28px;
+  background:
+    radial-gradient(60% 50% at 50% 60%, rgba(255, 110, 24, 0.08), transparent 70%),
+    linear-gradient(180deg, #0c0908, #070505);
+}
+
+.bx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+}
+
+.bx-eyebrow {
+  max-width: 560px;
+  color: rgba(255, 243, 231, 0.78);
+  font-size: clamp(13px, 1.1vw, 15px);
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.bx-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.bx-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 214, 170, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 243, 231, 0.8);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+
+.bx-btn:hover,
+.bx-btn:focus-visible {
+  border-color: rgba(255, 180, 106, 0.7);
+  color: #fff;
+}
+
+.bx-btn.is-on {
+  border-color: var(--hot);
+  background: rgba(255, 139, 18, 0.12);
+  color: #ffd29a;
+}
+
+.bx-btn__icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bx-stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 18px;
+  overflow: visible;
+  font-family: var(--font-display);
+}
+
+/* --- Devices: dull and out of step, until their key seats ----------------- */
+
+.bx-device__frame {
+  fill: var(--dull-fill);
+  stroke: rgba(255, 214, 170, 0.12);
+  stroke-width: 1;
+  transition: stroke 0.6s ease, fill 0.6s ease;
+}
+
+.bx-device__icon {
+  fill: none;
+  stroke: var(--dull);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.6s ease;
+}
+
+.bx-device__icon .bx-glow {
+  stroke-dasharray: 3 4;
+}
+
+.bx-device__label {
+  fill: rgba(255, 243, 231, 0.42);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: fill 0.6s ease;
+}
+
+/* Each machine pulses on its own beat (--beat), with no shared phase. */
+.bx-device__pulse {
+  fill: none;
+  stroke: var(--dull);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bxPulse var(--beat) ease-out infinite;
+}
+
+.bx-device.is-tuned .bx-device__frame {
+  fill: #1a0f08;
+  stroke: rgba(255, 139, 18, 0.55);
+}
+
+.bx-device.is-tuned .bx-device__icon {
+  stroke: var(--warm);
+}
+
+.bx-device.is-tuned .bx-device__label {
+  fill: #ffd29a;
+}
+
+/* Connected: one beat for all (the phase is locked from BoxStory.tsx). */
+.bx-device.is-tuned .bx-device__pulse {
+  stroke: var(--hot);
+  animation: bxBeat 1.6s ease-out infinite;
+}
+
+@keyframes bxPulse {
+  0% {
+    opacity: 0.55;
+    scale: 0.82;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.35;
+  }
+}
+
+@keyframes bxBeat {
+  0% {
+    opacity: 0.85;
+    scale: 0.9;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    scale: 1.45;
+  }
+}
+
+/* --- Scraps each machine throws off ---------------------------------------- */
+
+.bx-frag {
+  fill: #1b1614;
+  stroke: #6a615b;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Hidden in the final frame; the timeline shows them. */
+  opacity: 0;
+}
+
+.bx-frag--photo circle:last-child {
+  fill: #6a615b;
+}
+
+.bx-frag path {
+  fill: none;
+}
+
+/* --- The keys -------------------------------------------------------------- */
+
+.bx-key__body {
+  fill: #2a1a10;
+  stroke: var(--warm);
+  stroke-width: 1.5;
+}
+
+.bx-key__prongs {
+  fill: none;
+  stroke: #ffd29a;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.bx-key__tip {
+  fill: #ffd29a;
+  filter: drop-shadow(0 0 4px rgba(255, 170, 80, 0.95));
+}
+
+/* --- The box ---------------------------------------------------------------- */
+
+.bx-box__body {
+  fill: #120c09;
+  stroke: rgba(255, 180, 106, 0.55);
+  stroke-width: 1.5;
+}
+
+.bx-box__seam {
+  fill: none;
+  stroke: rgba(255, 180, 106, 0.25);
+}
+
+.bx-lid__top {
+  fill: #1c120c;
+  stroke: rgba(255, 180, 106, 0.7);
+  stroke-width: 1.5;
+}
+
+/* --- The record, and the staves into it ------------------------------------ */
+
+.bx-stave {
+  fill: none;
+  stroke: rgba(255, 139, 18, 0.55);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+}
+
+.bx-card__frame {
+  fill: #160d07;
+  stroke: var(--hot);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 18px rgba(255, 110, 20, 0.28));
+}
+
+.bx-card__part {
+  fill: none;
+  stroke: #ffd29a;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bx-card__part rect {
+  fill: rgba(255, 139, 18, 0.08);
+  stroke: rgba(255, 180, 106, 0.7);
+}
+
+.bx-card__fill {
+  fill: var(--hot);
+  stroke: none;
+}
+
+.bx-card__title {
+  fill: var(--warm);
+  stroke: none;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* --- The resolve ------------------------------------------------------------ */
+
+.bx-resolve {
+  margin-top: 18px;
+  text-align: center;
+}
+
+.bx-headline {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.6vw, 52px);
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.bx-sub {
+  max-width: 560px;
+  margin: 14px auto 0;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .bx {
+    padding: 20px 16px 26px;
+    border-radius: 22px;
+  }
+
+  .bx-stage {
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
+  .bx-device__label {
+    font-size: 14px;
+  }
+}

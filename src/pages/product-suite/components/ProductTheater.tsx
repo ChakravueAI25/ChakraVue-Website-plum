@@ -5,6 +5,7 @@ import { gsap, ScrollTrigger } from "../../../motion/gsap";
 import { scrollToY } from "../../../motion/lenis";
 import { useMotion } from "../../../motion/useMotion";
 import type { Theater } from "../../../motion/webgl/theater/engine";
+import { Link } from "../../../shared/components/Link";
 import { products } from "../data";
 import "./theater.css";
 
@@ -222,10 +223,10 @@ export function ProductTheater() {
                   </li>
                 ))}
               </ol>
-              <a className="theater__cta" href={product.cta.href} data-magnetic="0.25">
+              <Link className="theater__cta" href={product.cta.href} data-magnetic="0.25">
                 {product.cta.label}
                 <span aria-hidden="true">→</span>
-              </a>
+              </Link>
             </div>
             <img className="theater__photo" src={product.image} alt={product.title} loading={i === 0 ? "eager" : "lazy"} />
           </div>

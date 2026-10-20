@@ -5,6 +5,7 @@ import { useMotion } from "../../motion/useMotion";
 import { address, contactDetails } from "../../pages/contact/data";
 import { navItems } from "../data/content";
 import { BrandText } from "./BrandText";
+import { JoinChakraVue } from "./JoinChakraVue";
 import { Link } from "./Link";
 import "./footer.css";
 import { Logo } from "../../brand/Logo";
@@ -86,6 +87,7 @@ export function Footer() {
             <Link href="/experience#visit" className="footer__visit">
               Visit the Experience Centre <span aria-hidden="true">→</span>
             </Link>
+            <JoinChakraVue variant="footer" />
           </div>
         </div>
         <div className="footer__col footer__col--office">
