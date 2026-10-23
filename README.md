@@ -9,6 +9,8 @@ npm install
 npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
 ```
 
+The AI assistant needs an Anthropic API key in `.env` (see "AI assistant" below).
+
 ## What's in it
 
 **Across the site**
@@ -296,6 +298,81 @@ Changes to existing files are limited to motion hooks and attributes, plus CSS
 that moved from `transform` to `translate`/`scale` so it doesn't fight the
 animations. One side effect fixed an existing bug: the top and bottom
 system-map nodes no longer jump sideways on hover.
+
+## AI assistant
+
+A chat launcher sits in the bottom-right corner of every page. It opens the
+"ChakraVue AI Assistant", which answers visitors' questions about the
+products, platforms and services with Claude (Anthropic's API), using only
+what the site publishes.
+
+**Setup**
+
+```bash
+cp .env.example .env        # then put your Anthropic API key in ANTHROPIC_API_KEY
+npm run dev                 # site + assistant on http://127.0.0.1:5175
+```
+
+For production, `npm run build`, then `npm run serve` (Node 22.9+): one
+dependency-free Node server serves `dist/` and the assistant's API on `PORT`
+(default 4175). Set the same variables in the host's environment (or a
+`.env` beside the project); `.env` is git-ignored. Without a key the site
+works and the assistant replies that it isn't configured yet. `vite preview`
+has no API, so use `npm run serve` to try a production build.
+
+| Variable | Default | |
+| --- | --- | --- |
+| `ANTHROPIC_API_KEY` | (required) | Server only; never reaches the browser. |
+| `ANTHROPIC_MODEL` | `claude-opus-5-5` | The Claude model. |
+| `CHAT_RATE_PER_MINUTE` / `CHAT_RATE_PER_HOUR` | 8 / 60 | Messages per visitor (by IP). |
+| `TRUST_PROXY` | off | `1` behind your own reverse proxy, so limits use `X-Forwarded-For`. |
+| `PORT` / `HOST` | 4175 / 0.0.0.0 | For `npm run serve`. |
+
+**How it works**
+
+```
+src/shared/components/ChatAssistant.tsx   launcher + window (chat.css, classes .assist-*)
+src/shared/chat/api.ts                    browser → POST /api/chat
+server/chatHandler.ts                     validation, rate limit, errors
+server/assistant.ts                       instructions, Claude call, link checking
+server/retrieve.ts                        picks the relevant catalogue items
+server/catalog.ts                         the catalogue, built from the page data
+server/index.ts                           production server (dist/ + /api/chat)
+vite.config.ts                            mounts the same API in `npm run dev`
+```
+
+1. The browser sends the last few turns of the conversation (nothing else).
+2. The server validates them (non-empty, at most 1,000 characters a message,
+   12 turns) and applies the per-visitor rate limit.
+3. `retrieve.ts` scores every catalogue item against the question (name,
+   category, then description and features, with a few everyday synonyms such
+   as "eye" for ophthalmic) and attaches the full records of the best four.
+   The model also always sees a one-line index of everything, so "what do you
+   offer?" works. Only these records are sent, never whole pages.
+4. `assistant.ts` sends that to Claude with the owner's instructions (kept on
+   the server, where visitors can't change them). Product text is passed as
+   data, not instructions.
+5. The reply comes back with any link that isn't a real page on this site
+   removed, and with chips linking to the products it mentions.
+
+**Where the answers come from.** The catalogue is built at start-up from the
+same files the pages render: `product-suite/data.ts` (the four devices),
+`product-suite/platforms.ts` (the three software platforms),
+`services/data.ts` (the two services) and `contact/data.ts` (contact
+details). Change a product there and the assistant knows it on the next
+restart; there's nothing separate to keep in sync. The site publishes no
+prices, stock, delivery or warranty terms, so the assistant says so and
+points to Contact Us. It never invents them. If prices or availability
+are ever published, add fields to those data files and to `describe()` in
+`catalog.ts`. If the catalogue moves to a CMS or database, have `catalog.ts`
+load from it. Past a few hundred items, swap `retrieve()` for an embedding
+search with the same signature.
+
+**Deep links.** Products link to `/product-suite#<id>`, platforms to
+`/product-suite?platform=<id>#platforms` (the console opens that tab) and
+services to `/services#<id>`. Arriving from another page, the router keeps
+the anchor in view until the Product Suite theater has finished laying out
+(`settleOn` in `app/router.ts`).
 
 ## The 3D products
 

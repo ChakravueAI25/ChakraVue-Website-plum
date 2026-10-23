@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { reduceMotion } from "../../../motion/env";
 import { gsap, ScrollTrigger } from "../../../motion/gsap";
 import { platforms, type App, type Platform } from "../platforms";
@@ -58,6 +58,12 @@ function Glyph({ kind }: { kind: Platform["glyph"] | App["glyph"] }) {
   );
 }
 
+/** `/product-suite?platform=<id>#platforms` (the chat assistant's links, for one) opens that platform. */
+function platformFromUrl() {
+  const id = new URLSearchParams(window.location.search).get("platform");
+  return Math.max(0, platforms.findIndex((item) => item.id === id));
+}
+
 /**
  * The software platforms, as a console: pick one from the list and the
  * screen re-renders it with a scan line, the name decoding and the line
@@ -65,11 +71,20 @@ function Glyph({ kind }: { kind: Platform["glyph"] | App["glyph"] }) {
  * of its apps on its own inside the one screen.
  */
 export function PlatformConsole() {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(platformFromUrl);
   const ref = useRef<HTMLElement>(null);
   // Until the console has been seen, the first platform waits to draw itself in.
   const seen = useRef(false);
   const platform = platforms[active];
+
+  useEffect(() => {
+    // The router announces in-page link changes as hashchange (see navigate).
+    const onHash = () => {
+      if (new URLSearchParams(window.location.search).has("platform")) setActive(platformFromUrl());
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   useLayoutEffect(() => {
     const root = ref.current;
@@ -122,7 +137,7 @@ export function PlatformConsole() {
   };
 
   return (
-    <section ref={ref} className="plat section" aria-labelledby="plat-title">
+    <section ref={ref} id="platforms" className="plat section" aria-labelledby="plat-title">
       <div className="section__inner">
         <header className="plat__head">
           <p className="section-label" data-scramble>
