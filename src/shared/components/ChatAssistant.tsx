@@ -1,89 +1,19 @@
-import { Fragment, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { lockScroll } from "../../motion/lenis";
-import { askAssistant, ChatError, type ChatMessage } from "../chat/api";
-import { BrandText } from "./BrandText";
-import { Link } from "./Link";
+import { askAssistant, ChatError, type AssistantReply } from "../chat/api";
 import "./chat.css";
 
-const SUGGESTIONS = [
-  "What products do you offer?",
-  "Compare the Surgical Assistant and the Slit Lamp Module",
-  "Which product suits an eye clinic?",
-  "How do I get pricing or a demo?",
-];
-
-const MAX_CHARS = 1000;
-const STORE = "cv-chat";
+const WELCOME = "Hi! Welcome to our website. Ask me a question about our products, and I'll search our product document for the answer.";
+const MAX_CHARS = 500;
 const PHONE = "(max-width: 600px)";
 
-function loadHistory(): ChatMessage[] {
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(STORE) ?? "[]");
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
-  }
-}
-
-/** **bold** and [links](/path) inside one line of an answer. */
-function inline(text: string, onNavigate: () => void): ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))/g);
-  return parts.map((part, i) => {
-    const bold = part.match(/^\*\*([^*]+)\*\*$/);
-    if (bold) return <strong key={i}>{bold[1]}</strong>;
-    const link = part.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
-    // Only the site's own pages: the server already drops any other URL.
-    if (link && link[2].startsWith("/") && !link[2].startsWith("//")) {
-      return (
-        <Link key={i} href={link[2]} onClick={onNavigate}>
-          {link[1]}
-        </Link>
-      );
-    }
-    return <Fragment key={i}>{link ? link[1] : part}</Fragment>;
-  });
-}
-
-/** An answer's paragraphs and "- " bullet lists. */
-function Answer({ text, onNavigate }: { text: string; onNavigate: () => void }) {
-  const blocks: ReactNode[] = [];
-  let list: string[] = [];
-  const flush = () => {
-    if (!list.length) return;
-    blocks.push(
-      <ul key={blocks.length}>
-        {list.map((item, i) => (
-          <li key={i}>{inline(item, onNavigate)}</li>
-        ))}
-      </ul>,
-    );
-    list = [];
-  };
-  for (const line of text.split("\n")) {
-    const bullet = line.match(/^\s*[-*•]\s+(.*)$/);
-    if (bullet) list.push(bullet[1]);
-    else {
-      flush();
-      if (line.trim()) blocks.push(<p key={blocks.length}>{inline(line, onNavigate)}</p>);
-    }
-  }
-  flush();
-  return <>{blocks}</>;
-}
+type Message = { role: "user"; text: string } | { role: "assistant"; reply: AssistantReply };
 
 function ChatIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.6 3.8c-.5.4-1.2 0-1.2-.6V16h0A2.5 2.5 0 0 1 4 13.5Z" />
       <path className="assist-icon__spark" d="M9 9.5h.01M12 9.5h.01M15 9.5h.01" />
-    </svg>
-  );
-}
-
-function RestartIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4v4h4" />
     </svg>
   );
 }
@@ -96,31 +26,51 @@ function CloseIcon() {
   );
 }
 
+const pageList = (pages: number[]) => (pages.length === 1 ? `page ${pages[0]}` : `pages ${pages.slice(0, -1).join(", ")} and ${pages[pages.length - 1]}`);
+
+/** An answer: the document's own sentences, each with its page, plus any fixed message or note. */
+function Reply({ reply }: { reply: AssistantReply }) {
+  const pages = [...new Set(reply.quotes.map((quote) => quote.page))].sort((a, b) => a - b);
+  // Quotes from several sections say which section (product) each comes from.
+  const labelled = new Set(reply.quotes.map((quote) => quote.heading)).size > 1;
+  return (
+    <>
+      {reply.message && <p>{reply.message}</p>}
+      {reply.quotes.map((quote, i) => (
+        <p key={i} className="assist-quote">
+          {labelled && quote.heading && quote.heading !== reply.quotes[i - 1]?.heading && (
+            <span className="assist-section">{quote.heading}</span>
+          )}
+          {quote.text} <span className="assist-page">p. {quote.page}</span>
+        </p>
+      ))}
+      {reply.note && <p className="assist-quote-note">{reply.note}</p>}
+      {pages.length > 0 && reply.document && (
+        <p className="assist-source">
+          Source: {reply.document.name}, {pageList(pages)}
+        </p>
+      )}
+    </>
+  );
+}
+
 /**
- * The site's AI assistant: a launcher in the bottom-right corner that opens
- * a chat window. Answers come from server/assistant.ts, grounded in the same
- * product data the pages show.
+ * The Product Assistant: a chat button in the bottom-right corner that opens
+ * a chat window. Answers are sentences found in the product PDF by the
+ * site's own search engine (server/assistant/), with their page numbers.
  */
 export function ChatAssistant() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>(loadHistory);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ text: string; question: string } | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const request = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    try {
-      sessionStorage.setItem(STORE, JSON.stringify(messages.slice(-30)));
-    } catch {
-      // Private mode or storage blocked: the conversation just won't survive a reload.
-    }
-  }, [messages]);
-
-  // Always show the latest message (and the typing indicator or error).
+  // Always show the latest message (and the searching indicator or error).
   useEffect(() => {
     const log = logRef.current;
     if (log) log.scrollTo({ top: log.scrollHeight, behavior: "smooth" });
@@ -149,58 +99,44 @@ export function ChatAssistant() {
     launcherRef.current?.focus({ preventScroll: true });
   }
 
-  async function send(history: ChatMessage[]) {
-    setMessages(history);
+  async function ask(question: string) {
     setPending(true);
     setError(null);
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
     try {
-      const { reply, sources } = await askAssistant(history, controller.signal);
-      setMessages([...history, { role: "assistant", content: reply, sources }]);
+      const reply = await askAssistant(question, controller.signal);
+      setMessages((list) => [...list, { role: "assistant", reply }]);
     } catch (failure) {
       if ((failure as Error).name === "AbortError") return;
-      setError(failure instanceof ChatError ? failure.message : "The assistant couldn't answer just now. Please try again.");
+      const text = failure instanceof ChatError ? failure.message : "The assistant couldn't answer just now. Please try again.";
+      setError({ text, question });
     } finally {
       if (request.current === controller) setPending(false);
     }
   }
 
-  function submit(text: string) {
-    const question = text.trim().slice(0, MAX_CHARS);
+  function submit() {
+    const question = draft.trim().slice(0, MAX_CHARS);
     if (!question || pending) return;
     setDraft("");
-    void send([...messages, { role: "user", content: question }]);
+    setMessages((list) => [...list, { role: "user", text: question }]);
+    void ask(question);
   }
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    submit(draft);
+    submit();
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     // Enter sends; Shift+Enter starts a new line.
     if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault();
-      submit(draft);
+      submit();
     }
   };
-
-  // Following a link on a phone shows the page, not the chat on top of it.
-  const onNavigate = () => {
-    if (window.matchMedia(PHONE).matches) setOpen(false);
-  };
-
-  const restart = () => {
-    request.current?.abort();
-    setPending(false);
-    setError(null);
-    setMessages([]);
-    inputRef.current?.focus();
-  };
-
-  const lastUser = messages[messages.length - 1]?.role === "user";
 
   return (
     <div className={`assist${open ? " is-open" : ""}`}>
@@ -208,7 +144,7 @@ export function ChatAssistant() {
         ref={launcherRef}
         type="button"
         className="assist-launcher"
-        aria-label="Chat with the ChakraVue AI assistant"
+        aria-label={open ? "Close the Product Assistant" : "Open the Product Assistant"}
         aria-expanded={open}
         aria-controls="assist-window"
         onClick={() => (open ? close() : setOpen(true))}
@@ -222,16 +158,9 @@ export function ChatAssistant() {
             <ChatIcon />
           </span>
           <div className="assist-window__heading">
-            <h2 id="chat-title">
-              <BrandText text="ChakraVue AI Assistant" />
-            </h2>
-            <p>Answers from our product pages</p>
+            <h2 id="chat-title">Product Assistant</h2>
+            <p>Answers from our product document</p>
           </div>
-          {messages.length > 0 && (
-            <button type="button" className="assist-window__close" aria-label="Start a new chat" title="New chat" onClick={restart}>
-              <RestartIcon />
-            </button>
-          )}
           <button type="button" className="assist-window__close" aria-label="Close the chat" onClick={close}>
             <CloseIcon />
           </button>
@@ -239,50 +168,23 @@ export function ChatAssistant() {
 
         <div ref={logRef} className="assist-log" role="log" aria-live="polite" aria-busy={pending} data-lenis-prevent>
           <div className="assist-msg assist-msg--assistant">
-            <p>
-              Hi! 👋 I'm the <BrandText text="ChakraVue AI" /> assistant. Ask me anything about our products and services, and I'll help you find
-              what you're looking for.
-            </p>
+            <p>{WELCOME}</p>
           </div>
-
-          {messages.length === 0 && (
-            <div className="assist-suggest" aria-label="Suggested questions">
-              {SUGGESTIONS.map((suggestion) => (
-                <button key={suggestion} type="button" onClick={() => submit(suggestion)}>
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-          )}
 
           {messages.map((message, i) =>
             message.role === "user" ? (
               <div key={i} className="assist-msg assist-msg--user">
-                <p>{message.content}</p>
+                <p>{message.text}</p>
               </div>
             ) : (
               <div key={i} className="assist-msg assist-msg--assistant">
-                <Answer text={message.content} onNavigate={onNavigate} />
-                {!!message.sources?.length && (
-                  <ul className="assist-sources" aria-label="Pages mentioned">
-                    {message.sources.map((source) => (
-                      <li key={source.url}>
-                        <Link href={source.url} onClick={onNavigate}>
-                          <small>{source.kind}</small>
-                          <span>
-                            <BrandText text={source.name} />
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <Reply reply={message.reply} />
               </div>
             ),
           )}
 
           {pending && (
-            <div className="assist-msg assist-msg--assistant assist-typing" aria-label="The assistant is typing">
+            <div className="assist-msg assist-msg--assistant assist-typing" role="status" aria-label="Searching the product document">
               <i />
               <i />
               <i />
@@ -291,12 +193,10 @@ export function ChatAssistant() {
 
           {error && (
             <div className="assist-error" role="alert">
-              <p>{error}</p>
-              {lastUser && (
-                <button type="button" onClick={() => void send(messages)}>
-                  Try again
-                </button>
-              )}
+              <p>{error.text}</p>
+              <button type="button" onClick={() => void ask(error.question)}>
+                Try again
+              </button>
             </div>
           )}
         </div>
@@ -319,9 +219,6 @@ export function ChatAssistant() {
             Send
           </button>
         </form>
-        <p className="assist-note">
-          AI answers can be wrong. For quotes or demos, <Link href="/contact-us" onClick={onNavigate}>contact us</Link>.
-        </p>
       </section>
     </div>
   );

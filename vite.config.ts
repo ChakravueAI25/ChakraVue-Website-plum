@@ -2,16 +2,27 @@ import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 /**
- * Serves the chat assistant's API (server/chatHandler.ts) inside the dev
- * server, so `npm run dev` is the whole site. Production uses server/index.ts.
+ * Serves the Product Assistant (the chat API and the /admin upload page,
+ * server/routes.ts) inside the dev server, so `npm run dev` is the whole site.
+ * Production uses server/index.ts.
  */
-function chatApi(): Plugin {
+function productAssistant(): Plugin {
   return {
-    name: "chat-api",
+    name: "product-assistant",
     configureServer(server) {
-      server.middlewares.use("/api/chat", async (req, res) => {
-        const { handleChat } = await server.ssrLoadModule("/server/chatHandler.ts");
-        await handleChat(req, res);
+      server.middlewares.use(async (req, res, next) => {
+        const { pathname } = new URL(req.url ?? "/", "http://localhost");
+        // The uploaded document lives in data/, which must never be served.
+        if (/^\/(@fs\/.*\/)?data(\/|$)/i.test(decodeURIComponent(pathname))) {
+          res.statusCode = 404;
+          return res.end();
+        }
+        try {
+          const { handleAssistantRoute } = await server.ssrLoadModule("/server/routes.ts");
+          if (!(await handleAssistantRoute(req, res))) next();
+        } catch (error) {
+          next(error);
+        }
       });
     },
   };
@@ -19,13 +30,13 @@ function chatApi(): Plugin {
 
 // 5175 so this runs beside the main site (5173) and the colour lab (5174).
 export default defineConfig(({ mode }) => {
-  // Server-only settings from .env (the API key never reaches the browser:
-  // only VITE_-prefixed variables are exposed to client code).
-  Object.assign(process.env, loadEnv(mode, process.cwd(), ["ANTHROPIC_", "CHAT_"]));
+  // Server-only settings from .env (the admin password never reaches the
+  // browser: only VITE_-prefixed variables are exposed to client code).
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ["CHAT_", "ADMIN_", "PDF_", "DATA_", "TRUST_"]));
 
   return {
-    plugins: [react(), chatApi()],
-    server: { port: 5175 },
+    plugins: [react(), productAssistant()],
+    server: { port: 5175, fs: { deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "data/**"] } },
     preview: { port: 4175 },
     build: {
       // three.js is its own lazy chunk, loaded only by the home hero after first paint.

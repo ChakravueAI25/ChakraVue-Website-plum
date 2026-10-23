@@ -1,0 +1,326 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R] /Count 6 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Length 3018 >>
+stream
+BT /F2 22 Tf 64 778.0 Td (ChakraVue AI Product Guide) Tj ET
+BT /F1 10.5 Tf 64 733.2 Td (Medical systems generate enormous amounts of visual, clinical and operational data.) Tj ET
+BT /F1 10.5 Tf 64 718.5 Td (ChakraVue AI connects that data to intelligent software layers that help devices) Tj ET
+BT /F1 10.5 Tf 64 703.8 Td (understand, assist and respond within the clinical workflow.) Tj ET
+BT /F1 10.5 Tf 64 682.1 Td (This guide describes the ChakraVue AI product suite \(four products\), its software) Tj ET
+BT /F1 10.5 Tf 64 667.4 Td (platforms \(three platforms\) and its services, as published on the ChakraVue AI website.) Tj ET
+BT /F2 15 Tf 64 627.7 Td (Products, Platforms and Services) Tj ET
+BT /F1 10.5 Tf 64 598.7 Td (The ChakraVue AI products are the Surgical Assistant, Slit Lamp Module, AI Powered EMR) Tj ET
+BT /F1 10.5 Tf 64 584.0 Td (and Integrated Devices.) Tj ET
+BT /F1 10.5 Tf 64 562.3 Td (The ChakraVue AI software platforms are Dental Implant Planning, ChakraVue Doctor) Tj ET
+BT /F1 10.5 Tf 64 547.6 Td (Patient App and ChakraVue Wellness.) Tj ET
+BT /F1 10.5 Tf 64 525.9 Td (The ChakraVue AI services are Biomedical Finite Element Analysis and Tobacco Cessation) Tj ET
+BT /F1 10.5 Tf 64 511.2 Td (Programme.) Tj ET
+BT /F2 15 Tf 64 471.5 Td (How ChakraVue AI Works) Tj ET
+BT /F1 10.5 Tf 64 442.5 Td (Capture: Imaging and readings are captured at the instrument, in full fidelity, as the) Tj ET
+BT /F1 10.5 Tf 64 427.8 Td (examination happens.) Tj ET
+BT /F1 10.5 Tf 64 406.1 Td (Connect: Every device feeds one secure record, so nothing is lost between the instrument) Tj ET
+BT /F1 10.5 Tf 64 391.4 Td (and the patient file.) Tj ET
+BT /F1 10.5 Tf 64 369.7 Td (Analyse: Intelligent software reads the data alongside the clinician and surfaces what) Tj ET
+BT /F1 10.5 Tf 64 355.0 Td (is clinically relevant.) Tj ET
+BT /F1 10.5 Tf 64 333.3 Td (Assist: Insight returns to the point of care: in the field of view, in the workflow, in) Tj ET
+BT /F1 10.5 Tf 64 318.6 Td (the patient history.) Tj ET
+BT /F2 15 Tf 64 278.9 Td (Surgical Assistant \(Digital Surgical Assistant\)) Tj ET
+BT /F1 10.5 Tf 64 249.9 Td (Surgical Assistant is ChakraVue AI product 01: intraoperative visual intelligence.) Tj ET
+BT /F1 10.5 Tf 64 228.2 Td (A surgical assistance system that augments the surgeon’s field of view with real-time) Tj ET
+BT /F1 10.5 Tf 64 213.5 Td (visual overlays, guidance, and procedural information while capturing structured data) Tj ET
+BT /F1 10.5 Tf 64 198.8 Td (for surgical analysis.) Tj ET
+BT /F1 10.5 Tf 64 177.1 Td (The main parts of the Surgical Assistant are:) Tj ET
+BT /F1 10.5 Tf 78 155.4 Td (•) Tj ET
+BT /F1 10.5 Tf 88 155.4 Td (Rugged case) Tj ET
+BT /F1 10.5 Tf 78 137.7 Td (•) Tj ET
+BT /F1 10.5 Tf 88 137.7 Td (Surgical display) Tj ET
+BT /F1 10.5 Tf 78 120.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 120.0 Td (AI guidance overlay) Tj ET
+BT /F1 10.5 Tf 78 102.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 102.3 Td (Compute unit) Tj ET
+BT /F1 8.5 Tf 64 36 Td (ChakraVue AI Product Guide  -  Page 1 of 6) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 3056 >>
+stream
+BT /F1 10.5 Tf 78 778.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 778.0 Td (Keyboard and touchpad) Tj ET
+BT /F1 10.5 Tf 78 760.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 760.3 Td (Ports) Tj ET
+BT /F2 15 Tf 64 724.6 Td (Slit Lamp Module) Tj ET
+BT /F1 10.5 Tf 64 695.6 Td (Slit Lamp Module is ChakraVue AI product 02: intelligent ophthalmic examination.) Tj ET
+BT /F1 10.5 Tf 64 673.9 Td (An intelligence module for the slit lamp that captures every examination in high) Tj ET
+BT /F1 10.5 Tf 64 659.2 Td (fidelity, highlights clinically relevant findings in real time, and files structured) Tj ET
+BT /F1 10.5 Tf 64 644.5 Td (records straight into the patient history.) Tj ET
+BT /F1 10.5 Tf 64 622.8 Td (The main parts of the Slit Lamp Module are:) Tj ET
+BT /F1 10.5 Tf 78 601.1 Td (•) Tj ET
+BT /F1 10.5 Tf 88 601.1 Td (Rugged case) Tj ET
+BT /F1 10.5 Tf 78 583.4 Td (•) Tj ET
+BT /F1 10.5 Tf 88 583.4 Td (Analysis display) Tj ET
+BT /F1 10.5 Tf 78 565.7 Td (•) Tj ET
+BT /F1 10.5 Tf 88 565.7 Td (AI measurement overlay) Tj ET
+BT /F1 10.5 Tf 78 548.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 548.0 Td (Compute unit) Tj ET
+BT /F1 10.5 Tf 78 530.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 530.3 Td (Keyboard and touchpad) Tj ET
+BT /F1 10.5 Tf 78 512.6 Td (•) Tj ET
+BT /F1 10.5 Tf 88 512.6 Td (Ports) Tj ET
+BT /F2 15 Tf 64 476.9 Td (AI Powered EMR) Tj ET
+BT /F1 10.5 Tf 64 447.9 Td (AI Powered EMR is ChakraVue AI product 03: clinical data and workflow intelligence.) Tj ET
+BT /F1 10.5 Tf 64 426.2 Td (An electronic medical record built around ophthalmic workflows that brings imaging,) Tj ET
+BT /F1 10.5 Tf 64 411.5 Td (device output and clinical notes into one timeline, surfacing the insight each) Tj ET
+BT /F1 10.5 Tf 64 396.8 Td (consultation needs.) Tj ET
+BT /F1 10.5 Tf 64 375.1 Td (The main parts of the AI Powered EMR are:) Tj ET
+BT /F1 10.5 Tf 78 353.4 Td (•) Tj ET
+BT /F1 10.5 Tf 88 353.4 Td (Rugged case) Tj ET
+BT /F1 10.5 Tf 78 335.7 Td (•) Tj ET
+BT /F1 10.5 Tf 88 335.7 Td (Patient dashboard) Tj ET
+BT /F1 10.5 Tf 78 318.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 318.0 Td (Patient overview) Tj ET
+BT /F1 10.5 Tf 78 300.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 300.3 Td (Patient details) Tj ET
+BT /F1 10.5 Tf 78 282.6 Td (•) Tj ET
+BT /F1 10.5 Tf 88 282.6 Td (Optometry) Tj ET
+BT /F1 10.5 Tf 78 264.9 Td (•) Tj ET
+BT /F1 10.5 Tf 88 264.9 Td (Ophthalmic examination) Tj ET
+BT /F1 10.5 Tf 78 247.2 Td (•) Tj ET
+BT /F1 10.5 Tf 88 247.2 Td (Compute unit) Tj ET
+BT /F2 15 Tf 64 211.5 Td (Integrated Devices) Tj ET
+BT /F1 10.5 Tf 64 182.5 Td (Integrated Devices is ChakraVue AI product 04: legacy equipment, connected.) Tj ET
+BT /F1 10.5 Tf 64 160.8 Td (A connectivity module for the equipment you already own. It captures data from existing) Tj ET
+BT /F1 10.5 Tf 64 146.1 Td (devices over a wired or wireless link and routes it into your EMR or EHR in real time,) Tj ET
+BT /F1 10.5 Tf 64 131.4 Td (with no replacement hardware and no manual transcription.) Tj ET
+BT /F1 10.5 Tf 64 109.7 Td (The main parts of the Integrated Devices are:) Tj ET
+BT /F1 8.5 Tf 64 36 Td (ChakraVue AI Product Guide  -  Page 2 of 6) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 2935 >>
+stream
+BT /F1 10.5 Tf 78 778.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 778.0 Td (Enclosure) Tj ET
+BT /F1 10.5 Tf 78 760.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 760.3 Td (Port) Tj ET
+BT /F1 10.5 Tf 78 742.6 Td (•) Tj ET
+BT /F1 10.5 Tf 88 742.6 Td (Bluetooth) Tj ET
+BT /F1 10.5 Tf 78 724.9 Td (•) Tj ET
+BT /F1 10.5 Tf 88 724.9 Td (Battery) Tj ET
+BT /F1 10.5 Tf 78 707.2 Td (•) Tj ET
+BT /F1 10.5 Tf 88 707.2 Td (Power) Tj ET
+BT /F1 10.5 Tf 78 689.5 Td (•) Tj ET
+BT /F1 10.5 Tf 88 689.5 Td (Interface) Tj ET
+BT /F2 15 Tf 64 653.8 Td (Dental Implant Planning) Tj ET
+BT /F1 10.5 Tf 64 624.8 Td (Dental Implant Planning is ChakraVue AI software platform 05, in the Dental AI & 3D) Tj ET
+BT /F1 10.5 Tf 64 610.1 Td (visualisation category.) Tj ET
+BT /F1 10.5 Tf 64 588.4 Td (Patient-specific implant planning. It reconstructs the jaw in 3D, maps the nerve and) Tj ET
+BT /F1 10.5 Tf 64 573.7 Td (warns when a planned implant comes too close.) Tj ET
+BT /F1 10.5 Tf 64 552.0 Td (Dental Implant Planning features:) Tj ET
+BT /F1 10.5 Tf 78 530.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 530.3 Td (3D reconstruction from patient scans) Tj ET
+BT /F1 10.5 Tf 78 512.6 Td (•) Tj ET
+BT /F1 10.5 Tf 88 512.6 Td (Slice, panoramic and cross-section views) Tj ET
+BT /F1 10.5 Tf 78 494.9 Td (•) Tj ET
+BT /F1 10.5 Tf 88 494.9 Td (Nerve mapping) Tj ET
+BT /F1 10.5 Tf 78 477.2 Td (•) Tj ET
+BT /F1 10.5 Tf 88 477.2 Td (Implant library and custom models) Tj ET
+BT /F1 10.5 Tf 78 459.5 Td (•) Tj ET
+BT /F1 10.5 Tf 88 459.5 Td (Nerve proximity warnings) Tj ET
+BT /F1 10.5 Tf 78 441.8 Td (•) Tj ET
+BT /F1 10.5 Tf 88 441.8 Td (Facial registration and live overlay) Tj ET
+BT /F1 10.5 Tf 64 424.1 Td (The Dental Implant Planning workflow: Scan, then 3D, then Nerve map, then Place implant,) Tj ET
+BT /F1 10.5 Tf 64 409.4 Td (then Clearance, then Verify.) Tj ET
+BT /F1 10.5 Tf 64 387.7 Td (Note: Dental Implant Planning is for planning, training and research; not a standalone) Tj ET
+BT /F1 10.5 Tf 64 373.0 Td (clinical navigation system.) Tj ET
+BT /F2 15 Tf 64 333.3 Td (ChakraVue Doctor Patient App) Tj ET
+BT /F1 10.5 Tf 64 304.3 Td (ChakraVue Doctor Patient App is ChakraVue AI software platform 06, in the EMR ecosystem,) Tj ET
+BT /F1 10.5 Tf 64 289.6 Td (Doctors & patients category.) Tj ET
+BT /F1 10.5 Tf 64 267.9 Td (One connected pair of apps: the doctor and the patient each have their own, and the care) Tj ET
+BT /F1 10.5 Tf 64 253.2 Td (between visits runs through both.) Tj ET
+BT /F2 13 Tf 64 221.5 Td (ChakraVue Doctor App) Tj ET
+BT /F1 10.5 Tf 64 197.3 Td (The doctor's side of the ecosystem: patient information and patient requests on a phone,) Tj ET
+BT /F1 10.5 Tf 64 182.6 Td (not just at the desk.) Tj ET
+BT /F1 10.5 Tf 64 160.9 Td (ChakraVue Doctor App features: Patient information, Drug adherence, Submitted test) Tj ET
+BT /F1 10.5 Tf 64 146.2 Td (results, Patient call requests, Video consultation.) Tj ET
+BT /F1 8.5 Tf 64 36 Td (ChakraVue AI Product Guide  -  Page 3 of 6) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 3414 >>
+stream
+BT /F2 13 Tf 64 778.0 Td (ChakraVue Patient App) Tj ET
+BT /F1 10.5 Tf 64 753.8 Td (The patient's companion to their care: medicines on time, a direct line to the clinic,) Tj ET
+BT /F1 10.5 Tf 64 739.1 Td (and simple eye checks at home.) Tj ET
+BT /F1 10.5 Tf 64 717.4 Td (ChakraVue Patient App features: Medicine reminders, Video call requests, Emergency) Tj ET
+BT /F1 10.5 Tf 64 702.7 Td (messaging, Eye redness and itching checks, Amsler grid test, Visual acuity test.) Tj ET
+BT /F2 15 Tf 64 663.0 Td (ChakraVue Wellness) Tj ET
+BT /F1 10.5 Tf 64 634.0 Td (ChakraVue Wellness is ChakraVue AI software platform 07, in the Health & wellness) Tj ET
+BT /F1 10.5 Tf 64 619.3 Td (category.) Tj ET
+BT /F1 10.5 Tf 64 597.6 Td (Personal health in one place: activity, vitals, rest and mindfulness, connected to the) Tj ET
+BT /F1 10.5 Tf 64 582.9 Td (fitness apps people already use.) Tj ET
+BT /F1 10.5 Tf 64 561.2 Td (ChakraVue Wellness features:) Tj ET
+BT /F1 10.5 Tf 78 539.5 Td (•) Tj ET
+BT /F1 10.5 Tf 88 539.5 Td (Steps and heart rate) Tj ET
+BT /F1 10.5 Tf 78 521.8 Td (•) Tj ET
+BT /F1 10.5 Tf 88 521.8 Td (Stress and mood) Tj ET
+BT /F1 10.5 Tf 78 504.1 Td (•) Tj ET
+BT /F1 10.5 Tf 88 504.1 Td (Sleep) Tj ET
+BT /F1 10.5 Tf 78 486.4 Td (•) Tj ET
+BT /F1 10.5 Tf 88 486.4 Td (Meditation and yoga) Tj ET
+BT /F1 10.5 Tf 78 468.7 Td (•) Tj ET
+BT /F1 10.5 Tf 88 468.7 Td (Fitness app integration) Tj ET
+BT /F1 10.5 Tf 78 451.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 451.0 Td (Offline video and audio) Tj ET
+BT /F2 15 Tf 64 415.3 Td (Biomedical Finite Element Analysis \(FEA\)) Tj ET
+BT /F1 10.5 Tf 64 386.3 Td (Biomedical Finite Element Analysis is a ChakraVue AI service \(simulation\).) Tj ET
+BT /F1 10.5 Tf 64 364.6 Td (Simulation-driven biomechanical assessment for dental and maxillofacial devices. We show) Tj ET
+BT /F1 10.5 Tf 64 349.9 Td (how implants and fixation systems behave under realistic loading, so design decisions) Tj ET
+BT /F1 10.5 Tf 64 335.2 Td (are made before physical testing.) Tj ET
+BT /F1 10.5 Tf 64 313.5 Td (Biomedical Finite Element Analysis, what we deliver:) Tj ET
+BT /F1 10.5 Tf 78 291.8 Td (•) Tj ET
+BT /F1 10.5 Tf 88 291.8 Td (3D model preparation, meshing and material assignment) Tj ET
+BT /F1 10.5 Tf 78 274.1 Td (•) Tj ET
+BT /F1 10.5 Tf 88 274.1 Td (Realistic loading and boundary conditions) Tj ET
+BT /F1 10.5 Tf 78 256.4 Td (•) Tj ET
+BT /F1 10.5 Tf 88 256.4 Td (Stress, strain and displacement analysis) Tj ET
+BT /F1 10.5 Tf 78 238.7 Td (•) Tj ET
+BT /F1 10.5 Tf 88 238.7 Td (Comparative studies across design variants and load cases) Tj ET
+BT /F1 10.5 Tf 78 221.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 221.0 Td (Engineering reports with contour plots and interpretation) Tj ET
+BT /F1 10.5 Tf 64 203.3 Td (Case study: Dental implant thread design. Dental implant thread design \(thread pitch,) Tj ET
+BT /F1 10.5 Tf 64 188.6 Td (bone quality and loading\) covers: Multiple thread pitches on one standardised implant;) Tj ET
+BT /F1 10.5 Tf 64 173.9 Td (Dense and porous trabecular bone; Axial and oblique loads at varying forces; Crestal) Tj ET
+BT /F1 10.5 Tf 64 159.2 Td (bone stress, implant neck stress and micromotion.) Tj ET
+BT /F1 10.5 Tf 64 137.5 Td (Outcome: Which thread designs reduce bone overload and implant stress, and how bone) Tj ET
+BT /F1 10.5 Tf 64 122.8 Td (quality and load direction change the answer.) Tj ET
+BT /F1 8.5 Tf 64 36 Td (ChakraVue AI Product Guide  -  Page 4 of 6) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 3117 >>
+stream
+BT /F1 10.5 Tf 64 778.0 Td (Audience for the Dental implant thread design study: Implant manufacturers, dental R&D) Tj ET
+BT /F1 10.5 Tf 64 763.3 Td (teams, researchers.) Tj ET
+BT /F1 10.5 Tf 64 741.6 Td (Case study: Mandibular fracture fixation. Mandibular fracture fixation \(plate-and-screw) Tj ET
+BT /F1 10.5 Tf 64 726.9 Td (systems under function\) covers: Patient-representative mandible with fracture, plate and) Tj ET
+BT /F1 10.5 Tf 64 712.2 Td (screws; Physiological boundary conditions at the condyles; Bite forces and muscle) Tj ET
+BT /F1 10.5 Tf 64 697.5 Td (loading; Plate, screw and bone stress, interfragmentary motion, optional screw) Tj ET
+BT /F1 10.5 Tf 64 682.8 Td (loosening.) Tj ET
+BT /F1 10.5 Tf 64 661.1 Td (Outcome: How load crosses the fracture, where the hardware concentrates stress, and how) Tj ET
+BT /F1 10.5 Tf 64 646.4 Td (stable the fixation is.) Tj ET
+BT /F1 10.5 Tf 64 624.7 Td (Audience for the Mandibular fracture fixation study: Maxillofacial device companies,) Tj ET
+BT /F1 10.5 Tf 64 610.0 Td (surgeons, validation teams.) Tj ET
+BT /F2 15 Tf 64 570.3 Td (Tobacco Cessation Programme) Tj ET
+BT /F1 10.5 Tf 64 541.3 Td (Tobacco Cessation Programme is a ChakraVue AI service \(digital care\).) Tj ET
+BT /F1 10.5 Tf 64 519.6 Td (A conversational companion for people quitting tobacco. It learns each person's habits,) Tj ET
+BT /F1 10.5 Tf 64 504.9 Td (cravings and triggers, and guides them through the journey, remembering what they have) Tj ET
+BT /F1 10.5 Tf 64 490.2 Td (already shared.) Tj ET
+BT /F1 10.5 Tf 64 468.5 Td (Tobacco Cessation Programme, inside the programme:) Tj ET
+BT /F1 10.5 Tf 78 446.8 Td (•) Tj ET
+BT /F1 10.5 Tf 88 446.8 Td (A structured conversation about usage, past attempts, cravings, triggers and) Tj ET
+BT /F1 10.5 Tf 88 432.1 Td (difficulties) Tj ET
+BT /F1 10.5 Tf 78 414.4 Td (•) Tj ET
+BT /F1 10.5 Tf 88 414.4 Td (Spoken answers transcribed to text) Tj ET
+BT /F1 10.5 Tf 78 396.7 Td (•) Tj ET
+BT /F1 10.5 Tf 88 396.7 Td (Semantic matching that understands meaning, not exact words) Tj ET
+BT /F1 10.5 Tf 78 379.0 Td (•) Tj ET
+BT /F1 10.5 Tf 88 379.0 Td (Context carried across the conversation) Tj ET
+BT /F1 10.5 Tf 78 361.3 Td (•) Tj ET
+BT /F1 10.5 Tf 88 361.3 Td (Conversation history, saved presets and re-recording) Tj ET
+BT /F1 10.5 Tf 64 343.6 Td (The Tobacco Cessation Programme runs in stages: Assessment, Triggers, Guidance, Support,) Tj ET
+BT /F1 10.5 Tf 64 328.9 Td (Progress.) Tj ET
+BT /F2 15 Tf 64 289.2 Td (Our Working Principles) Tj ET
+BT /F1 10.5 Tf 64 260.2 Td (Repeatable method: Structured, documented workflows, so every study and deployment can) Tj ET
+BT /F1 10.5 Tf 64 245.5 Td (be reproduced and compared.) Tj ET
+BT /F1 10.5 Tf 64 223.8 Td (Clinically relevant: Outputs chosen for the decisions clinicians and device teams) Tj ET
+BT /F1 10.5 Tf 64 209.1 Td (actually have to make.) Tj ET
+BT /F1 10.5 Tf 64 187.4 Td (Clear reporting: Reports written for design reviews, regulatory files and research) Tj ET
+BT /F1 10.5 Tf 64 172.7 Td (documentation.) Tj ET
+BT /F1 8.5 Tf 64 36 Td (ChakraVue AI Product Guide  -  Page 5 of 6) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 1916 >>
+stream
+BT /F2 15 Tf 64 778.0 Td (Pricing, Demos and Availability) Tj ET
+BT /F1 10.5 Tf 64 749.0 Td (ChakraVue AI does not publish prices on its website. For pricing, a demo or availability) Tj ET
+BT /F1 10.5 Tf 64 734.3 Td (of any product, platform or service, contact ChakraVue AI by email at) Tj ET
+BT /F1 10.5 Tf 64 719.6 Td (chakravueai@chakravue.ai or by phone on +91 6300147979.) Tj ET
+BT /F2 15 Tf 64 679.9 Td (Leadership and Team) Tj ET
+BT /F1 10.5 Tf 64 650.9 Td (Dr. Ajay Chakravarthy: Founder & CEO, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 629.2 Td (Dr. Chitra Chakravarthy: Co-Founder, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 607.5 Td (Sumanth Akula: Founding Executive Officer, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 585.8 Td (N. Sushanth: Technical Strategy Engineer, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 564.1 Td (Srinidhi Chintaluri: Product Designer, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 542.4 Td (K. Abhinay Srikanth: Android Architect & Security Engineer, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 520.7 Td (A. Karthikeya: Business & Marketing Strategist, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 499.0 Td (Ram Kashyap Isikella: Product Engineer, ChakraVue AI.) Tj ET
+BT /F1 10.5 Tf 64 477.3 Td (Hrushikesh Patki: Mechanical Engineer, ChakraVue AI.) Tj ET
+BT /F2 15 Tf 64 437.6 Td (Contact ChakraVue AI) Tj ET
+BT /F1 10.5 Tf 64 408.6 Td (Email: chakravueai@chakravue.ai) Tj ET
+BT /F1 10.5 Tf 64 386.9 Td (Phone: +91 6300147979) Tj ET
+BT /F1 10.5 Tf 64 365.2 Td (Office address: ChakraVue AI Private Limited, First Floor, Vijetha Sanjeevani) Tj ET
+BT /F1 10.5 Tf 64 350.5 Td (Apartments, Opposite Gandhi Hospital, Metro Pillar No 1034, Musheerabad, Secunderabad,) Tj ET
+BT /F1 10.5 Tf 64 335.8 Td (Telangana 500003, India.) Tj ET
+BT /F1 10.5 Tf 64 314.1 Td (LinkedIn: ChakraVue AI \(linkedin.com/company/chakravue-ai-pvt-ltd\).) Tj ET
+BT /F1 8.5 Tf 64 36 Td (ChakraVue AI Product Guide  -  Page 6 of 6) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 15 0 R >>
+endobj
+17 0 obj
+<< /Title (ChakraVue AI Product Guide) /Producer (ChakraVue AI website) >>
+endobj
+xref
+0 18
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000149 00000 n 
+0000000246 00000 n 
+0000000348 00000 n 
+0000003418 00000 n 
+0000003554 00000 n 
+0000006662 00000 n 
+0000006798 00000 n 
+0000009785 00000 n 
+0000009922 00000 n 
+0000013389 00000 n 
+0000013527 00000 n 
+0000016697 00000 n 
+0000016835 00000 n 
+0000018804 00000 n 
+0000018942 00000 n 
+trailer
+<< /Size 18 /Root 1 0 R /Info 17 0 R >>
+startxref
+19033
+%%EOF

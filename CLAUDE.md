@@ -16,7 +16,7 @@ when you change one.
 - `npm install`, then `npm run dev`: http://127.0.0.1:5175 (5173 is the
   original site, 5174 the About Us colour lab).
 - `npm run build` must pass; `npx tsc --noEmit -p .` for types (covers
-  `server/` too).
+  `server/` too). `npm run test:assistant` for the Product Assistant.
 - Production: `npm run build && npm run serve` (Node 22.9+, `server/index.ts`
   runs as TypeScript via type stripping, so no enums or constructor
   parameter properties there, and imports keep their `.ts` extension).
@@ -166,14 +166,15 @@ when you change one.
 - **Phone menu** (`Header.tsx`, `.menu` in `global.css`): up to 960px the
   six links don't fit, so the bar is the brand plus a menu button that opens
   a full-screen menu. Before 2026-10-19 phones only showed two links.
-- **AI assistant** (added 2026-10-23, README "AI assistant"): a chat
-  launcher bottom-right on every page, titled "ChakraVue AI Assistant" (the
-  owner chose this over a "shopping assistant": the site sells nothing
-  online). `server/` answers with Claude from a catalogue built from the
-  page data files, so it follows product edits automatically. It must never
-  quote prices, stock or specs the site doesn't publish. The key lives in
-  `.env` (server only). Its classes are `.assist-*`, because Services owns
-  `.chat`.
+- **Product Assistant** (2026-10-23, README "Product Assistant"): a chat
+  button bottom-right on every page that answers from one product PDF the
+  admin uploads at `/admin` (Basic auth, scrypt hash in `.env`). The owner
+  ruled out any LLM, API key, embeddings or outside service: answers are
+  sentences quoted from the PDF with page numbers, found by local TF-IDF and
+  keyword search (`server/assistant/`). Never add generated or paraphrased
+  text, and never let it invent prices or specs. Its fixed texts (header,
+  welcome, not-found message) are the owner's wording. Classes are
+  `.assist-*`, because Services owns `.chat`.
 - **Cursor:** the standard system cursor, with grab/grabbing on 3D models.
   `PointerFX.tsx` only adds a small tag ("View", "Drag") beside the pointer
   over `[data-cursor]`, plus magnetic buttons and card spotlights. The owner
