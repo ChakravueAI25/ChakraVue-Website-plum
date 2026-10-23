@@ -84,6 +84,16 @@
   color: #fff;
 }
 
+/* "Visit the Experience Centre": the one call to action, kept to a line. */
+.footer__links a.footer__visit {
+  color: #ffb46a;
+}
+
+.footer__links a.footer__visit:hover,
+.footer__links a.footer__visit:focus-visible {
+  color: #fff;
+}
+
 /* Oversized wordmark, cropped by the bottom bar like a signature. */
 .footer__mark {
   display: flex;

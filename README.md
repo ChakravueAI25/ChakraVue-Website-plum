@@ -42,14 +42,21 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
 - **Text.** Headlines rise line by line out of masks, labels decode from random
   glyphs, and paragraphs drift in. Blocks enter in staggered groups.
 - **Header.** Hides as you read down, returns when you scroll up (or reach for
-  the top). Nav labels roll letter by letter on hover. Up to 960px wide the
+  the top). Nav labels roll letter by letter on hover. Seven links: Product
+  Suite, Experience, Hospital System, Services | brand | About Us, Blog,
+  Contact Us, then a compact "Experience it" pill (`experienceCta` in
+  `shared/data/content.ts`; `START_LINKS` in `Header.tsx` sets the split).
+  Privacy Policy lives in the footer only. Up to 1180px wide the
   bar holds the brand and a menu button, which opens every page in a
-  full-screen menu (numbered links, then phone and email). Escape, a link or
+  full-screen menu (numbered links, the "Experience it" button, then phone
+  and email). Escape, a link or
   the button closes it; the page behind stays still while it's open.
 - **Logo marquee.** Speeds up and leans with scroll velocity, follows scroll
   direction, and slows under the pointer.
 - **Footer (new).** The same on every page, kept short: Explore on the left
-  (two short columns), Reach us in the middle and Office on the right, over
+  (two short columns), Reach us in the middle (ending with the one call to
+  actions, "Visit the Experience Centre" → /experience#visit and "Join
+  ChakraVue AI" → /experience#join) and Office on the right, over
   the large faint mark centred behind them, then the wordmark, which rises
   letter by letter.
 - **Film grain.** A faint moving grain over the glows (desktop only).
@@ -64,8 +71,10 @@ sections animate in as they arrive. In order:
   supplied and never turned, is centred behind the copy, as large as fits
   between the nav and the horizon: cream glyphs deepening to amber toward the
   horizon, softer behind the words (which carry a soft shadow), with a glint
-  of light travelling round the ring. Headline, one-line summary, "Explore products"
-  and "Contact us", and shortcuts to the four products on the lit ground.
+  of light travelling round the ring. Headline "Analogue to AI.", a one-line
+  summary in plain words, "Experience it online" (→ /experience) and "Book a
+  visit" (→ /experience#visit), and shortcuts to the four products on the lit
+  ground.
 - **Featured in** marquee (homepage only).
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
@@ -77,9 +86,13 @@ sections animate in as they arrive. In order:
   the whole product is lit. Opens on hover, click, tap or keyboard; plays by
   itself with a progress line until the visitor picks one. Product shots are
   cut from the Product Suite hero render (`public/images/home/products/`).
+- **Join ChakraVue AI** (the `band` form of `JoinChakraVue`, below).
 - **The core idea** (original).
-- **How it works.** Capture → Connect → Analyse → Assist on one line; a signal
-  of light travels through the stages as you scroll and lights each one.
+- **A day in the hospital** (`HospitalDay.tsx`, steps in `hospitalDay` in
+  `shared/data/content.ts`): six plain steps from the kiosk to video
+  follow-up on one line (two rows of three on small laptops, a column on
+  phones); a signal of light travels through them as you scroll. Links to
+  /hospital-system. It replaced the Capture/Connect/Analyse/Assist cards.
 - **Team.** The three leaders and the wider team, linking to About.
 - **Blog.** The three latest posts, linking to the blog.
 
@@ -108,6 +121,95 @@ sections animate in as they arrive. In order:
   label or the product. With reduced motion or no WebGL it becomes a plain list
   with the photographs.
 
+**Experience (new).** `/experience`, `src/pages/experience/` (all copy in
+`data.ts`). Every visitor gets two ways to experience ChakraVue AI.
+Conventional and unpinned.
+- **Hero** "See it for yourself." with two cards: Online (→ `#join`) and In
+  person (→ `#visit`).
+- **Join ChakraVue AI** (`#join`): the `page` form of `JoinChakraVue`.
+- **Book a visit** (`#visit`, `VisitForm.tsx`): the Experience Centre is by
+  invitation only and opens on 1 November 2026, so this requests an
+  invitation. Name, date (from the opening day, `visit.opens`), morning or
+  afternoon, number of visitors, role, what to see (the four products or
+  Everything), phone. Beside it the Experience Centre's address and "Opens
+  1 November 2026 · By invitation only", then the map (`ContactMap` with a
+  label and src).
+- **Submitting** (`shared/submit.ts`, outcome line `FormOutcome.tsx`): both
+  forms POST JSON to `VITE_EXPERIENCE_API + /signup` or `/visit`. With no API set, or if it
+  fails, they open a pre-filled Gmail draft as the Contact form does, and say
+  so plainly ("Nothing is sent until you do"), with a link in case the
+  browser blocked the tab. The "your ChakraVue ID is on its way" message only
+  appears when the backend actually accepted the request.
+- **Closing band** "Analogue to AI." with three before → after pairs; each
+  old thing dims as its new form lights.
+- A fresh page load on `/experience#visit` scrolls to the form once the
+  curtain opens (in-site links are handled by the router).
+
+**Join ChakraVue AI (new).** `shared/components/JoinChakraVue.tsx` +
+`join.css`, one component in three places (`variant`):
+- `band`: home, between the product showcase and the core idea.
+- `page`: `/experience#join` and `/hospital-system#join`.
+- `footer`: one line under Reach us, "Join ChakraVue AI" → /experience#join.
+Fields: name, one "email or phone" field (either accepted), role, "Keep me
+posted" (on by default) and an optional referral code pre-filled from
+`?ref=`. It POSTs `{ name, contact, role, subscribe, ref }` to
+`VITE_EXPERIENCE_API + /signup`; until that exists it opens a pre-filled
+Gmail draft (subject "Join ChakraVue AI") and says so. The "Thanks. Your
+ChakraVue ID is on its way…" line only appears on a real success. A privacy
+line links to /privacy-policy. All its copy is `joinCopy` at the top of the
+file.
+
+**Hospital System (new).** `/hospital-system`, `src/pages/hospital-system/`
+(all copy in `data.ts`, so it can be reviewed in one file). Conventional and
+unpinned:
+- **Hero:** "From registration to discharge to NABH-style registers — one
+  system, built for Indian eye and dental hospitals.", the "Live in a
+  hospital today" badge (a breathing dot), "Join ChakraVue AI" (→ #join) and
+  "Book a visit" (→ /experience#visit).
+- **Four audience tabs** (Hospital · Doctors · Patients · Devices): a real
+  tablist (arrow keys, Home/End). Each has 5–6 cards, one picturable
+  sentence each, and a "See everything" disclosure with the remaining items.
+  The cards are drafts until the feature document arrives (see COPY.md).
+- **Safety and privacy, built for India's DPDP Act:** five short cards.
+- **Coming with the ChakraVue Box** (`#box`): opens with the Box story
+  (below), then four cards labelled "Built, not yet live".
+- **Join ChakraVue AI** (`#join`).
+
+**The Box opens** (`hospital-system/components/BoxStory.tsx`, geometry in
+`boxStoryLayout.ts`, sound in `boxSound.ts`, styles in `box.css`).
+Cacophony to symphony without words, as inline SVG and one GSAP timeline
+(~9 s). It starts when the stage is 40% visible, plays once, and has Replay.
+1. Six generic machines (lamp, test machine, scanner, printer, front desk,
+   phone), each pulsing on its own beat (CSS, `--beat`), throw off
+   mismatched scraps (a paper strip, a photo, a numbers card, a note) that
+   drift. Dull colours.
+2. A plain box with the ChakraVue mark (as supplied, never turned) opens; six
+   identical keys rise.
+3. Each key flies on a curved MotionPath to its machine and seats with a
+   settle (0.25 s apart). The machine takes `.is-tuned`: it warms to amber
+   and its pulse locks to the shared beat (the animation delay is set from
+   one clock, so all connected machines beat in phase).
+4. The scraps fly into one patient record card, thin lines draw in from
+   every machine, and "Analogue to AI." resolves letter by letter.
+- The markup is the final frame, so reduced motion (and no JS) shows the
+  symphony only; the timeline sets the opening state and plays to it.
+  Colours change through classes, never inline styles, so the Plum grade
+  applies. Phones (≤700px) use a tall layout: three machines above the
+  record, three below, the box at the foot.
+- **Sound:** off by default. "Sound" plays a muffled, out-of-tune cluster
+  that glides into a clear chord as the record forms (Web Audio API, no
+  files). The choice is kept in `sessionStorage.cv-box-sound`.
+- Ids and labels are generic (`device-1`, `lamp`, `key`); no connector
+  standard or part names.
+- Not reused on the Product Suite page: the Integrated Devices card there is
+  part of the 3D theatre, which this milestone doesn't touch.
+
+**Build check.** `npm run build` runs `scripts/check-bundle.mjs` after Vite:
+it fails the build if the bundle contains a chip, board or model name, or
+"NABH accredited", "ABDM" or "certified", and if the Surgical Assistant's
+required phrases ("helps the surgeon review and learn", "coming after
+regulatory approval") are missing. `npm run check:bundle` runs it alone.
+
 **Services (new, replaces "What We Do" in the nav).** `/services`,
 `src/pages/services/`.
 - **Hero:** an engineering drawing sheet (an implant in half section, with
@@ -129,10 +231,13 @@ sections animate in as they arrive. In order:
   diagrams are illustrative, not simulation output.
 
 **Product Suite: software platforms.** A console under the 3D theater
-(`PlatformConsole.tsx`, data in `product-suite/platforms.ts`) with three
-platforms: Dental Implant Planning; the ChakraVue Doctor Patient App, one
-bundle showing the Doctor App and the Patient App side by side; and
-ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
+(`PlatformConsole.tsx`, data in `product-suite/platforms.ts`) with two
+platforms: Dental Implant Planning, and One ChakraVue app (records,
+reminders, video consultation, pay by UPI, health data from the phone,
+works offline), which replaced the separate Doctor and Patient apps.
+ChakraVue Wellness was removed (restore it from git if it still ships). The
+product CTAs in the theater link to /experience, /hospital-system and
+/hospital-system#box. Choosing one re-renders the screen with a scan line, a
 decoding title and a self-drawing line icon.
 
 **3D products.** The Surgical Assistant, the Slit Lamp Module and the AI
@@ -351,6 +456,14 @@ original mix back:
 so the browser mustn't fake them.
 
 ## Copy to confirm
+
+**Copy register.** `COPY.md` at the repo root lists every public sentence
+added or changed for the "Analogue to AI" milestone, with its file, for
+line-by-line approval. Lay copy lives in data files (`shared/data/content.ts`,
+`product-suite/data.ts` `description`, `experience/data.ts`); the Product Suite
+page keeps the technical wording for doctors (`detail`). The Surgical
+Assistant's lay copy says it helps the surgeon review and learn; live
+guidance is "coming after regulatory approval".
 
 Services and platforms: all text is condensed from the briefs supplied
 (FEA, osteotomy and integrated-devices PDFs and the contribution report).

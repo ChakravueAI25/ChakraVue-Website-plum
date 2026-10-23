@@ -62,6 +62,26 @@ when you change one.
   softened (`hot` 1.02, bloom 0.24 once lit). The owner asked twice for
   less brightness, so don't brighten it.
   `sessionStorage.cv-intro-seen = "1"` skips it.
+- **"Analogue to AI" (Milestone 1, 2026-10-20):** the site now speaks to lay
+  people. Home hero reads "Analogue to AI." with "Experience it online" and
+  "Book a visit"; lay copy is in data files (`product-suite/data.ts`
+  `description` is lay, `detail` keeps the technical text for the Product
+  Suite page). New `/experience` page (sign-up + book a visit, both falling
+  back to a Gmail draft until `VITE_EXPERIENCE_API` exists; never a fake
+  "done"). Nav: Product Suite, Experience, Services | About Us, Blog,
+  Contact Us + "Experience it" pill; "More" dropped, Privacy is in the
+  footer. Every public sentence is in `COPY.md` for approval. The Surgical
+  Assistant must never be described as guiding surgery today: "helps the
+  surgeon review and learn"; live guidance "coming after regulatory
+  approval".
+- **Milestone 2 (2026-10-20):** `JoinChakraVue` (sign-up + subscribe; home
+  band, `/experience#join`, `/hospital-system#join`, footer line); new
+  `/hospital-system` page (copy in its `data.ts`; the audience cards and
+  Box cards are drafts until the owner's CHAKRAVUE_FEATURES_FOR_WEBSITE.md
+  arrives); "The Box opens" SVG/GSAP story (`BoxStory.tsx`); "A day in the
+  hospital" strip on home; `npm run build` runs `scripts/check-bundle.mjs`
+  (the bundle grep is now automatic). The Experience Centre is by
+  invitation only and opens on 1 November 2026 (owner, 2026-10-20).
 - **Home**, in order:
   - Hero (`pages/home/components/Hero.tsx`):
     - Sunset gradient plus the WebGL particle landscape
@@ -81,7 +101,8 @@ when you change one.
     by Intelligence.", closed by the coda "Shaping What Healthcare Can See,
     Understand, and Do." (the `coda` prop of `InsightStatement`).
   - Product showcase: "Four products, one connected line of sight."
-  - The core idea (eclipse glow), then How it works, Team and Latest posts.
+  - Join ChakraVue AI (band), the core idea (eclipse glow), A day in the
+    hospital (six steps), Team and Latest posts.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**
@@ -138,9 +159,9 @@ when you change one.
     (for example the segmentation model) and internal detector strings
     painted out.
   - Then the software platforms console (`product-suite/platforms.ts`):
-    05 Dental Implant Planning; 06 ChakraVue Doctor Patient App, a bundle
-    showing the Doctor App and Patient App individually (`apps` field);
-    07 ChakraVue Wellness.
+    05 Dental Implant Planning; 06 One ChakraVue app (the Doctor and Patient
+    apps folded into one, 2026-10-20). ChakraVue Wellness was removed
+    pending the owner's confirmation that it still ships.
   - The closing "Institute creates data…" band and the platforms EMR
     Mobile, Face & Eye, Voice, Data Sender and Secure Edge were removed on
     request.
@@ -158,10 +179,11 @@ when you change one.
     the right (the address from the Contact page data).
   - A large faint logo centred behind them, then the "ChakraVue AI"
     wordmark, which is solid so the logo never shows through it.
-  - No call-to-action block.
-- **Phone menu** (`Header.tsx`, `.menu` in `global.css`): up to 960px the
-  six links don't fit, so the bar is the brand plus a menu button that opens
-  a full-screen menu. Before 2026-10-19 phones only showed two links.
+  - No call-to-action block; the only calls to action are two lines under
+    Reach us: "Visit the Experience Centre" and "Join ChakraVue AI".
+- **Phone menu** (`Header.tsx`, `.menu` in `global.css`): up to 1180px the
+  seven links (plus "Experience it") don't fit, so the bar is the brand plus
+  a menu button that opens a full-screen menu. Before 2026-10-19 phones only showed two links.
 - **Cursor:** the standard system cursor, with grab/grabbing on 3D models.
   `PointerFX.tsx` only adds a small tag ("View", "Drag") beside the pointer
   over `[data-cursor]`, plus magnetic buttons and card spotlights. The owner

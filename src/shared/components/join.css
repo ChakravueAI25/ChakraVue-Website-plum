@@ -1,0 +1,338 @@
+/* ==========================================================================
+   Join ChakraVue AI (JoinChakraVue.tsx): the home band, the page section
+   (/experience, /hospital-system) and the footer line. Also the shared
+   form status line (FormOutcome.tsx).
+   ========================================================================== */
+
+.join {
+  --soft: rgba(255, 243, 231, 0.72);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(80px, 9vw, 130px) 0;
+  scroll-margin-top: 40px;
+  background: #030102;
+}
+
+/* The home band: the hero's horizon, rising behind the form. */
+.join__glow {
+  position: absolute;
+  inset: auto -10% -35%;
+  z-index: -1;
+  height: 80%;
+  background:
+    radial-gradient(48% 55% at 70% 100%, rgba(255, 110, 24, 0.26), transparent 72%),
+    radial-gradient(22% 26% at 70% 100%, rgba(255, 196, 128, 0.2), transparent 72%);
+  pointer-events: none;
+}
+
+.join--band {
+  border-block: 1px solid rgba(255, 190, 130, 0.08);
+}
+
+.join--page {
+  padding: clamp(48px, 5vw, 72px) 0;
+  background: transparent;
+}
+
+.join--page .join__glow {
+  inset: 15% -10% auto;
+  height: 70%;
+  background: radial-gradient(40% 50% at 75% 50%, rgba(255, 110, 24, 0.12), transparent 72%);
+}
+
+.join__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+.join__eyebrow {
+  color: rgba(255, 242, 232, 0.72);
+  font-size: 20px;
+  line-height: 24px;
+  text-transform: uppercase;
+}
+
+.join__title {
+  margin-top: 16px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 400;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.join__lead {
+  max-width: 480px;
+  margin-top: 20px;
+  color: var(--soft);
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.75;
+}
+
+.join__perks {
+  display: grid;
+  max-width: 420px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.join__perks li {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.join__perks span {
+  color: #ffb46a;
+}
+
+/* --- The form ------------------------------------------------------------- */
+
+.join__form {
+  display: grid;
+  gap: 20px;
+  padding: clamp(26px, 3vw, 40px);
+  border: 1px solid rgba(255, 214, 170, 0.12);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0.94), rgba(10, 8, 7, 0.94));
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.join__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.join__field {
+  display: grid;
+  gap: 9px;
+}
+
+.join__field span {
+  color: rgba(255, 236, 225, 0.65);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.join__field:focus-within span {
+  color: var(--amber);
+}
+
+.join__field input,
+.join__field select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.35s ease;
+}
+
+.join__field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ff8b12' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+}
+
+.join__field select option {
+  background: #0a0908;
+  color: #fff;
+}
+
+.join__field select:invalid {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.join__field input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.join__field input:focus,
+.join__field select:focus {
+  outline: none;
+  border-color: var(--amber);
+  background-color: rgba(255, 139, 18, 0.06);
+  box-shadow: 0 0 0 4px rgba(255, 139, 18, 0.1);
+}
+
+/* "Keep me posted": a drawn box, the real checkbox over it for input. */
+.join__check {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: start;
+  color: #fff3e7;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.join__check input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.join__box {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(255, 180, 106, 0.6);
+  border-radius: 6px;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.join__box::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 5px;
+  height: 9px;
+  border: solid #140b04;
+  border-width: 0 2px 2px 0;
+  rotate: 45deg;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.join__check input:checked + .join__box {
+  border-color: var(--amber);
+  background: var(--amber);
+}
+
+.join__check input:checked + .join__box::after {
+  opacity: 1;
+}
+
+.join__check input:focus-visible + .join__box {
+  box-shadow: 0 0 0 4px rgba(255, 139, 18, 0.2);
+}
+
+.join__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  justify-self: start;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 999px;
+  background: var(--amber);
+  box-shadow: 0 16px 36px rgba(255, 110, 20, 0.25);
+  color: #140b04;
+  font-family: var(--font-display);
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.join__submit:hover,
+.join__submit:focus-visible {
+  background: #ffd29a;
+  box-shadow: 0 16px 40px rgba(255, 139, 18, 0.35);
+}
+
+.join__submit span {
+  transition: translate 0.35s var(--ease-out);
+}
+
+.join__submit:hover span {
+  translate: 4px 0;
+}
+
+.join__submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.join__privacy {
+  color: rgba(255, 236, 225, 0.55);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.join__privacy a {
+  color: #ffb46a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- The footer line ------------------------------------------------------ */
+
+.footer__links a.footer__join {
+  color: #ffb46a;
+}
+
+.footer__links a.footer__join:hover,
+.footer__links a.footer__join:focus-visible {
+  color: #fff;
+}
+
+/* --- What happened to a form (FormOutcome.tsx) ---------------------------- */
+
+.form-status:empty {
+  display: none;
+}
+
+.form-status {
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 180, 106, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 139, 18, 0.07);
+  color: #fff3e7;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.form-status a {
+  color: #ffb46a;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* --- Responsive ----------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .join__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .join__perks {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .join__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .join__form {
+    border-radius: 22px;
+  }
+
+  .join__submit {
+    justify-self: stretch;
+  }
+}

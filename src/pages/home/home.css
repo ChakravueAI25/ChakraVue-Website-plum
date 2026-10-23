@@ -292,7 +292,7 @@
 
 /* --- How it works ------------------------------------------------------------ */
 
-/* Four stages on one line. Each stage draws the link to the next; the
+/* The steps of a day on one line (--count of them). Each stage draws the link to the next; the
    component sets --seg (0…1) on it as the signal passes, and .is-lit once
    the signal has reached the stage. Without the motion layer, all are lit. */
 .hsteps {
@@ -304,7 +304,7 @@
 
 .hsteps__list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--count, 4), minmax(0, 1fr));
   gap: var(--g);
   margin: 0;
   padding: 0;
@@ -412,7 +412,7 @@
   margin: 26px 0 0;
   color: #f2af63;
   font-family: var(--font-display);
-  font-size: clamp(20px, 1.9vw, 26px);
+  font-size: clamp(14px, 1.15vw, 17px);
   font-weight: 400;
   line-height: 1.2;
   text-transform: uppercase;
@@ -440,6 +440,18 @@
 .hsteps.is-driven .hsteps__step:not(.is-lit) .hsteps__title,
 .hsteps.is-driven .hsteps__step:not(.is-lit) .hsteps__body {
   opacity: 0.35;
+}
+
+/* Tablets: the day in two rows of three; the line breaks at the row's end. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .hsteps__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 56px;
+  }
+
+  .hsteps__step:nth-child(3n) .hsteps__link {
+    display: none;
+  }
 }
 
 /* --- Team ------------------------------------------------------------------ */
@@ -763,7 +775,7 @@
 
   .hsteps__title {
     margin-top: 14px;
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .hsteps__body {

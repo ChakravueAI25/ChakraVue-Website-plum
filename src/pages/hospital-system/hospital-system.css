@@ -1,0 +1,425 @@
+/* ==========================================================================
+   Hospital System page (HospitalSystemPage.tsx). The Box story has its own
+   stylesheet (components/box.css), Join ChakraVue AI too (join.css).
+   ========================================================================== */
+
+.hospital-page {
+  --soft: rgba(255, 243, 231, 0.72);
+  background: #030303;
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+
+.hs-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 168px 0 clamp(80px, 9vw, 120px);
+}
+
+.hs-hero__glow {
+  position: absolute;
+  inset: auto -10% -30%;
+  z-index: -1;
+  height: 75%;
+  background:
+    radial-gradient(50% 60% at 30% 100%, rgba(255, 110, 24, 0.24), transparent 72%),
+    radial-gradient(24% 30% at 30% 100%, rgba(255, 196, 128, 0.18), transparent 72%);
+  pointer-events: none;
+}
+
+.hs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 180, 106, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 139, 18, 0.08);
+  color: #ffd29a;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* "Live": a steady glow that breathes. */
+.hs-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff8b12;
+  box-shadow: 0 0 0 0 rgba(255, 139, 18, 0.6);
+  animation: hsLive 2s ease-out infinite;
+}
+
+@keyframes hsLive {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 139, 18, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(255, 139, 18, 0);
+  }
+}
+
+.hs-hero__title {
+  max-width: 1000px;
+  margin-top: 26px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.4vw, 50px);
+  font-weight: 400;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.hs-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 40px;
+}
+
+.hs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.hs-btn--primary {
+  background: var(--amber);
+  box-shadow: 0 18px 40px rgba(255, 110, 20, 0.28);
+  color: #140b04;
+}
+
+.hs-btn--primary:hover,
+.hs-btn--primary:focus-visible {
+  background: #ffd29a;
+}
+
+.hs-btn--ghost {
+  border: 1px solid rgba(255, 236, 220, 0.45);
+  color: #fff;
+}
+
+.hs-btn--ghost:hover,
+.hs-btn--ghost:focus-visible {
+  border-color: #fff;
+}
+
+.hs-btn span {
+  transition: translate 0.35s var(--ease-out);
+}
+
+.hs-btn:hover span {
+  translate: 4px 0;
+}
+
+/* --- Shared section heads and cards ---------------------------------------- */
+
+.hs-head {
+  max-width: 820px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.hs-title {
+  margin-top: 14px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 38px);
+  font-weight: 400;
+  line-height: 1.22;
+  text-transform: uppercase;
+}
+
+.hs-head > .hs-title:first-child {
+  margin-top: 0;
+}
+
+.hs-lead {
+  max-width: 620px;
+  margin-top: 16px;
+  color: var(--soft);
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.75;
+}
+
+.hs-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 26px;
+  border: 1px solid rgba(255, 214, 170, 0.12);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0.92), rgba(10, 8, 7, 0.92));
+  transition: border-color 0.3s ease;
+}
+
+.hs-card:hover {
+  border-color: rgba(255, 180, 106, 0.45);
+}
+
+.hs-card h3 {
+  color: #ffd29a;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.hs-card p {
+  color: var(--soft);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* --- Audience tabs -------------------------------------------------------- */
+
+.hs-audience {
+  padding: clamp(40px, 5vw, 72px) 0 clamp(80px, 9vw, 120px);
+}
+
+.hs-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 214, 170, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+  scrollbar-width: none;
+}
+
+.hs-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.hs-tab {
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgba(255, 243, 231, 0.7);
+  font-size: 13px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.hs-tab__index {
+  color: #ffb46a;
+  font-size: 11px;
+}
+
+.hs-tab:hover {
+  color: #fff;
+}
+
+.hs-tab.is-active {
+  background: var(--amber);
+  color: #140b04;
+}
+
+.hs-tab.is-active .hs-tab__index {
+  color: #140b04;
+}
+
+.hs-tab:focus-visible {
+  outline: 1px dashed rgba(255, 180, 106, 0.8);
+  outline-offset: 2px;
+}
+
+.hs-panel {
+  margin-top: 32px;
+}
+
+.hs-panel__intro {
+  max-width: 640px;
+  color: #fff;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.6;
+}
+
+.hs-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-more {
+  margin-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hs-more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0 6px;
+  color: #ffb46a;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+
+.hs-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.hs-more summary::after {
+  content: "+";
+  font-size: 18px;
+  transition: rotate 0.3s ease;
+}
+
+.hs-more[open] summary::after {
+  rotate: 45deg;
+}
+
+.hs-more ul {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding-left: 20px;
+  color: var(--soft);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.hs-more li::marker {
+  color: #ff8b12;
+}
+
+/* --- Safety band ---------------------------------------------------------- */
+
+.hs-safety {
+  padding: clamp(80px, 9vw, 120px) 0;
+  border-block: 1px solid rgba(255, 190, 130, 0.08);
+  background: linear-gradient(180deg, #070403, #030202);
+}
+
+.hs-safety__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-safety__card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 24px 20px;
+  border: 1px solid rgba(255, 214, 170, 0.12);
+  border-radius: 20px;
+  background: rgba(14, 10, 8, 0.8);
+}
+
+.hs-safety__index {
+  color: #ff8b12;
+  font-size: 12px;
+}
+
+.hs-safety__card h3 {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.hs-safety__card p {
+  color: var(--soft);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* --- Coming with the Box -------------------------------------------------- */
+
+.hs-box {
+  padding: clamp(80px, 9vw, 120px) 0 clamp(40px, 5vw, 64px);
+  scroll-margin-top: 40px;
+}
+
+.hs-box__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-status {
+  justify-self: start;
+  padding: 5px 10px;
+  border: 1px dashed rgba(255, 180, 106, 0.6);
+  border-radius: 999px;
+  color: #ffb46a;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* --- Responsive ----------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .hs-safety__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hs-box__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .hs-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .hs-hero {
+    padding: 120px 0 64px;
+  }
+
+  .hs-tabs {
+    border-radius: 18px;
+  }
+
+  .hs-tab {
+    padding: 12px 16px;
+  }
+
+  .hs-cards,
+  .hs-safety__grid,
+  .hs-box__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hs-card {
+    padding: 22px;
+  }
+}

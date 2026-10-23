@@ -61,8 +61,8 @@ function Glyph({ kind }: { kind: Platform["glyph"] | App["glyph"] }) {
 /**
  * The software platforms, as a console: pick one from the list and the
  * screen re-renders it with a scan line, the name decoding and the line
- * drawing tracing itself in. A bundle (the Doctor Patient App) shows each
- * of its apps on its own inside the one screen.
+ * drawing tracing itself in. A bundle (one with `apps`) shows each of its
+ * apps on its own inside the one screen.
  */
 export function PlatformConsole() {
   const [active, setActive] = useState(0);
@@ -132,7 +132,7 @@ export function PlatformConsole() {
             The software behind the suite.
           </h2>
           <p className="plat__lead" data-split="fade" data-delay="0.15">
-            Planning, care and wellness platforms that ChakraVue AI has built alongside its devices.
+            Planning and care platforms that ChakraVue AI has built alongside its devices.
           </p>
         </header>
 
