@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
-   Chat assistant: a launcher in the bottom-right corner and its window.
+   Product Assistant: a launcher in the bottom-right corner and its window.
    Classes are .assist-* because the Services page already owns .chat.
    Written in the Ember colours like every stylesheet; theme.ts grades them.
    Above the header (50) and the phone menu (49), below the grain, intro and
@@ -220,17 +220,6 @@ html.is-menu-open .assist {
   background: #1c1615;
 }
 
-.assist-msg--assistant a {
-  color: #ffb46a;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 180, 106, 0.45);
-  text-underline-offset: 3px;
-}
-
-.assist-msg--assistant a:hover {
-  color: #fbd896;
-}
-
 .assist-msg--user {
   align-self: flex-end;
   border-bottom-right-radius: 4px;
@@ -239,70 +228,43 @@ html.is-menu-open .assist {
   white-space: pre-wrap;
 }
 
-/* Links to the pages an answer talks about. */
-.assist-sources {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 10px 0 0 !important;
-  padding: 0 !important;
-  list-style: none;
+/* A sentence quoted from the product document, with its page. */
+.assist-quote {
+  padding-left: 10px;
+  border-left: 2px solid rgba(255, 139, 18, 0.45);
 }
 
-.assist-sources li + li {
-  margin-top: 0;
-}
-
-.assist-msg--assistant .assist-sources a {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 1px;
-  padding: 6px 10px;
-  border: 1px solid rgba(255, 139, 18, 0.35);
-  border-radius: 10px;
-  color: #fff3e7;
-  font-size: 12px;
-  line-height: 1.3;
-  text-decoration: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.assist-sources a small {
+/* The section (product) a quote comes from, when an answer spans several. */
+.assist-section {
+  display: block;
   color: #c99b78;
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
 }
 
-.assist-msg--assistant .assist-sources a:hover {
-  border-color: #ffb46a;
-  background: rgba(255, 139, 18, 0.12);
-  color: #fff3e7;
-}
-
-.assist-suggest {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.assist-suggest button {
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 139, 18, 0.4);
+.assist-page {
+  display: inline-block;
+  margin-left: 2px;
+  padding: 1px 7px;
+  border: 1px solid rgba(255, 139, 18, 0.35);
   border-radius: 999px;
-  background: rgba(255, 139, 18, 0.06);
   color: #ffb46a;
-  font-size: 12px;
-  line-height: 1.35;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: 1px;
 }
 
-.assist-suggest button:hover {
-  background: rgba(255, 139, 18, 0.16);
-  color: #fff3e7;
+.assist-quote-note {
+  color: #fbd896;
+}
+
+.assist-msg .assist-source {
+  margin-top: 10px;
+  color: #c99b78;
+  font-size: 10px;
+  line-height: 1.4;
 }
 
 .assist-typing {
@@ -374,7 +336,7 @@ html.is-menu-open .assist {
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  padding: 12px 12px 6px;
+  padding: 12px;
   border-top: 1px solid rgba(255, 139, 18, 0.2);
 }
 
@@ -419,20 +381,6 @@ html.is-menu-open .assist {
 .assist-input button:disabled {
   cursor: default;
   opacity: 0.4;
-}
-
-.assist-note {
-  margin: 0;
-  padding: 2px 14px 10px;
-  color: rgba(201, 155, 120, 0.8);
-  font-size: 10px;
-  line-height: 1.4;
-}
-
-.assist-note a {
-  color: #ffb46a;
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
 /* Phones: the window fills the screen and the launcher hides behind it. */

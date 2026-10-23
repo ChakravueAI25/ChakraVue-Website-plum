@@ -2,10 +2,14 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
-import { handleChat } from "./chatHandler.ts";
+import { adminEnabled } from "./assistant/auth.ts";
+import { documentInfo } from "./assistant/knowledge.ts";
+import { handleAssistantRoute } from "./routes.ts";
 
 /**
- * Production server: the built site from dist/ plus the assistant's API.
+ * Production server: the built site from dist/ plus the Product Assistant
+ * (the chat API and the /admin upload page). The assistant answers from the
+ * uploaded PDF with local keyword search; it calls no outside service.
  * `npm run build && npm run serve`. In development `npm run dev` mounts the
  * same API inside Vite (vite.config.ts), so this file isn't needed there.
  */
@@ -49,7 +53,7 @@ async function fileFor(pathname: string) {
 
 createServer(async (req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
-  if (url.pathname === "/api/chat") return handleChat(req, res);
+  if (await handleAssistantRoute(req, res)) return;
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.writeHead(405, { Allow: "GET, HEAD" }).end();
     return;
@@ -74,9 +78,10 @@ createServer(async (req, res) => {
   });
   if (req.method === "HEAD") return res.end();
   createReadStream(path).pipe(res);
-}).listen(PORT, HOST, () => {
+}).listen(PORT, HOST, async () => {
   console.log(`ChakraVue AI site on http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`);
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    console.warn("ANTHROPIC_API_KEY is not set: the chat assistant will answer that it isn't configured.");
-  }
+  if (!adminEnabled()) console.warn("ADMIN_PASSWORD_HASH is not set: the /admin upload page is switched off.");
+  const document = await documentInfo();
+  if (document) console.log(`Product Assistant: answering from "${document.name}" (updated ${document.updatedAt}).`);
+  else console.warn("Product Assistant: no PDF uploaded yet. Upload one at /admin.");
 });
