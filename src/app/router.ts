@@ -57,7 +57,10 @@ export function navigate(href: string, origin?: Origin) {
   const next = normalize(url.pathname);
 
   if (next === path) {
+    const oldURL = window.location.href;
     window.history.pushState({}, "", url);
+    // pushState announces nothing; components that open on a link (the platform console) listen for this.
+    if (url.hash && url.href !== oldURL) window.dispatchEvent(new HashChangeEvent("hashchange", { oldURL, newURL: url.href }));
     if (url.hash) scrollToTarget(url.hash);
     else scrollToTop(false);
     return;
@@ -71,9 +74,32 @@ export function navigate(href: string, origin?: Origin) {
       commit(next);
     },
     afterSwap: () => {
-      if (url.hash) scrollToTarget(url.hash, true);
+      if (url.hash) settleOn(url.hash);
     },
   });
+}
+
+/**
+ * Jumps to an anchor on a page that has just mounted, and keeps it in view
+ * while the page finishes laying out: the Product Suite theater grows by
+ * thousands of pixels after mount (and Lenis clamps to the old height until
+ * it measures again), which would leave a one-off jump to anything below it
+ * far short. Stops once the anchor has held still for a moment.
+ */
+function settleOn(hash: string) {
+  const target = document.querySelector<HTMLElement>(hash);
+  if (!target) return;
+  const until = performance.now() + 3000;
+  let steady = 0;
+  const follow = () => {
+    const atBottom = window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 2;
+    if (Math.abs(target.getBoundingClientRect().top) > 2 && !atBottom) {
+      steady = 0;
+      scrollToTarget(target, true);
+    } else steady += 1;
+    if (steady < 30 && performance.now() < until) requestAnimationFrame(follow);
+  };
+  follow();
 }
 
 export function useRoute() {
