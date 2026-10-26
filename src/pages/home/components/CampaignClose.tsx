@@ -42,13 +42,13 @@ export function CampaignClose() {
 
         <div className="campaign-close__copy">
           <p className="section-label" data-scramble>
-            Every doctor started small
+            The dream, within reach
           </p>
           <h2 id="campaign-close-title" className="campaign-close__title" data-split>
-            Levelling the field for <em>every hospital</em>.
+            A doctor with <em>new powers</em>.
           </h2>
           <p className="campaign-close__lead" data-split="fade" data-delay="0.15">
-            Join the revolution.
+            Every case captured. Every examination remembered. Every patient on one timeline. Every instrument connected. Join the revolution.
           </p>
           <div className="campaign-close__actions">
             <Link href="/product-suite" className="hero__btn hero__btn--primary" data-magnetic="0.2" data-reveal>

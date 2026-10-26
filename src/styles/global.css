@@ -1,4 +1,25 @@
-@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
+/* Audiowide is linked from index.html. Until it arrives, text is set in
+   Arial resized to Audiowide's width and line height, so nothing moves when
+   it swaps in (the hero's copy, set low in the hero, used to jump). Capitals
+   and lower case differ in width between the two, so headings, labels and
+   the nav (mostly capitals) get one fallback and body text the other. */
+@font-face {
+  font-family: "Audiowide Fallback";
+  src: local("Arial");
+  size-adjust: 126.2%;
+  ascent-override: 78.4%;
+  descent-override: 23%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Audiowide Fallback Caps";
+  src: local("Arial");
+  size-adjust: 114.9%;
+  ascent-override: 86.2%;
+  descent-override: 25.2%;
+  line-gap-override: 0%;
+}
 
 :root {
   --bg: #030303;
@@ -12,10 +33,10 @@
   --line: rgba(255, 139, 18, 0.35);
   /* One typeface for the whole site: Audiowide. The role tokens are kept so
      every stylesheet stays readable; they all resolve to the same face. */
-  --font-display: "Audiowide", Arial, sans-serif;
-  --font-body: "Audiowide", Arial, sans-serif;
-  --font-nav: "Audiowide", Arial, sans-serif;
-  --font-ui: "Audiowide", Arial, sans-serif;
+  --font-display: "Audiowide", "Audiowide Fallback Caps", Arial, sans-serif;
+  --font-body: "Audiowide", "Audiowide Fallback", Arial, sans-serif;
+  --font-nav: "Audiowide", "Audiowide Fallback Caps", Arial, sans-serif;
+  --font-ui: "Audiowide", "Audiowide Fallback Caps", Arial, sans-serif;
 }
 
 * {

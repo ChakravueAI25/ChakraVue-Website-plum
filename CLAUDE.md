@@ -25,7 +25,9 @@ when you change one.
   scroll for storytelling. Motion supports the content and never becomes
   the content. The owner shares this work with their head, so finish
   should be senior-level.
-- **Audiowide is the only typeface.** Never add another.
+- **Audiowide is the only typeface.** Never add another. (Its metric-matched
+  Arial fallbacks in `global.css` only show until it loads; they stop the
+  page jumping when it swaps in.)
 - **The name is always written "ChakraVue AI"**, even inside labels set in
   capitals: wrap it with `BrandText` / `setBrandText`
   (`src/shared/components/BrandText.tsx`), which applies `.brand-name`
@@ -64,19 +66,25 @@ when you change one.
   `sessionStorage.cv-intro-seen = "1"` skips it.
 - **Home**, in order:
   - Hero (`pages/home/components/Hero.tsx`), rebuilt 2026-10-26 at the
-    owner's request: the "Analogue to AI" campaign film fills it (the kid
-    walks a blueprint, strikes a match, it burns open onto AI circuitry),
-    replacing the sunset, the particle landscape (`dataHorizon.ts`, now
-    unused) and the centred logo. Copy low on the left, a "The campaign
-    film" play/pause chip on the right, product shortcuts along the
-    bottom; shading keeps the nav and copy readable. Silent, starts after
-    the curtain, pauses off screen, poster under reduced motion. Nothing
-    in the hero moves with scroll. (The separate film band that sat under
-    the hero was removed in the same change.)
+    owner's request: the dream. The campaign film's first 5.5 s (the kid
+    walks a blueprint and strikes a match) plays once and holds on the lit
+    match; the burn is saved for the discovery. Two encodes
+    (`analogue-to-ai-dream.mp4`, `-sm` for phones). It replaced the sunset,
+    the particle landscape (`dataHorizon.ts`, now unused) and the centred
+    logo. "Every doctor started small" above the unchanged headline (the
+    owner hasn't yet decided whether the story line replaces it), copy low
+    on the left, a play/pause chip ("Play again"), product shortcuts along
+    the bottom. On phones the film fills the top half so the boy stays in
+    view. Nothing in the hero moves with scroll.
   - Featured-in (NDTV) marquee: home only.
   - The page tells the kid's story in six chapters (`shared/data/story.ts`,
     added 2026-10-26 at the owner's request): dream, beginning, discovery,
-    transformation, journey, aspiration. `ChapterMark`s sit between
+    transformation, journey, aspiration. The owner's direction (2026-10-26):
+    the kid is a future doctor and ChakraVue's products are his powers;
+    the film's curly-haired boy is the canonical character (the 3D
+    superhero toddler and the illustrated doctor are stand-ins until
+    matching art exists). Power lines must paraphrase each product's own
+    description; never claim the site trains or qualifies doctors. `ChapterMark`s sit between
     sections, so technical sections carry no story code; keep it that way
     (the owner asked for the technical content to stay exactly as it is).
   - Statement band: "Built From Experience. / Guided by Science. / Elevated
@@ -92,6 +100,8 @@ when you change one.
   - Team and Latest posts.
   - The aspiration (`CampaignClose.tsx`): toddler and doctor at a height
     chart, the doctor rising to full height; Explore products / Contact us.
+  - The art pipeline (frames, sprites, retouching, film cuts) is in
+    `tools/campaign-art/`; rebuild art from there, not by hand.
   - Campaign and reel art is retouched before it ships: no State Emblem,
     no car or microscope maker's marks, no REF/SN plates, no FPS or GPU
     readouts on screens (the summit setup photo was left out for a GPU

@@ -49,7 +49,7 @@ const reels: Reel[] = [
 ];
 
 /**
- * The beginning of the kid's story: the days every hospital knows, from the
+ * The challenge in the kid's story: the days every doctor knows, from the
  * campaign's reel wall. Where the campaign drew the answer too, the scene
  * turns into it as the card arrives; hovering a card shows the old day again.
  * Each card leads to the product that answers it.
@@ -73,10 +73,10 @@ export function ProblemReels() {
         <header className="hsec-head">
           <div>
             <p className="section-label" data-scramble>
-              Still on the old blueprint?
+              Still on the old blueprint
             </p>
             <h2 id="reels-title" className="hsec-title" data-split>
-              Every hospital knows these days.
+              Every doctor knows these days.
             </h2>
           </div>
         </header>

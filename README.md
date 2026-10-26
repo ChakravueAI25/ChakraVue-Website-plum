@@ -80,26 +80,29 @@ chapters (`shared/data/story.ts`): The dream, The beginning, The discovery,
 The transformation, The journey, The aspiration. Each starts at a
 `ChapterMark` placed between sections, so the technical sections carry no
 story code; the growth rail reads the marks. In order:
-- **Hero** (`Hero.tsx`, `home.css`). The "Analogue to AI" campaign film fills
-  the hero (`public/images/campaign/analogue-to-ai.mp4`, 11.6s, silent
-  loop): the campaign's character, a small boy, walks across an old
-  engineering blueprint, strikes a match, and the paper burns open onto AI
-  circuitry. It replaced the sunset, the particle landscape and the centred
-  logo (2026-10-26, at the owner's request). Framed into the site: the
-  nav's band and the copy's corner are shaded, the edges vignetted, the
-  bottom melts into the page over a warm hairline. Over it, low on the
-  left: "Analogue to AI", the headline, the one-line summary, "Explore
-  products" and "Contact us"; on the right a "The campaign film" chip with
-  play/pause; and the four product shortcuts along the bottom. The film
-  starts once the curtain opens (never under the intro), pauses off screen,
-  and waits on its poster under reduced motion. On phones it's framed on
-  the boy. Nothing in the hero moves with scroll.
+- **Hero: the dream** (`Hero.tsx`, `home.css`). The kid, who wants to be a
+  doctor, walks across an old engineering blueprint and strikes a match. The
+  film (`campaign/analogue-to-ai-dream.mp4`, the campaign film's first 5.5 s;
+  `-dream-sm.mp4`, a lighter encode, below 760px) plays once and holds on
+  the lit match; what it sets alight is the discovery further down. It
+  replaced the sunset, the particle landscape and the centred logo
+  (2026-10-26, at the owner's request). Framed into the site: the nav's band
+  and the copy's corner are shaded, the edges vignetted, the bottom melts
+  into the page over a warm hairline. Over it, low on the left: "Every
+  doctor started small", the headline, the one-line summary, "Explore
+  products" and "Contact us"; on the right a chip with play/pause ("Play
+  again" once it has played); the four product shortcuts along the bottom.
+  The film starts once the curtain opens (never under the intro), pauses
+  off screen, and waits on its poster under reduced motion. On phones the
+  film fills the top half and fades into the copy, so the boy stays in
+  view. Nothing in the hero moves with scroll. The full campaign film
+  (`analogue-to-ai.mp4`) is no longer used.
 - **Featured in** marquee (homepage only).
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
   Healthcare Can See, Understand, and Do." under a short rule.
 - **The beginning: problem reels** (`ProblemReels.tsx`, `reels.css`). "Still
-  on the old blueprint? / Every hospital knows these days." Three scenes
+  on the old blueprint / Every doctor knows these days." Three scenes
   from the campaign's reel wall, each linking to the product that answers
   it: an old car (Integrated Devices), a clerk buried in paperwork (AI
   Powered EMR), a wobbly tower (Dental Implant Planning). The car and the
@@ -112,8 +115,11 @@ story code; the growth rail reads the marks. In order:
   blueprint redesign's logo reveal. The burnt blueprint (`burn-hole.webp`)
   hangs over the scene; as the section arrives it opens out past the screen
   and the boy is there at the glowing circuit (`circuit-reveal.jpg`), then
-  "Underneath it all / Not to burn the past. / To see what was underneath it
-  all along." Plays once, with Replay; open from the start without motion.
+  "The spark / Not to burn the past. / To see what was underneath it all
+  along." and the way on into the products: "Four new powers, built into
+  the tools doctors already use ↓". The only place the burn is shown (the
+  hero stops at the match). Plays once, with Replay; open from the start
+  without motion.
 - **Product suite showcase.** "Four products, one connected line of
   sight." Four dark panels, each crossed by a slit of
   light (a nod to the slit lamp) showing a sliver of its product. Opening a
@@ -134,9 +140,17 @@ story code; the growth rail reads the marks. In order:
 - **Blog.** The three latest posts, linking to the blog.
 - **The aspiration** (`CampaignClose.tsx`, `campaign.css`). A height chart:
   the toddler at 0.95 m and, beside him, the doctor he grows into rising to
-  1.74 m as the section arrives, the tape lighting with him. "Every doctor
-  started small / Levelling the field for every hospital. / Join the
-  revolution." and Explore products / Contact us.
+  1.74 m as the section arrives, the tape lighting with him. "The dream,
+  within reach / A doctor with new powers." and the four powers, each
+  drawn from its product's own description: "Every case captured. Every
+  examination remembered. Every patient on one timeline. Every instrument
+  connected. Join the revolution." Then Explore products / Contact us.
+
+How the campaign art was made (frame cutting, sprites, retouching, the hero
+film's cuts) is in `tools/campaign-art/README.md`, with the scripts.
+
+The leaders' and team portraits are WebP (the PNGs they came from are still
+in `public/images/` but no longer used): about 8 MB less on the homepage.
 
 The campaign art comes from the blueprint redesign (`blueprint-site/` on the
 `blueprint-site` branch); only the pieces used here are copied into
@@ -402,13 +416,19 @@ and Plum is applied over them at runtime (`SITE_THEME` in `theme.ts`).
 
 ## Typography
 
-The whole site is set in Audiowide. The stylesheets still use role tokens
-(`--font-display`, `--font-body`, `--font-nav`, `--font-ui` in
-`src/styles/global.css`), and they now all point to Audiowide. To bring the
-original mix back:
+The whole site is set in Audiowide, linked from `index.html` (not
+`@import`ed from a stylesheet, so it starts loading with the page). Until it
+arrives, text is set in Arial resized to Audiowide's measurements, so nothing
+moves when it swaps in: "Audiowide Fallback Caps" for headings, labels and
+the nav (mostly capitals) and "Audiowide Fallback" for body text, since the
+two fonts differ in width differently for capitals and lower case. The
+stylesheets still use role tokens (`--font-display`, `--font-body`,
+`--font-nav`, `--font-ui` in `src/styles/global.css`), and they all point to
+Audiowide. To bring the original mix back:
 1. Set `--font-body` and `--font-nav` to `"Inria Serif", Georgia, serif` and
    `--font-ui` to `"Montserrat", "Segoe UI", Arial, sans-serif`.
-2. Put those families back in the Google Fonts `@import` at the top of that file.
+2. Add those families to the Google Fonts link in `index.html` (with fallbacks
+   measured the same way).
 3. Add them to `FAMILIES` in `src/motion/fonts.ts`, so text waits for them
    before it's split into lines.
 
@@ -427,15 +447,19 @@ dialogue are illustrative, so please confirm they're acceptable to show.
 Campaign copy (from the blueprint redesign, adapted). Please review:
 - Hero: the "Analogue to AI" eyebrow and the "The campaign film" chip.
 - Story chapter names (`story.ts`), shown on the growth rail.
+- Hero: "Every doctor started small" above the headline. The headline itself
+  is unchanged until the owner decides whether the story line should replace
+  it.
 - Reels: "Still on the old blueprint?", "Every hospital knows these days.",
   each card's hook and punchline, and which product each links to.
-- Discovery: "Underneath it all" / "Not to burn the past." / "To see what was
-  underneath it all along."
+- Discovery: "The spark" / "Not to burn the past." / "To see what was
+  underneath it all along." / "Four new powers, built into the tools doctors
+  already use".
 - Real theatres: "Not a render", "In real theatres, with real surgeons." and
   the four captions. Confirm consent for the people shown, and that the
   summit appearance can be named.
-- Aspiration: "Every doctor started small" / "Levelling the field for every
-  hospital." / "Join the revolution."
+- Aspiration: "The dream, within reach" / "A doctor with new powers." and the
+  four power lines.
 - About: "Why we exist", the blueprint's About hero lines, and the two
   captions under the height chart.
 - The film shows the boy striking a match; confirm that's acceptable for a

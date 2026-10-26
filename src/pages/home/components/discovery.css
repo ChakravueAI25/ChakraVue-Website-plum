@@ -90,6 +90,40 @@
   transition-delay: 1.5s;
 }
 
+.discovery__copy > :nth-child(4) {
+  transition-delay: 2.4s;
+}
+
+/* The way on into the four products, the powers, just below. */
+.discovery__bridge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  color: rgba(255, 243, 231, 0.82);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.discovery__bridge span {
+  color: #ffb46a;
+  animation: bridgeNudge 1.8s ease-in-out infinite;
+}
+
+@keyframes bridgeNudge {
+  50% {
+    translate: 0 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discovery__bridge span {
+    animation: none;
+  }
+}
+
 /* At the content column's right edge, clear of the growth rail. */
 .discovery__replay {
   position: absolute;

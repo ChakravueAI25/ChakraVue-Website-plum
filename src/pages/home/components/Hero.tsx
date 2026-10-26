@@ -6,7 +6,12 @@ import { useMotion } from "../../../motion/useMotion";
 import { Link } from "../../../shared/components/Link";
 import { products } from "../../product-suite/data";
 
-const FILM = "/images/campaign/analogue-to-ai.mp4";
+// The film's first five and a half seconds: the boy walks the blueprint and
+// strikes the match. The burn itself is saved for the discovery further down.
+// Phones get a lighter encode of the same cut.
+const FILM = window.matchMedia("(max-width: 760px)").matches
+  ? "/images/campaign/analogue-to-ai-dream-sm.mp4"
+  : "/images/campaign/analogue-to-ai-dream.mp4";
 const POSTER = "/images/campaign/analogue-to-ai-poster.jpg";
 
 type HeroProps = {
@@ -15,13 +20,14 @@ type HeroProps = {
 };
 
 /**
- * The homepage hero, set over the "Analogue to AI" campaign film: the boy
- * walks across an old engineering blueprint, strikes a match, and the paper
- * burns open onto the intelligence underneath. Over it: the headline, one
- * line on what ChakraVue does, the two next steps, and a direct way into
- * each product. The film starts once the curtain opens (never under the
- * intro), pauses when the hero is off screen, and waits on its poster under
- * reduced motion until someone presses play.
+ * The homepage hero, and the dream: the boy, who wants to be a doctor, walks
+ * across an old engineering blueprint and strikes a match. The film plays
+ * once and holds on the lit match; what it sets alight is the discovery,
+ * further down the page. Over it: the story line, the headline, one line on
+ * what ChakraVue does, the two next steps, and a way into each product. The
+ * film starts once the curtain opens (never under the intro), pauses when
+ * the hero is off screen, and waits on its poster under reduced motion until
+ * someone presses play.
  */
 export function Hero({ onIntroDone }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
@@ -29,6 +35,7 @@ export function Hero({ onIntroDone }: HeroProps) {
   const introDone = useRef(onIntroDone);
   introDone.current = onIntroDone;
   const [playing, setPlaying] = useState(false);
+  const [ended, setEnded] = useState(false);
   // Someone pressed pause: scrolling back up doesn't override them.
   const held = useRef(reduceMotion);
 
@@ -39,7 +46,7 @@ export function Hero({ onIntroDone }: HeroProps) {
     const off = whenRevealed(() => {
       observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting && !held.current) video.play().catch(() => {});
+          if (entry.isIntersecting && !held.current && !video.ended) video.play().catch(() => {});
           else if (!entry.isIntersecting) video.pause();
         },
         { threshold: 0.2 },
@@ -57,6 +64,7 @@ export function Hero({ onIntroDone }: HeroProps) {
     if (!video) return;
     if (video.paused) {
       held.current = false;
+      if (video.ended) video.currentTime = 0;
       video.play().catch(() => {});
     } else {
       held.current = true;
@@ -112,22 +120,24 @@ export function Hero({ onIntroDone }: HeroProps) {
         src={FILM}
         poster={POSTER}
         muted
-        loop
         playsInline
         preload="metadata"
         aria-describedby="hero-film-desc"
-        onPlay={() => setPlaying(true)}
+        onPlay={() => {
+          setPlaying(true);
+          setEnded(false);
+        }}
         onPause={() => setPlaying(false)}
+        onEnded={() => setEnded(true)}
       />
       <p id="hero-film-desc" className="sr-only">
-        A short film without sound: a boy walks across an old engineering blueprint, strikes a match, and the burning paper opens onto glowing
-        AI circuitry underneath.
+        A short film without sound: a boy walks across an old engineering blueprint, kneels, and strikes a match.
       </p>
       <div className="hero__shade" aria-hidden="true" />
 
       <div className="section__inner hero__content">
         <div className="hero__copy">
-          <p className="hero__eyebrow">Analogue to AI</p>
+          <p className="hero__eyebrow">Every doctor started small</p>
           <h1 id="hero-title">
             Add <em>Intelligence</em> To Your Practice
           </h1>
@@ -146,8 +156,13 @@ export function Hero({ onIntroDone }: HeroProps) {
         </div>
 
         <div className="hero__chip">
-          <span className="hero__chip-label">The campaign film</span>
-          <button type="button" className="hero__chip-toggle" onClick={toggle} aria-label={playing ? "Pause the film" : "Play the film"}>
+          <span className="hero__chip-label">{ended ? "Play again" : "The campaign film"}</span>
+          <button
+            type="button"
+            className="hero__chip-toggle"
+            onClick={toggle}
+            aria-label={playing ? "Pause the film" : ended ? "Play the film again" : "Play the film"}
+          >
             {playing ? (
               <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12">
                 <rect x="6" y="5" width="4" height="14" />
