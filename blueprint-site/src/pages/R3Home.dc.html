@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ChakraVue AI — Home (round 3)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&amp;family=Lora:ital,wght@0,500;0,600;1,500&amp;family=Inter:wght@400;500;600&amp;family=Noto+Sans+Devanagari:wght@500&amp;family=Noto+Sans+Telugu:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A1220}
+a{color:#E8A93A;text-decoration:none}a:hover{color:#F4C46A}
+.aw{font-family:'Audiowide',sans-serif}
+.serif{font-family:'Lora',Georgia,serif}
+.eyebrow{font:400 12px/1.4 'Audiowide',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#38E1E6}
+.navl{font:400 12px 'Audiowide',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#D5CDBE}
+.step-no{display:block;font:400 12px/1 'Audiowide',sans-serif;color:#38E1E6;padding-bottom:10px;border-bottom:3px solid #38E1E6;width:28px}
+.logo{mix-blend-mode:screen;pointer-events:none}
+.punch{color:#E8A93A;border-bottom:2px solid #E8A93A;padding-bottom:2px}
+.chip{font:400 10px 'Audiowide',sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid #4E6690;color:#D5CDBE}
+.link-line{flex:1 1 40px;min-width:24px;height:1px;background:linear-gradient(90deg,rgba(56,225,230,.08),#38E1E6,rgba(56,225,230,.08))}
+.bp-bg{background:linear-gradient(rgba(10,18,32,.82),rgba(10,18,32,.9)),url(/_blob/93ae008253bfb33164a6c9e073fae461) center/cover}
+.reveal-bg{background:linear-gradient(rgba(10,18,32,.78),rgba(10,18,32,.9)),url(/_blob/17b8fc6ce2c88b4e8b0c0ad6789b0576) center/cover}
+.hero-shade{background:linear-gradient(0deg,#0A1220 0%,rgba(10,18,32,.78) 28%,rgba(10,18,32,.1) 62%,rgba(10,18,32,0) 100%)}
+.ai{color:#38E1E6}
+.rv-sheet{transform:scale(1);transform-origin:50% 50%;transition:transform 2.4s cubic-bezier(.65,0,.25,1),opacity 1s ease 1.5s}
+.rv-on .rv-sheet{transform:scale(7.5);opacity:0}
+.rv-mark{opacity:.55;transform:scale(.86);transition:opacity 1.4s ease .5s,transform 2.2s cubic-bezier(.2,.7,.2,1) .5s}
+.rv-on .rv-mark{opacity:1;transform:scale(1)}
+.rv-name,.rv-line,.rv-cta{opacity:0;transform:translateY(14px);transition:opacity 1s ease,transform 1s ease}
+.rv-on .rv-name{opacity:1;transform:none;transition-delay:1.7s}
+.rv-on .rv-line{opacity:1;transform:none;transition-delay:2s}
+.rv-on .rv-cta{opacity:1;transform:none;transition-delay:2.3s}
+.rv-cap{transition:opacity .8s ease}
+.rv-on .rv-cap{opacity:0}
+@media (prefers-reduced-motion:reduce){.rv-sheet,.rv-mark,.rv-name,.rv-line,.rv-cta,.rv-cap{transition:none}}
+
+
+
+
+
+@keyframes cvfuse{0%{border-color:#7CC8FF;box-shadow:0 0 0 1px rgba(124,200,255,.22),0 0 14px rgba(80,170,255,.45),inset 0 0 14px rgba(80,170,255,.18)}16%{border-color:#FFD08A;box-shadow:-16px -6px 34px rgba(255,140,30,1),-4px 0 60px rgba(255,120,20,.6),inset 14px 0 20px rgba(255,140,30,.55)}50%{border-color:#FFC060;box-shadow:0 0 0 2px rgba(255,190,90,.7),0 0 46px rgba(255,140,30,.95),0 0 90px rgba(255,120,20,.45),inset 0 0 22px rgba(255,140,30,.4)}100%{border-color:#F2A93B;box-shadow:0 0 0 1px rgba(242,169,59,.5),0 0 22px rgba(242,169,59,.55),inset 0 0 14px rgba(242,169,59,.22)}}
+@keyframes cvhole{0%,8%{opacity:0;clip-path:polygon(0 0,0 0,0 100%,0 100%)}16%{opacity:1}64%{clip-path:polygon(0 0,115% 0,95% 100%,0 100%)}100%{opacity:1;clip-path:polygon(0 0,130% 0,130% 100%,0 100%)}}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 66px 0 28px;border-radius:10px;font:500 17px/1 'Lora',Georgia,serif;letter-spacing:.02em;color:#F2E9D8;box-sizing:border-box;white-space:nowrap;cursor:pointer;text-shadow:0 1px 8px rgba(0,0,0,.45);transition:border-color .25s,box-shadow .25s}
+.btn::after{content:"→";position:absolute;right:30px;top:50%;transform:translateY(-52%);font:400 22px/1 'Lora',Georgia,serif}
+.btn::before{content:"";position:absolute;inset:-62px -104px;border-style:solid;border-width:62px 104px;border-image:url(/_blob/05c13ba366acdfa0bb742c16289e0c7f) 120 200 stretch;opacity:0;pointer-events:none}
+.btn-ghost::before,.btn:nth-of-type(3n+2)::before{border-image-source:url(/_blob/0f3d4e10d5207884dd4ace302f0ddb08)}
+.btn-cta::before,.btn:nth-of-type(3n)::before{border-image-source:url(/_blob/250c98d90a39c4f82886b206ab67a4f8)}
+.btn-gold{border:1.5px solid #7CC8FF;background:radial-gradient(circle at calc(100% - 12px) 50%,transparent 0 4px,rgba(170,210,255,.5) 4px 5px,transparent 5px 10px,rgba(170,210,255,.32) 10px 11px,transparent 11px 17px,rgba(170,210,255,.22) 17px 18px,transparent 18px 25px,rgba(170,210,255,.14) 25px 26px,transparent 26px),repeating-linear-gradient(0deg,rgba(150,200,255,.09) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(150,200,255,.09) 0 1px,transparent 1px 10px),linear-gradient(180deg,#16335E,#0D2246);box-shadow:0 0 0 1px rgba(124,200,255,.22),0 0 14px rgba(80,170,255,.45),inset 0 0 14px rgba(80,170,255,.18)}
+.btn-ghost{border:1px solid rgba(242,233,216,.6);background:radial-gradient(circle at calc(100% - 12px) 50%,transparent 0 10px,rgba(242,233,216,.18) 10px 11px,transparent 11px 18px,rgba(242,233,216,.12) 18px 19px,transparent 19px),repeating-linear-gradient(0deg,rgba(150,200,255,.06) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(150,200,255,.06) 0 1px,transparent 1px 10px),rgba(10,18,32,.55);box-shadow:inset 0 0 0 1px rgba(242,233,216,.08)}
+.btn-cta{border:1.5px solid #F2A93B;background:radial-gradient(circle at calc(100% - 12px) 50%,transparent 0 4px,rgba(255,200,120,.5) 4px 5px,transparent 5px 10px,rgba(255,200,120,.3) 10px 11px,transparent 11px 18px,rgba(255,200,120,.18) 18px 19px,transparent 19px),repeating-linear-gradient(0deg,rgba(255,200,120,.07) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(255,200,120,.07) 0 1px,transparent 1px 10px),linear-gradient(180deg,#1A2B4A,#101C33);box-shadow:0 0 0 1px rgba(242,169,59,.35),0 0 18px rgba(242,169,59,.45),inset 0 0 14px rgba(242,169,59,.16)}
+.btn:hover,.btn.is-hover{color:#F2E9D8;border-color:#F2A93B;box-shadow:0 0 0 1px rgba(242,169,59,.5),0 0 22px rgba(242,169,59,.55),inset 0 0 14px rgba(242,169,59,.22)}
+.btn:focus-visible{outline:2px solid #F2E9D8;outline-offset:6px}
+.btn:active,.btn:focus,.btn.is-burning{animation:cvfuse 1.3s ease forwards}
+.btn:active::before,.btn:focus::before,.btn.is-burning::before{animation:cvhole 1.1s ease-out forwards}
+.btn.is-burnt{border-color:#F2A93B;box-shadow:0 0 0 1px rgba(242,169,59,.5),0 0 22px rgba(242,169,59,.55),inset 0 0 14px rgba(242,169,59,.22)}
+.btn.is-burnt::before{opacity:1}
+@media (prefers-reduced-motion:reduce){.btn:active,.btn:focus,.btn.is-burning,.btn:active::before,.btn:focus::before,.btn.is-burning::before{animation:none}}
+.tab{min-height:44px;padding:0 18px;border-radius:8px;border:1px solid rgba(124,200,255,.35);background:repeating-linear-gradient(0deg,rgba(150,200,255,.06) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(150,200,255,.06) 0 1px,transparent 1px 10px),rgba(10,18,32,.5);color:#D5CDBE;font:500 15px 'Lora',Georgia,serif;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.tab:hover{border-color:#F2A93B}
+.tab-on{border-color:#7CC8FF;color:#F2E9D8;background:linear-gradient(180deg,#16335E,#0D2246);box-shadow:0 0 14px rgba(80,170,255,.45),inset 0 0 12px rgba(80,170,255,.2)}
+</style>
+</helmet>
+<div style="background:#0A1220;color:#F2E9D8;font-family:'Inter',system-ui,sans-serif;overflow:hidden">
+
+<!-- NAV -->
+<header style="border-bottom:1px solid #1B2942">
+<nav aria-label="Main" style="max-width:1280px;margin:0 auto;padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px">
+<a href="R3Home.dc.html" style="display:flex;align-items:center;gap:12px;color:#F2E9D8">
+<img class="logo" src="/_blob/b0b8b3ee954b3696d50ef351e274f514" alt="" style="width:42px;height:41px">
+<img class="wordmark" src="/_blob/6edccd582e6619f3ec058609d6d24263" alt="ChakraVue AI" style="display:block;height:19px;width:auto">
+</a>
+<div style="display:flex;flex-wrap:wrap;gap:6px 24px;flex:1 1 440px">
+<a class="navl" href="R3Products.dc.html">Products</a>
+<a class="navl" href="R3Insurance.dc.html">Hospitals</a>
+<a class="navl" href="#reels">Dental</a>
+<a class="navl" href="#box">ChakraVue Box</a>
+<a class="navl" href="R3Partners.dc.html">Partners</a>
+<a class="navl" href="R3About.dc.html">About</a>
+</div>
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<div role="group" aria-label="Language" style="display:flex;gap:2px;font-size:13px;border:1px solid #2E4163;border-radius:999px;padding:3px">
+<a href="#" style="padding:6px 10px;border-radius:999px;background:#22324F;color:#F2E9D8">EN</a>
+<a href="#" style="padding:6px 10px;color:#AEB8C9;font-family:'Noto Sans Devanagari',sans-serif">हिं</a>
+<a href="#" style="padding:6px 10px;color:#AEB8C9;font-family:'Noto Sans Telugu',sans-serif">తె</a>
+</div>
+<a class="btn btn-gold" href="R3Signup.dc.html">Book a visit</a>
+</div>
+</nav>
+</header>
+
+<!-- HERO -->
+<section aria-label="Analogue to AI" style="position:relative;min-height:min(860px,92vh);display:flex;align-items:flex-end;overflow:hidden">
+<video ref="{{heroRef}}" autoplay="" muted="" loop="" playsinline="" poster="/_blob/1b54fe7fdb01555589ac79cfa38cbdee" src="/_blob/82f1a2351c05a1499d0efaa213efa8c6" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
+<div class="hero-shade" aria-hidden="true" style="position:absolute;inset:0"></div>
+<div style="position:relative;width:100%;max-width:1280px;margin:0 auto;padding:0 24px 64px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px">
+<div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:20px;max-width:720px">
+<span class="eyebrow">Analogue to AI</span>
+<h1 class="serif" style="margin:0;font-size:clamp(44px,6.4vw,88px);line-height:1.02;font-weight:600;text-shadow:0 2px 24px rgba(0,0,0,.5)">Your equipment has served you well.<br><span class="punch" style="font-style:italic;font-weight:500">Now give it an engine.</span></h1>
+<p style="margin:0;font-size:20px;line-height:1.55;color:#E6DFD0;max-width:600px"><b style="color:#F2E9D8">AI in your hands</b>, on the devices you already own. <span style="white-space:nowrap">ChakraVue AI</span> levels the field for every hospital, eye and dental.</p>
+<div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:4px">
+<a class="btn btn-gold" href="R3Signup.dc.html">Visit the Experience Centre</a>
+<a class="btn btn-ghost" href="R3Signup.dc.html">Start 90-day free trial</a>
+</div>
+</div>
+<button type="button" aria-label="{{vidLabel}}" onClick="{{toggleVideo}}" style="width:44px;height:44px;border-radius:50%;border:1px solid #3D5378;background:rgba(10,18,32,.6);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="#F2E9D8"><rect x="6" y="5" width="4" height="14"></rect><rect x="14" y="5" width="4" height="14"></rect></svg></button>
+</div>
+</section>
+
+<!-- LOGO REVEAL: the blueprint burns open onto the ChakraVue AI mark -->
+<section id="reveal" ref="{{revealRef}}" class="{{revealCls}}" aria-label="ChakraVue AI" style="position:relative;height:min(860px,94vh);min-height:560px;overflow:hidden;background:#05090F">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px">
+<img class="logo rv-mark" src="/_blob/b0b8b3ee954b3696d50ef351e274f514" alt="" style="width:min(300px,52vw)">
+<h2 class="rv-name" style="margin:0;line-height:0"><img src="/_blob/6edccd582e6619f3ec058609d6d24263" alt="ChakraVue AI" style="height:clamp(34px,4.4vw,58px);width:auto"></h2>
+<p class="serif rv-line" style="margin:0;font-size:clamp(18px,2vw,24px);font-style:italic;color:#D5CDBE">The revolution begins here.</p>
+<div class="rv-cta" style="padding-top:18px"><a class="btn btn-gold" href="R3Signup.dc.html" style="min-height:56px;padding-left:40px;padding-right:72px;font-size:20px">Start the Journey</a></div>
+</div>
+<img class="rv-sheet" src="/_blob/bdf11dc762663f33cfd5ee90789c2779" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+<p class="serif rv-cap" style="position:absolute;left:0;right:0;bottom:56px;margin:0;text-align:center;font-size:clamp(20px,2.2vw,28px);text-shadow:0 2px 16px rgba(0,0,0,.8)">Not to burn the past.<br><span style="font-size:.7em;color:#D5CDBE">To see what was underneath it all along.</span></p>
+<button type="button" onClick="{{replay}}" style="position:absolute;right:20px;bottom:20px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid #3D5378;background:rgba(10,18,32,.7);color:#D5CDBE;font:500 13px 'Inter',sans-serif;cursor:pointer">Replay reveal</button>
+</section>
+
+<!-- PRESS -->
+<section aria-label="Featured in" style="border-top:1px solid #1B2942;border-bottom:1px solid #1B2942;background:#0E1828">
+<div style="max-width:1280px;margin:0 auto;padding:18px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 40px">
+<span class="eyebrow" style="color:#8C99B0">As featured in</span>
+<img src="/_blob/df8db04c22fbb096e9311b104de44ea8" alt="NDTV" style="height:40px;width:40px;border-radius:8px">
+<img src="/_blob/dd97768321169056e7181e4d1b3cb680" alt="AI Impact Summit, Bharat 2026" style="height:40px;border-radius:6px">
+<span style="flex:1 1 20px"></span>
+<span style="font-size:14px;color:#D5CDBE">Built with leading ophthalmic device makers</span>
+<span style="font-size:14px;color:#D5CDBE">Works without internet · EN · <span style="font-family:'Noto Sans Devanagari',sans-serif">हिंदी</span> · <span style="font-family:'Noto Sans Telugu',sans-serif">తెలుగు</span></span>
+</div>
+</section>
+
+<!-- MILESTONE: AI Impact Summit 2026 (from the live site's blog) -->
+<section aria-labelledby="summit-h" style="max-width:1280px;margin:0 auto;padding:110px 24px 30px">
+<div style="display:flex;flex-wrap:wrap;gap:48px;align-items:center">
+<div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:18px">
+<span class="eyebrow">Milestone · New Delhi · 16–21 Feb 2026</span>
+<h2 id="summit-h" class="serif" style="margin:0;font-size:clamp(32px,4.2vw,54px);line-height:1.08;font-weight:600">From Secunderabad to the national stage.</h2>
+<p style="margin:0;color:#D5CDBE;font-size:17px;line-height:1.65">At the AI Impact Summit 2026 we demonstrated the real-time Surgical Assistant live, to clinicians, hospitals, investors and technology leaders, and spoke to national television and digital media about AI in the operating room.</p>
+<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;color:#AEB8C9;font-size:15px">
+<li>— Live surgical step recognition and AI overlays</li>
+<li>— Surgeon Performance Scoring (SPS) framework</li>
+<li>— Early talks on clinical pilots and OEM partnerships</li>
+</ul>
+<a href="#" class="aw" style="font-size:12px;letter-spacing:.08em">READ THE STORY →</a>
+</div>
+<div style="flex:1.3 1 520px;min-width:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">
+<img src="/_blob/7a893502e5217e2b2dddd14dbf3a57dc" alt="The ChakraVue AI team at the summit stall" style="grid-column:span 4;width:100%;height:280px;object-fit:cover;border-radius:14px">
+<img src="/_blob/522edee18eb76e32b80a54a864564941" alt="A television interview at the ChakraVue AI stall" style="grid-column:span 2;width:100%;height:280px;object-fit:cover;border-radius:14px">
+<img src="/_blob/d0a8f5f8620ce3f0e7f15b27cc7a9bfc" alt="The live demo setup: microscope and surgical display" style="grid-column:span 2;width:100%;height:170px;object-fit:cover;border-radius:14px">
+<img src="/_blob/69bbfb6b74daa1ce3306b508c33242ad" alt="Visitors trying the Surgical Assistant demo" style="grid-column:span 2;width:100%;height:170px;object-fit:cover;border-radius:14px">
+<img src="/_blob/5339619610f133c176d8ef56f4f79bd5" alt="A crowd at the stall" style="grid-column:span 2;width:100%;height:170px;object-fit:cover;border-radius:14px">
+</div>
+</div>
+</section>
+
+<!-- RESEARCH & RECOGNITION -->
+<section aria-labelledby="rr-h" style="max-width:1280px;margin:0 auto;padding:70px 24px 30px">
+<div style="display:flex;flex-direction:column;gap:14px;padding-bottom:28px">
+<span class="eyebrow">Research &amp; recognition</span>
+<h2 id="rr-h" class="serif" style="margin:0;font-size:clamp(28px,3.4vw,42px);line-height:1.12;font-weight:600">Trusted by the institutions that train India's doctors.</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px">
+<article style="background:#111D31;border:1px solid #1F2E48;border-top:2px solid #38E1E6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<span class="aw" style="font-size:11px;letter-spacing:.14em;color:#38E1E6">ORIGINAL RESEARCH</span>
+<h3 class="serif" style="margin:0;font-size:21px;font-weight:600;line-height:1.25">AIIMS Vijayawada</h3>
+<p style="margin:0;color:#AEB8C9;font-size:15px;line-height:1.55">Technology partner on original clinical research.</p>
+</article>
+<article style="background:#111D31;border:1px solid #1F2E48;border-top:2px solid #38E1E6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<span class="aw" style="font-size:11px;letter-spacing:.14em;color:#38E1E6">ORIGINAL RESEARCH</span>
+<h3 class="serif" style="margin:0;font-size:21px;font-weight:600;line-height:1.25">Manipal</h3>
+<p style="margin:0;color:#AEB8C9;font-size:15px;line-height:1.55">Technology partner on original clinical research.</p>
+</article>
+<article style="background:#111D31;border:1px solid #1F2E48;border-top:2px solid #E8A93A;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<span class="aw" style="font-size:11px;letter-spacing:.14em;color:#E8A93A">DENTAL CONFERENCE · SALEM</span>
+<h3 class="serif" style="margin:0;font-size:21px;font-weight:600;line-height:1.25">Dental Implant Planning, live</h3>
+<p style="margin:0;color:#AEB8C9;font-size:15px;line-height:1.55">Demonstrated to dentists at [conference name, month year].</p>
+</article>
+<article style="background:#111D31;border:1px solid #1F2E48;border-top:2px solid #E8A93A;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<span class="aw" style="font-size:11px;letter-spacing:.14em;color:#E8A93A">NEW DELHI · FEB 2026</span>
+<h3 class="serif" style="margin:0;font-size:21px;font-weight:600;line-height:1.25">AI Impact Summit</h3>
+<p style="margin:0;color:#AEB8C9;font-size:15px;line-height:1.55">Live Surgical Assistant demos and national TV coverage.</p>
+</article>
+</div>
+</section>
+
+<!-- HUB -->
+<section id="hub" style="max-width:1280px;margin:0 auto;padding:110px 24px 30px">
+<div style="display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;padding-bottom:48px">
+<span class="eyebrow">01 Upgrade · 02 Integrate</span>
+<h2 class="serif" style="margin:0;font-size:clamp(32px,4.2vw,56px);line-height:1.08;font-weight:600">We add intelligence to your devices.</h2>
+<p style="margin:0;color:#AEB8C9;max-width:640px;line-height:1.6;font-size:17px">We don't replace the device. We extend what it can do. Four clinical systems, one <span style="white-space:nowrap">ChakraVue AI</span> intelligence connecting them.</p>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px">
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:40px">
+<sc-for list="{{hubL}}" as="p" hint-placeholder-count="2">
+<a href="R3Products.dc.html" style="display:flex;align-items:center;gap:0;color:#F2E9D8">
+<div style="flex:0 1 300px;min-width:0;background:#111D31;border:1px solid #26375A;border-radius:16px;overflow:hidden">
+<img src="{{p.img}}" alt="{{p.alt}}" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover">
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span class="aw" style="font-size:13px;letter-spacing:.06em">{{p.no}} {{p.name}}</span><span style="font-size:13px;color:#AEB8C9">{{p.tag}}</span></div>
+</div>
+<span class="link-line" aria-hidden="true"></span>
+</a>
+</sc-for>
+</div>
+<div style="flex:0 0 auto;width:min(340px,80vw);aspect-ratio:1/1;border-radius:50%;border:1px solid #38E1E6;box-shadow:0 0 90px rgba(56,225,230,.22) inset,0 0 70px rgba(56,225,230,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:30px;box-sizing:border-box;position:relative">
+<img src="/_blob/8bf8608f3447e4475024a106520719e2" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;opacity:.38"><img class="logo" src="/_blob/b0b8b3ee954b3696d50ef351e274f514" alt="" style="position:relative;width:92px">
+<img class="wordmark" src="/_blob/6edccd582e6619f3ec058609d6d24263" alt="ChakraVue AI" style="display:block;height:17px;width:auto">
+<span style="font-size:13px;color:#AEB8C9;line-height:1.5">One record, one intelligence,<br>on a box in your hospital</span>
+</div>
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:40px">
+<sc-for list="{{hubR}}" as="p" hint-placeholder-count="2">
+<a href="R3Products.dc.html" style="display:flex;align-items:center;justify-content:flex-end;gap:0;color:#F2E9D8">
+<span class="link-line" aria-hidden="true"></span>
+<div style="flex:0 1 300px;min-width:0;background:#111D31;border:1px solid #26375A;border-radius:16px;overflow:hidden">
+<img src="{{p.img}}" alt="{{p.alt}}" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover">
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span class="aw" style="font-size:13px;letter-spacing:.06em">{{p.no}} {{p.name}}</span><span style="font-size:13px;color:#AEB8C9">{{p.tag}}</span></div>
+</div>
+</a>
+</sc-for>
+</div>
+</div>
+<!-- capture connect analyse assist -->
+<ol style="list-style:none;margin:72px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px">
+<li style="border-top:1px solid #2E4163;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span class="step-no">01</span><span class="aw" style="font-size:18px;letter-spacing:.1em">CAPTURE</span><span style="color:#AEB8C9;line-height:1.55;font-size:15px">Images and readings captured at the instrument, as the examination happens.</span></li>
+<li style="border-top:1px solid #2E4163;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span class="step-no">02</span><span class="aw" style="font-size:18px;letter-spacing:.1em">CONNECT</span><span style="color:#AEB8C9;line-height:1.55;font-size:15px">Every device feeds one secure record. Nothing retyped, nothing lost.</span></li>
+<li style="border-top:1px solid #2E4163;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span class="step-no">03</span><span class="aw" style="font-size:18px;letter-spacing:.1em">ANALYSE</span><span style="color:#AEB8C9;line-height:1.55;font-size:15px">AI reads the data alongside the clinician and surfaces what matters.</span></li>
+<li style="border-top:1px solid #2E4163;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span class="step-no">04</span><span class="aw" style="font-size:18px;letter-spacing:.1em">ASSIST</span><span style="color:#AEB8C9;line-height:1.55;font-size:15px">Insight returns to the point of care. The doctor decides.</span></li>
+</ol>
+</section>
+
+<!-- 03 AUTOMATE / CHOOSE YOUR VIEW WITH REAL SCREENS -->
+<section style="max-width:1280px;margin:0 auto;padding:110px 24px 30px">
+<div style="display:flex;flex-direction:column;gap:14px;padding-bottom:28px">
+<span class="eyebrow">03 Automate</span>
+<h2 class="serif" style="margin:0;font-size:clamp(32px,4.2vw,56px);line-height:1.08;font-weight:600">Workflows that run themselves.</h2>
+</div>
+<div role="tablist" aria-label="Audience" style="display:flex;flex-wrap:wrap;gap:10px;padding-bottom:28px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.pick}}">{{t.label}}</button>
+</sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start">
+<div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:18px">
+<sc-for list="{{view.items}}" as="it" hint-placeholder-count="4">
+<div style="border-top:1px solid #2E4163;padding-top:16px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="serif" style="font-size:20px;font-weight:600">{{it.t}}</span><span class="chip">{{it.s}}</span></div>
+<span style="font-size:15px;color:#AEB8C9;line-height:1.55">{{it.d}}</span>
+</div>
+</sc-for>
+</div>
+<figure style="flex:2 1 560px;min-width:0;margin:0;display:flex;flex-direction:column;gap:10px">
+<sc-if value="{{view.hasImg}}" hint-placeholder-val="{{true}}">
+<img src="{{view.img}}" alt="{{view.cap}}" style="display:block;width:100%;border-radius:16px;border:1px solid #26375A">
+</sc-if>
+<sc-if value="{{view.noImg}}" hint-placeholder-val="{{false}}">
+<div style="width:100%;aspect-ratio:16/9;border-radius:16px;border:1px dashed #3D5378;background:#0E1828;display:flex;align-items:center;justify-content:center;color:#8C99B0;font-size:14px;text-align:center;padding:24px;box-sizing:border-box">{{view.cap}}</div>
+</sc-if>
+<figcaption style="font-size:13px;color:#8C99B0">{{view.cap}}</figcaption>
+</figure>
+</div>
+</section>
+
+<!-- REEL WALL (compact) -->
+<section id="reels" class="bp-bg" style="margin-top:110px;padding:100px 24px 100px;border-top:1px solid #1B2942;border-bottom:1px solid #1B2942">
+<div style="max-width:1280px;margin:0 auto">
+<div style="display:flex;flex-direction:column;gap:14px;padding-bottom:36px">
+<span class="eyebrow" style="color:#E2BE86">Still on the old blueprint?</span>
+<h2 class="serif" style="margin:0;font-size:clamp(32px,4.2vw,56px);line-height:1.08;font-weight:600">Every hospital knows these days.</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px">
+<sc-for list="{{reels}}" as="r" hint-placeholder-count="6">
+<a href="{{r.href}}" style="display:flex;flex-direction:column;background:#111D31;border:1px solid #1F2E48;border-radius:16px;overflow:hidden;color:#F2E9D8">
+<img src="{{r.img}}" alt="{{r.alt}}" style="display:block;width:100%;aspect-ratio:4/3;object-fit:cover">
+<div style="padding:18px;display:flex;flex-direction:column;gap:6px">
+<span class="eyebrow" style="font-size:10px;color:#8C99B0">{{r.area}}</span>
+<span class="serif" style="font-size:20px;font-weight:600">{{r.hook}}</span>
+<span class="serif" style="color:#E8A93A;font-style:italic;font-size:15px">{{r.punch}}</span>
+</div>
+</a>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- BOX -->
+<section id="box" style="margin-top:110px;background:#0E1828;border-top:1px solid #1B2942;border-bottom:1px solid #1B2942">
+<div style="max-width:1280px;margin:0 auto;padding:96px 24px;display:flex;flex-wrap:wrap;gap:56px;align-items:center">
+<img src="/_blob/1ad4a3415a44e23efcea7a4ae6143699" alt="The Surgical Assistant field kit: an open rugged case with display, compute unit and camera" style="flex:1 1 460px;min-width:0;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px">
+<div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:18px">
+<span class="eyebrow">The clinic in a box</span>
+<h2 class="serif" style="margin:0;font-size:clamp(32px,4.2vw,56px);line-height:1.08;font-weight:600">Pull the cable.<br>Keep working.</h2>
+<p style="margin:0;color:#D5CDBE;font-size:18px;line-height:1.6">One small AI computer runs <span style="white-space:nowrap">ChakraVue AI</span> inside your hospital. It is its own Wi-Fi, every device that joins knows its role, and patient data never leaves the building.</p>
+<p style="margin:0;color:#8C99B0;font-size:13px">Shown: the Surgical Assistant field kit, compute and display in one rugged case.</p>
+<div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-gold" href="R3Signup.dc.html">See it at the Experience Centre</a></div>
+</div>
+</div>
+</section>
+
+<!-- IN REAL HOSPITALS -->
+<section aria-labelledby="real-h" style="max-width:1280px;margin:0 auto;padding:110px 24px 30px">
+<div style="display:flex;flex-direction:column;gap:14px;padding-bottom:32px">
+<span class="eyebrow">Not a render</span>
+<h2 id="real-h" class="serif" style="margin:0;font-size:clamp(32px,4.2vw,54px);line-height:1.08;font-weight:600">In real theatres, with real surgeons.</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px">
+<figure style="margin:0;display:flex;flex-direction:column;gap:10px"><img src="/_blob/7c15faffec1b746a299af8573fcba197" alt="The Surgical Assistant display beside the microscope in an operating theatre" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px"><figcaption style="font-size:14px;color:#AEB8C9"><b style="color:#F2E9D8">Surgical Assistant</b> · live in the operating theatre</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:10px"><img src="/_blob/c1ae2f76790a661e199eaa3cc1f25453" alt="A doctor examining a patient at the slit lamp with the analysis screen alongside" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px"><figcaption style="font-size:14px;color:#AEB8C9"><b style="color:#F2E9D8">Slit Lamp Module</b> · on the doctor's own slit lamp</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:10px"><img src="/_blob/9b0019f9d80b407a2770de662cfd50b4" alt="A surgeon practising with a VR headset and hand controls" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px"><figcaption style="font-size:14px;color:#AEB8C9"><b style="color:#F2E9D8">AR/VR training</b> · practise at your own pace, with a score</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:10px"><img src="/_blob/427a06479d93e1b0f43c2457af5bfd38" alt="A hands-on training session for clinicians" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px"><figcaption style="font-size:14px;color:#AEB8C9"><b style="color:#F2E9D8">Hands-on sessions</b> · with surgeons and trainees</figcaption></figure>
+</div>
+</section>
+
+<!-- TEAM -->
+<section style="max-width:1280px;margin:0 auto;padding:110px 24px 30px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;padding-bottom:36px">
+<div style="display:flex;flex-direction:column;gap:14px;max-width:700px">
+<span class="eyebrow">The minds behind it</span>
+<h2 class="serif" style="margin:0;font-size:clamp(32px,4.2vw,56px);line-height:1.08;font-weight:600">Doctors and engineers, in one room.</h2>
+</div>
+<a href="R3About.dc.html" class="aw" style="font-size:13px;letter-spacing:.08em">MEET THE TEAM →</a>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px">
+<sc-for list="{{leaders}}" as="l" hint-placeholder-count="3">
+<article style="background:#111D31;border:1px solid #1F2E48;border-radius:18px;overflow:hidden;display:flex;flex-direction:column">
+<img src="{{l.img}}" alt="Portrait of {{l.name}}" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;object-position:{{l.pos}};background:#0A1220">
+<div style="padding:20px;display:flex;flex-direction:column;gap:4px"><span class="serif" style="font-size:20px;font-weight:600">{{l.name}}</span><span style="color:#AEB8C9;font-size:14px">{{l.role}}</span></div>
+</article>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:26px">
+<div style="display:flex">
+<sc-for list="{{team}}" as="m" hint-placeholder-count="6">
+<img src="{{m}}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #0A1220;margin-right:-10px;background:#111D31">
+</sc-for>
+</div>
+<span style="color:#AEB8C9;font-size:14px;padding-left:14px">and the team building <span style="white-space:nowrap">ChakraVue AI</span> in Secunderabad</span>
+</div>
+</section>
+
+<!-- JOIN -->
+<section class="reveal-bg" style="margin-top:110px;padding:130px 24px 120px;text-align:center;border-top:1px solid #1B2942">
+<div style="display:flex;flex-direction:column;align-items:center;gap:20px;max-width:1000px;margin:0 auto">
+<img class="logo" src="/_blob/b0b8b3ee954b3696d50ef351e274f514" alt="" style="width:170px">
+<h2 class="serif" style="margin:0;font-size:clamp(40px,5vw,64px);font-weight:600">Join the revolution.</h2>
+<p style="margin:0;color:#AEB8C9;font-size:18px">Levelling the field for every hospital.</p>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding-top:12px">
+<a class="btn btn-gold" href="R3Signup.dc.html">Visit the Experience Centre</a>
+<a class="btn btn-ghost" href="R3Signup.dc.html">Start 90-day free trial</a>
+<a class="btn btn-ghost" href="R3Partners.dc.html">Partner with us</a>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid #1B2942;background:#060C17">
+<div style="max-width:1280px;margin:0 auto;padding:56px 24px 40px;display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between">
+<div style="display:flex;flex-direction:column;gap:12px;max-width:380px">
+<div style="display:flex;align-items:center;gap:10px"><img class="logo" src="/_blob/b0b8b3ee954b3696d50ef351e274f514" alt="" style="width:38px"><img class="wordmark" src="/_blob/6edccd582e6619f3ec058609d6d24263" alt="ChakraVue AI" style="display:block;height:17px;width:auto"></div>
+<address style="font-style:normal;color:#8C99B0;font-size:14px;line-height:1.6">ChakraVue AI Private Limited<br>First Floor, Vijetha Sanjeevani Apartments, opp. Gandhi Hospital, Musheerabad, Secunderabad, Telangana 500003</address>
+<span style="color:#D5CDBE;font-size:14px">+91 63001 47979 · chakravueai@chakravue.ai</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:48px;font-size:14px">
+<div style="display:flex;flex-direction:column;gap:10px"><span class="eyebrow" style="font-size:10px;color:#8C99B0">Products</span><a href="R3Products.dc.html" style="color:#D5CDBE">Surgical Assistant</a><a href="R3Products.dc.html" style="color:#D5CDBE">Slit Lamp Module</a><a href="R3Products.dc.html" style="color:#D5CDBE">AI Powered EMR</a><a href="R3Products.dc.html" style="color:#D5CDBE">Integrated Devices</a></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span class="eyebrow" style="font-size:10px;color:#8C99B0">Get started</span><a href="R3Signup.dc.html" style="color:#D5CDBE">Book a visit</a><a href="R3Signup.dc.html" style="color:#D5CDBE">Free trial</a><a href="R3Partners.dc.html" style="color:#D5CDBE">Partners</a></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span class="eyebrow" style="font-size:10px;color:#8C99B0">Company</span><a href="R3About.dc.html" style="color:#D5CDBE">About</a><a href="#" style="color:#D5CDBE">Blog</a><a href="#" style="color:#D5CDBE">LinkedIn</a><a href="#" style="color:#D5CDBE">Privacy policy</a></div>
+</div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":9900}}'>
+class Component extends DCLogic {
+  // Button links play the burn before moving on, so the click effect is seen
+  componentDidMount() {
+    this._burnNav = (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a.btn') : null;
+      if (!a || a.dataset.go === '1' || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      e.preventDefault(); e.stopPropagation();
+      a.classList.remove('is-burning'); void a.offsetWidth; a.classList.add('is-burning');
+      clearTimeout(this._burnT);
+      this._burnT = setTimeout(() => { a.dataset.go = '1'; a.click(); delete a.dataset.go; a.classList.remove('is-burning'); }, 1050);
+    };
+    document.addEventListener('click', this._burnNav, true);
+  }
+  componentWillUnmount() { document.removeEventListener('click', this._burnNav, true); clearTimeout(this._burnT); }
+  constructor(p){ super(p); this.state = { tab: 'owner' }; }
+  renderVals() {
+    const views = {
+      owner: { img: '/_blob/925dcc4d6dc095edd112b0b6b415fc85', cap: 'AI Powered EMR: the day’s patients by stage (anonymised capture)', items: [
+        { t: 'Live patient flow', s: 'Live', d: 'Reception to optometry to doctor, every stage visible to every desk.' },
+        { t: 'Insurance forms', s: 'Live', d: 'Pre-auth and claims filled from the record.' },
+        { t: 'Finance hub', s: 'Live', d: 'Tally, bank statements, revenue and payroll in one place.' },
+        { t: 'Audit ready', s: 'Live', d: 'SOP checklists and digital registers, reminders to staff on duty.' } ] },
+      doctor: { img: '/_blob/bdbc3086d3750580724711bc3ff515a4', cap: 'AI Powered EMR: ophthalmic examination (anonymised capture)', items: [
+        { t: 'Dictation', s: 'Live', d: 'Speak the findings; the record fills itself.' },
+        { t: 'AI summary', s: 'Live', d: 'Rule-based criteria first, AI narrative on request.' },
+        { t: 'Drug safety alerts', s: 'Live', d: 'Interactions and dosing checks before you sign.' },
+        { t: 'Research Assistant', s: 'Pilot', d: 'From your EMR data to a paper, poster or slides.' } ] },
+      surgeon: { img: '/_blob/1795cc1a78fe1b265db749c61642430f', cap: 'Surgical Assistant: live guidance on the microscope feed', items: [
+        { t: 'Live guidance', s: 'Live', d: 'Overlays on the existing microscope feed.' },
+        { t: 'Recording and steps', s: 'Live', d: 'Every case recorded, steps detected, filed to the patient.' },
+        { t: 'Operative note', s: 'Live', d: 'A draft waits for the surgeon’s approval.' },
+        { t: 'Teaching streams', s: 'Live', d: 'Watch live on a phone or VR headset.' } ] },
+      dentist: { img: '', cap: '[Screenshot: Dental Implant Planning on a CBCT]', items: [
+        { t: 'Dental Implant Planning', s: 'Live', d: 'Plan on the scan with nerve proximity warnings.' },
+        { t: 'Tooth chart', s: 'Live', d: 'FDI odontogram, plans and progress per tooth.' },
+        { t: 'X-ray viewer', s: 'Live', d: 'OPG, IOPA, CBCT with side-by-side compare.' },
+        { t: 'Intra-oral camera', s: 'Live', d: 'Photos straight into the record.' } ] },
+      patient: { img: '', cap: '[Screenshot: ChakraVue Patient App]', items: [
+        { t: 'Reports and prescriptions', s: 'Live', d: 'Everything from your visits in one app.' },
+        { t: 'Medicine reminders', s: 'Live', d: 'In your language, with follow-up dates.' },
+        { t: 'Video consultation', s: 'Live', d: 'See your doctor from home.' },
+        { t: 'Pay by UPI', s: 'Live', d: 'QR or link, no queue.' } ] }
+    };
+    const labels = [['owner','Hospital'],['doctor','Doctor'],['surgeon','Surgeon'],['dentist','Dentist'],['patient','Patient']];
+    const v = views[this.state.tab];
+    if (!this._revealRef) {
+      this._revealRef = (el) => {
+        if (this.io) { this.io.disconnect(); this.io = null; }
+        if (!el) return;
+        if (typeof IntersectionObserver === 'undefined') { this.setState({ revealed: true }); return; }
+        this.io = new IntersectionObserver((entries) => {
+          if (entries.some((e) => e.isIntersecting)) { this.setState({ revealed: true }); this.io.disconnect(); }
+        }, { threshold: 0.45 });
+        this.io.observe(el);
+      };
+    }
+    return {
+      revealRef: this._revealRef,
+      revealCls: this.state.revealed ? 'rv-on' : '',
+      replay: () => { this.setState({ revealed: false }); setTimeout(() => this.setState({ revealed: true }), 700); },
+      heroRef: (el) => { this.vid = el; if (el && !this.state.paused) { el.muted = true; const p = el.play && el.play(); if (p && p.catch) p.catch(() => {}); } },
+      vidLabel: this.state.paused ? 'Play background video' : 'Pause background video',
+      toggleVideo: () => { const v = this.vid; const paused = !this.state.paused; if (v) { if (paused) v.pause(); else { const p = v.play(); if (p && p.catch) p.catch(() => {}); } } this.setState({ paused }); },
+      tabs: labels.map(([id,label]) => ({ label, on: this.state.tab === id ? 'true' : 'false', cls: this.state.tab === id ? 'tab tab-on' : 'tab', pick: () => this.setState({ tab: id }) })),
+      view: { ...v, hasImg: !!v.img, noImg: !v.img },
+      hubL: [
+        { no: '01', name: 'SURGICAL ASSISTANT', tag: 'Intraoperative visual intelligence', img: '/_blob/7539297adb725f40ac76e0bc6f4b1bc9', alt: 'Live microscope view during cataract surgery' },
+        { no: '03', name: 'AI POWERED EMR', tag: 'Clinical data and workflow intelligence', img: '/_blob/fddc34d2c3583780ea5c0595de0fa8c6', alt: 'The EMR patient dashboard' }
+      ],
+      hubR: [
+        { no: '02', name: 'SLIT LAMP MODULE', tag: 'Intelligent ophthalmic examination', img: '/_blob/886917b9aa79fc15892ab44beed63850', alt: 'Slit-lamp view of an eye' },
+        { no: '04', name: 'INTEGRATED DEVICES', tag: 'Legacy equipment, connected', img: '/_blob/3e246d3015c90cf1c6d6cf0394df1c13', alt: 'Render of the integration unit' }
+      ],
+      reels: [
+        { href: 'R3Products.dc.html', img: '/_blob/e4ba3bae747be11430506867d4347348', alt: 'A rusty Ambassador car', area: 'Devices', hook: 'Still running on analogue?', punch: 'Now give it an engine.' },
+        { href: 'R3Insurance.dc.html', img: '/_blob/c3168e99e40658e5b7ae26dd10ae60af', alt: 'A clerk buried under files', area: 'Insurance', hook: 'Insurance paperwork again?', punch: 'Same details. Typed five times.' },
+        { href: '#', img: '/_blob/4851fb17db5b94202e7b8fd4a631e7a2', alt: 'A boy getting a hurried haircut', area: 'Quality', hook: 'Inspection next week?', punch: 'Hoping nobody looks closely.' },
+        { href: '#', img: '/_blob/84de95a036779f5fc401b867ff2dc121', alt: 'A toddler stacking a wobbly tower', area: 'Dental', hook: 'Planning an implant by eye?', punch: 'One wobble is one too many.' },
+        { href: '#', img: '/_blob/bc0a2b18a5aafa4f87e28b5340060440', alt: 'A bored doctor at a conference', area: 'Research', hook: 'Tired of waiting to showcase your work?', punch: 'Until now.' },
+        { href: 'R3Partners.dc.html', img: '/_blob/df57e44c0a1bf1e2761a834d54ec18cd', alt: 'An Ambassador car with a jet engine', area: 'Partners', hook: 'Make devices?', punch: 'Ship them with AI inside.' }
+      ],
+      leaders: [
+        { name: 'Dr. Ajay Chakravarthy', role: 'Founder & CEO', img: '/_blob/d93bca26eb8277991f13188a07410a9d', pos: '48% 20%' },
+        { name: 'Dr. Chitra Chakravarthy', role: 'Co-Founder', img: '/_blob/7fd0c01286164229a031b3c6dac830d3', pos: '50% 14%' },
+        { name: 'Sumanth Akula', role: 'Founding Executive Officer', img: '/_blob/a21aed278492b20ea3320764974351d9', pos: '50% 25%' }
+      ],
+      team: ['/_blob/5cb6644013e1a8c99b333ff909604ebb','/_blob/1e1fad8e585d65ff0861326534df407d','/_blob/3001b41034647f742f460bca4e682212','/_blob/f476d5a291dee0d9e8fbb4380b284780','/_blob/564a1d32eabc83e7668d6e1dfe29c325','/_blob/5deae14848a947d7d53ec30530cf5096']
+    };
+  }
+}
+</script>
+</body>
+</html>

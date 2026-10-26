@@ -1,0 +1,38 @@
+/* Site-wide additions on top of each page's own styles */
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; }
+img, video { max-width: 100%; }
+.preview-flag {
+  position: fixed; left: 12px; bottom: 12px; z-index: 50;
+  padding: 8px 12px; border-radius: 999px;
+  background: rgba(10, 18, 32, .88); border: 1px solid #3D5378;
+  color: #D5CDBE; font: 500 12px/1 'Inter', system-ui, sans-serif; letter-spacing: .02em;
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  /* the hub's link lines only make sense side by side */
+  .link-line { display: none; }
+}
+
+/* Phone menu: the nav links fold behind a Menu button (added by site.js) */
+.menu-btn { display: none; }
+@media (max-width: 760px) {
+  header nav { row-gap: 10px !important; }
+  header nav > a:first-child { flex: 1 1 auto; }
+  .menu-btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
+    border-radius: 10px; border: 1px solid #3D5378; background: rgba(10, 18, 32, .6); color: #F2E9D8;
+    font: 400 12px 'Audiowide', sans-serif; letter-spacing: .12em; text-transform: uppercase; cursor: pointer;
+  }
+  header nav > div:first-of-type { display: none !important; order: 5; flex: 1 1 100% !important; flex-direction: column; gap: 4px !important; padding: 6px 0 4px; }
+  header nav > div:first-of-type a { padding: 10px 0; border-top: 1px solid #1B2942; }
+  header nav.nav-open > div:first-of-type { display: flex !important; }
+  header nav [role="group"][aria-label="Language"] { display: none !important; }
+  header nav .btn { min-height: 44px; font-size: 15px; padding: 0 56px 0 18px; }
+  /* keep the boy in frame in the hero loop */
+  section[aria-label="Analogue to AI"] video { object-position: 28% 40%; }
+}
+
+/* The page wrapper hides decorative overflow (big logo rings, burn rings). "hidden" can still be scrolled
+   sideways by focus or taps on phones; "clip" cannot. */
+body > div:not(.preview-flag) { overflow: clip !important; }

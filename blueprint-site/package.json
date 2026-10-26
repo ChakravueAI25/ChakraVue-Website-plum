@@ -1,0 +1,14 @@
+{
+  "name": "chakravue-website-preview",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "ChakraVue AI website preview, built from the round 3 design mockups",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "node serve.mjs"
+  },
+  "devDependencies": {
+    "linkedom": "^0.18.5"
+  }
+}

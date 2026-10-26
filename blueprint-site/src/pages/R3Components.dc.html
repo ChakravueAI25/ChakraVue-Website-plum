@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ChakraVue AI — UI components (round 3)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&amp;family=Lora:ital,wght@0,500;0,600;1,500&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A1220}
+a{color:#E8A93A;text-decoration:none}
+.aw{font-family:'Audiowide',sans-serif}
+.serif{font-family:'Lora',Georgia,serif}
+.sheet{background:repeating-linear-gradient(0deg,rgba(150,200,255,.05) 0 1px,transparent 1px 16px),repeating-linear-gradient(90deg,rgba(150,200,255,.05) 0 1px,transparent 1px 16px),linear-gradient(rgba(10,18,32,.86),rgba(10,18,32,.93)),url(/_blob/93ae008253bfb33164a6c9e073fae461) center/cover}
+.panel{position:relative;border:1px solid rgba(220,230,240,.28);padding:22px 24px 26px;display:flex;flex-direction:column;gap:18px}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;font:500 13px 'Lora',Georgia,serif;letter-spacing:.2em;text-transform:uppercase;color:#E8E1D2}
+.no{font:400 11px 'Inter',sans-serif;color:#8C99B0;letter-spacing:0}
+.dim{font:italic 500 12px 'Lora',Georgia,serif;color:#AEB8C9}
+.hand{font:italic 500 13px 'Lora',Georgia,serif;color:#E2BE86}
+.ib{width:44px;height:44px;border-radius:8px;border:1px solid rgba(242,233,216,.55);background:rgba(10,18,32,.5);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{border-color:#F2A93B;box-shadow:0 0 14px rgba(242,169,59,.45)}
+.seg{display:flex;border:1px solid rgba(124,200,255,.4);border-radius:8px;overflow:hidden}
+.seg button{min-height:44px;padding:0 20px;border:0;border-right:1px solid rgba(124,200,255,.25);background:transparent;color:#D5CDBE;font:500 15px 'Lora',Georgia,serif;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg .on{background:linear-gradient(180deg,#16335E,#0D2246);color:#F2E9D8;box-shadow:inset 0 0 12px rgba(80,170,255,.35)}
+.field{min-height:48px;box-sizing:border-box;width:100%;border-radius:8px;border:1px solid rgba(242,233,216,.5);background:rgba(10,18,32,.6);color:#F2E9D8;font:15px 'Lora',Georgia,serif;padding:0 16px}
+.field:focus{outline:none;border-color:#7CC8FF;box-shadow:0 0 14px rgba(80,170,255,.45),inset 0 0 10px rgba(80,170,255,.18)}
+.pill{min-height:36px;padding:0 16px;border-radius:999px;border:1px solid rgba(242,233,216,.5);background:transparent;color:#D5CDBE;font:500 14px 'Lora',Georgia,serif;display:inline-flex;align-items:center;gap:8px}
+.pill-on{border-color:#7CC8FF;color:#F2E9D8;background:#13305A;box-shadow:0 0 12px rgba(80,170,255,.4)}
+.pill-acc{border-color:#F2A93B;color:#F2E9D8;box-shadow:0 0 12px rgba(242,169,59,.4)}
+.pg{width:40px;height:40px;border-radius:6px;border:1px solid rgba(242,233,216,.45);background:transparent;color:#D5CDBE;font:500 14px 'Lora',serif}
+.pg-on{border-color:#7CC8FF;background:#13305A;color:#F2E9D8;box-shadow:0 0 10px rgba(80,170,255,.45)}
+.tog{width:64px;height:30px;border-radius:999px;border:1.5px solid #7CC8FF;background:#0D2246;position:relative;box-shadow:0 0 12px rgba(80,170,255,.4)}
+.tog span{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#F2E9D8 0 30%,#AEB8C9 31% 60%,#F2E9D8 61%)}
+.tog-off{border-color:#F2A93B;box-shadow:0 0 12px rgba(242,169,59,.4);background:transparent}
+.tog-off span{right:auto;left:3px}
+.chk{display:flex;align-items:center;gap:12px;font:500 15px 'Lora',serif;color:#D5CDBE}
+.chk input{width:20px;height:20px;accent-color:#7CC8FF}
+.card{border:1px solid rgba(242,233,216,.4);border-radius:10px;padding:16px;display:flex;gap:16px;background:rgba(10,18,32,.45)}
+
+
+
+
+
+@keyframes cvfuse{0%{border-color:#7CC8FF;box-shadow:0 0 0 1px rgba(124,200,255,.22),0 0 14px rgba(80,170,255,.45),inset 0 0 14px rgba(80,170,255,.18)}16%{border-color:#FFD08A;box-shadow:-16px -6px 34px rgba(255,140,30,1),-4px 0 60px rgba(255,120,20,.6),inset 14px 0 20px rgba(255,140,30,.55)}50%{border-color:#FFC060;box-shadow:0 0 0 2px rgba(255,190,90,.7),0 0 46px rgba(255,140,30,.95),0 0 90px rgba(255,120,20,.45),inset 0 0 22px rgba(255,140,30,.4)}100%{border-color:#F2A93B;box-shadow:0 0 0 1px rgba(242,169,59,.5),0 0 22px rgba(242,169,59,.55),inset 0 0 14px rgba(242,169,59,.22)}}
+@keyframes cvhole{0%,8%{opacity:0;clip-path:polygon(0 0,0 0,0 100%,0 100%)}16%{opacity:1}64%{clip-path:polygon(0 0,115% 0,95% 100%,0 100%)}100%{opacity:1;clip-path:polygon(0 0,130% 0,130% 100%,0 100%)}}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 66px 0 28px;border-radius:10px;font:500 17px/1 'Lora',Georgia,serif;letter-spacing:.02em;color:#F2E9D8;box-sizing:border-box;white-space:nowrap;cursor:pointer;text-shadow:0 1px 8px rgba(0,0,0,.45);transition:border-color .25s,box-shadow .25s}
+.btn::after{content:"→";position:absolute;right:30px;top:50%;transform:translateY(-52%);font:400 22px/1 'Lora',Georgia,serif}
+.btn::before{content:"";position:absolute;inset:-62px -104px;border-style:solid;border-width:62px 104px;border-image:url(/_blob/05c13ba366acdfa0bb742c16289e0c7f) 120 200 stretch;opacity:0;pointer-events:none}
+.btn-ghost::before,.btn:nth-of-type(3n+2)::before{border-image-source:url(/_blob/0f3d4e10d5207884dd4ace302f0ddb08)}
+.btn-cta::before,.btn:nth-of-type(3n)::before{border-image-source:url(/_blob/250c98d90a39c4f82886b206ab67a4f8)}
+.btn-gold{border:1.5px solid #7CC8FF;background:radial-gradient(circle at calc(100% - 12px) 50%,transparent 0 4px,rgba(170,210,255,.5) 4px 5px,transparent 5px 10px,rgba(170,210,255,.32) 10px 11px,transparent 11px 17px,rgba(170,210,255,.22) 17px 18px,transparent 18px 25px,rgba(170,210,255,.14) 25px 26px,transparent 26px),repeating-linear-gradient(0deg,rgba(150,200,255,.09) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(150,200,255,.09) 0 1px,transparent 1px 10px),linear-gradient(180deg,#16335E,#0D2246);box-shadow:0 0 0 1px rgba(124,200,255,.22),0 0 14px rgba(80,170,255,.45),inset 0 0 14px rgba(80,170,255,.18)}
+.btn-ghost{border:1px solid rgba(242,233,216,.6);background:radial-gradient(circle at calc(100% - 12px) 50%,transparent 0 10px,rgba(242,233,216,.18) 10px 11px,transparent 11px 18px,rgba(242,233,216,.12) 18px 19px,transparent 19px),repeating-linear-gradient(0deg,rgba(150,200,255,.06) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(150,200,255,.06) 0 1px,transparent 1px 10px),rgba(10,18,32,.55);box-shadow:inset 0 0 0 1px rgba(242,233,216,.08)}
+.btn-cta{border:1.5px solid #F2A93B;background:radial-gradient(circle at calc(100% - 12px) 50%,transparent 0 4px,rgba(255,200,120,.5) 4px 5px,transparent 5px 10px,rgba(255,200,120,.3) 10px 11px,transparent 11px 18px,rgba(255,200,120,.18) 18px 19px,transparent 19px),repeating-linear-gradient(0deg,rgba(255,200,120,.07) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(255,200,120,.07) 0 1px,transparent 1px 10px),linear-gradient(180deg,#1A2B4A,#101C33);box-shadow:0 0 0 1px rgba(242,169,59,.35),0 0 18px rgba(242,169,59,.45),inset 0 0 14px rgba(242,169,59,.16)}
+.btn:hover,.btn.is-hover{color:#F2E9D8;border-color:#F2A93B;box-shadow:0 0 0 1px rgba(242,169,59,.5),0 0 22px rgba(242,169,59,.55),inset 0 0 14px rgba(242,169,59,.22)}
+.btn:focus-visible{outline:2px solid #F2E9D8;outline-offset:6px}
+.btn:active,.btn:focus,.btn.is-burning{animation:cvfuse 1.3s ease forwards}
+.btn:active::before,.btn:focus::before,.btn.is-burning::before{animation:cvhole 1.1s ease-out forwards}
+.btn.is-burnt{border-color:#F2A93B;box-shadow:0 0 0 1px rgba(242,169,59,.5),0 0 22px rgba(242,169,59,.55),inset 0 0 14px rgba(242,169,59,.22)}
+.btn.is-burnt::before{opacity:1}
+@media (prefers-reduced-motion:reduce){.btn:active,.btn:focus,.btn.is-burning,.btn:active::before,.btn:focus::before,.btn.is-burning::before{animation:none}}
+</style>
+</helmet>
+<div class="sheet" style="color:#F2E9D8;font-family:'Inter',system-ui,sans-serif;min-height:100%;padding:40px 40px 56px;box-sizing:border-box">
+<div style="max-width:1360px;margin:0 auto;display:flex;flex-direction:column;gap:22px">
+
+<header class="panel" style="flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h1 class="serif" style="margin:0;font-size:46px;font-weight:600;letter-spacing:.08em">UI COMPONENTS</h1>
+<span style="display:flex;align-items:center;gap:12px"><img src="/_blob/6edccd582e6619f3ec058609d6d24263" alt="ChakraVue AI" style="height:16px;width:auto"><span class="panel-h" style="letter-spacing:.32em">· blueprint system</span></span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;text-align:right"><span class="dim">Form × Function × Analogue to AI</span><span class="dim">Grid 8 px · units px · Fig. 01</span></div>
+</header>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,600px),1fr));gap:22px">
+
+<!-- PRIMARY + BURN DEMO -->
+<section class="panel" aria-labelledby="h-primary">
+<div class="panel-h"><span id="h-primary">Primary button</span><span class="no">01</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:80px 150px;align-items:flex-end;padding:44px 80px 44px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px"><span class="dim">Idle</span><button type="button" class="btn btn-gold">Primary</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px"><span class="dim">Hover</span><button type="button" class="btn btn-gold is-hover">Primary</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px"><span class="dim">Clicked (burnt open)</span><button type="button" class="btn btn-gold is-burnt">Primary</button></div>
+</div>
+</section>
+
+<section class="panel" aria-labelledby="h-burn">
+<div class="panel-h"><span id="h-burn">Click effect: the burn</span><span class="no">02</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:22px;padding:56px 10px 8px">
+<button type="button" class="{{burnCls}}" onClick="{{burn}}" style="min-height:56px;padding-left:44px;padding-right:76px;font-size:20px">Start the Journey</button>
+<span class="dim">56 × 360 · click it: the ember starts at the left corner, the edge turns gold, the paper burns back to the circuit</span>
+<button type="button" onClick="{{reset}}" class="pill" style="cursor:pointer">Reset</button>
+</div>
+</section>
+
+<section class="panel" aria-labelledby="h-sec">
+<div class="panel-h"><span id="h-sec">Secondary &amp; call to action</span><span class="no">03</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:60px 120px;align-items:flex-end;padding:20px 20px 10px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px"><span class="dim">Secondary</span><button type="button" class="btn btn-ghost">Secondary</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px"><span class="dim">Secondary · hover</span><button type="button" class="btn btn-ghost is-hover">Secondary</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px"><span class="dim">Call to action</span><button type="button" class="btn btn-cta">Explore the possibilities</button></div>
+</div>
+</section>
+
+<section class="panel" aria-labelledby="h-icon">
+<div class="panel-h"><span id="h-icon">Icon buttons, tabs, toggles</span><span class="no">04</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:22px 34px;align-items:center">
+<div style="display:flex;gap:12px">
+<button type="button" class="ib" aria-label="Settings"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2E9D8" stroke-width="1.6"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"></path></svg></button>
+<button type="button" class="ib" aria-label="Search"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2E9D8" stroke-width="1.6"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg></button>
+<button type="button" class="ib" aria-label="Add"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2E9D8" stroke-width="1.6"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+<div class="seg" role="tablist" aria-label="Example tabs"><button type="button" role="tab" aria-selected="true" class="on">Overview</button><button type="button" role="tab" aria-selected="false">Details</button><button type="button" role="tab" aria-selected="false">Status</button></div>
+<div style="display:flex;gap:18px;align-items:center"><span class="tog" role="img" aria-label="Toggle on"><span></span></span><span class="tog tog-off" role="img" aria-label="Toggle off"><span></span></span></div>
+</div>
+</section>
+
+<section class="panel" aria-labelledby="h-form">
+<div class="panel-h"><span id="h-form">Fields &amp; choices</span><span class="no">05</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+<label style="display:flex;flex-direction:column;gap:6px"><span class="dim">Default</span><input class="field" placeholder="Hospital name"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span class="dim">Select</span><select class="field"><option>Eye hospital</option><option>Dental clinic</option></select></label>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:22px">
+<label class="chk"><input type="checkbox" checked="">Checked</label>
+<label class="chk"><input type="checkbox">Unchecked</label>
+<label class="chk"><input type="radio" name="r" checked="">Selected</label>
+<label class="chk"><input type="radio" name="r">Unselected</label>
+</div>
+</section>
+
+<section class="panel" aria-labelledby="h-chips">
+<div class="panel-h"><span id="h-chips">Chips, navigation, pagination</span><span class="no">06</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:10px"><span class="pill">Default</span><span class="pill pill-on">Live</span><span class="pill pill-acc">Pilot</span><span class="pill">Coming</span></div>
+<div class="seg" style="align-self:flex-start"><button type="button" class="on">Home</button><button type="button">Products</button><button type="button">Hospitals</button><button type="button">About</button></div>
+<div style="display:flex;gap:8px"><button type="button" class="pg" aria-label="Previous page">‹</button><button type="button" class="pg pg-on">1</button><button type="button" class="pg">2</button><button type="button" class="pg">3</button><button type="button" class="pg" aria-label="Next page">›</button></div>
+</section>
+
+<section class="panel" aria-labelledby="h-card" style="grid-column:1 / -1">
+<div class="panel-h"><span id="h-card">Cards</span><span class="no">07</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px">
+<article class="card"><img src="/_blob/886917b9aa79fc15892ab44beed63850" alt="Slit-lamp view" style="width:120px;height:96px;object-fit:cover;border-radius:6px;filter:saturate(.7)"><div style="display:flex;flex-direction:column;gap:6px"><span class="serif" style="font-size:19px;font-weight:600">Slit Lamp Module</span><span style="color:#AEB8C9;font-size:14px;line-height:1.5">AI on the slit lamp you already use.</span><a href="#" class="serif" style="color:#F2E9D8;font-size:14px">View details →</a></div></article>
+<article class="card"><img src="/_blob/7539297adb725f40ac76e0bc6f4b1bc9" alt="Microscope view" style="width:120px;height:96px;object-fit:cover;border-radius:6px;filter:saturate(.7)"><div style="display:flex;flex-direction:column;gap:6px"><span class="serif" style="font-size:19px;font-weight:600">Surgical Assistant</span><span style="color:#AEB8C9;font-size:14px;line-height:1.5">Guidance on your existing microscope.</span><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="min-height:28px;font-size:12px">Eye</span><span class="pill pill-on" style="min-height:28px;font-size:12px">Live</span></div></div></article>
+<article class="card"><img src="/_blob/925dcc4d6dc095edd112b0b6b415fc85" alt="EMR dashboard" style="width:120px;height:96px;object-fit:cover;border-radius:6px;filter:saturate(.7)"><div style="display:flex;flex-direction:column;gap:6px"><span class="serif" style="font-size:19px;font-weight:600">AI Powered EMR</span><span style="color:#AEB8C9;font-size:14px;line-height:1.5">One timeline for every device and note.</span><a href="#" class="serif" style="color:#F2E9D8;font-size:14px">View details →</a></div></article>
+</div>
+<span class="hand" style="align-self:flex-end">Ideas in motion. Built to last.</span>
+</section>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1650}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { burning: false, n: 0 }; }
+  renderVals() {
+    return {
+      burnCls: this.state.burning ? 'btn btn-gold is-burning' : 'btn btn-gold',
+      burn: () => { this.setState({ burning: false }); setTimeout(() => this.setState({ burning: true }), 30); },
+      reset: () => this.setState({ burning: false })
+    };
+  }
+}
+</script>
+</body>
+</html>
