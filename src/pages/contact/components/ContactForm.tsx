@@ -26,6 +26,15 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
   window.open(gmailComposeUrl({ subject, body }), "_blank", "noopener");
 }
 
+/**
+ * A link can choose the interest for the visitor (`/contact-us?interest=…`,
+ * from the audience sections). Only the form's own options are accepted.
+ */
+function interestFromLink() {
+  const asked = new URLSearchParams(window.location.search).get("interest");
+  return asked && interestOptions.includes(asked) ? asked : "";
+}
+
 export function ContactForm() {
   const ref = useRef<HTMLFormElement>(null);
 
@@ -77,7 +86,7 @@ export function ContactForm() {
 
       <label className="contact-form__field">
         <span>What Excited You About Us?*</span>
-        <select name="interest" defaultValue="" required>
+        <select name="interest" defaultValue={interestFromLink()} required>
           <option value="" disabled>
             Choose one
           </option>

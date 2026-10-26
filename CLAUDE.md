@@ -95,6 +95,8 @@ when you change one.
   - The discovery (`DiscoveryReveal.tsx`): the burnt blueprint opens out
     onto the boy at the circuit, once, with Replay. Not pinned.
   - Product showcase: "Four products, one connected line of sight."
+  - Who we serve (`AudienceMap`, overview): "Technology Built for Every
+    Role in Surgery", the owner's product-to-audience mapping.
   - The core idea (eclipse glow), then How it works.
   - The journey: real theatres (`RealTheatres.tsx`), four real photos.
   - Team and Latest posts.
@@ -176,6 +178,16 @@ when you change one.
     capture must have chip/GPU names, performance readouts, model names
     (for example the segmentation model) and internal detector strings
     painted out.
+  - Between the lead statement and the theater: By role (`AudienceMap`,
+    detailed), the same mapping with each product's description, and
+    "Also in the suite" for the rest of the portfolio.
+  - The audience mapping lives only in `shared/data/audiences.ts` (owner,
+    2026-10-26): Doctors & Surgeons → Digital Surgical Assistant, Slit Lamp;
+    PG Students & Surgical Trainees → Gaming; Hospitals & Training
+    Institutions → EMR; OEMs & Medical Device Manufacturers → microscope
+    software integrations. Don't misclassify or add products. Gaming and
+    the integrations have no section yet, so they link to Contact with the
+    interest chosen (`?interest=`).
   - Then the software platforms console (`product-suite/platforms.ts`):
     05 Dental Implant Planning; 06 ChakraVue Doctor Patient App, a bundle
     showing the Doctor App and Patient App individually (`apps` field);

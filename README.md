@@ -127,6 +127,10 @@ story code; the growth rail reads the marks. In order:
   the whole product is lit. Opens on hover, click, tap or keyboard; plays by
   itself with a progress line until the visitor picks one. Product shots are
   cut from the Product Suite hero render (`public/images/home/products/`).
+- **Who we serve** (`shared/components/AudienceMap.tsx`, `variant="overview"`).
+  "Technology Built for Every Role in Surgery": four audiences side by side,
+  each with its products as linked cards (a thumbnail, the name, an arrow).
+  2×2 on tablets, stacked on phones.
 - **The core idea** (original).
 - **How it works.** Capture → Connect → Analyse → Assist on one line; a signal
   of light travels through the stages as you scroll and lights each one.
@@ -145,6 +149,25 @@ story code; the growth rail reads the marks. In order:
   drawn from its product's own description: "Every case captured. Every
   examination remembered. Every patient on one timeline. Every instrument
   connected. Join the revolution." Then Explore products / Contact us.
+
+**The audience mapping** (`shared/data/audiences.ts`) is the single source
+for both "Who we serve" sections; change it there only. It is the owner's
+mapping (2026-10-26):
+
+| Audience | Products | Link |
+| --- | --- | --- |
+| Doctors & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their theater chapters (`/product-suite#…`) |
+| PG Students & Surgical Trainees | Gaming | `/contact-us?interest=VR/AR Gaming Environment` |
+| Hospitals & Training Institutions | AI Powered EMR | Its theater chapter |
+| OEMs & Medical Device Manufacturers | Microscope Software Integrations | `/contact-us?interest=Partnership / Collaboration` |
+
+Products on the Product Suite page are referenced by id, so their names,
+taglines, descriptions and links come from `product-suite/data.ts`; Gaming
+and the microscope integrations have no section of their own yet, so they're
+written out in the owner's words and lead to Contact, whose form picks the
+interest from the link (`?interest=`, only its own options). "Also in the
+suite" is worked out from what the mapping leaves out. Don't add products,
+capabilities or integrations the owner hasn't listed.
 
 How the campaign art was made (frame cutting, sprites, retouching, the hero
 film's cuts) is in `tools/campaign-art/README.md`, with the scripts.
@@ -174,6 +197,12 @@ only; elsewhere the character is just the small growth rail in the margin.
   The scroll fade is desktop-only, so phones never dim the products.
 - "Intelligence, Engineered for the Operating Room." follows the hero as a
   compact band that lights as it passes (not pinned).
+- **By role** (`AudienceMap.tsx`, `variant="detailed"`), between the lead
+  statement and the theater: the same four audiences, one row each, with
+  what they need and a card per product (tagline, the product's own
+  description, and "See it in the suite ↓" to its theater chapter). Under
+  it, "Also in the suite" lists the rest of the portfolio, so the audience
+  view never reads as the whole suite.
 - **3D product theater** (replaces the four podium sections). A studio stage
   stays fixed while each product's chapter scrolls over it: the product builds
   up through a glowing scan line, turns, comes apart into labelled internal
@@ -447,6 +476,10 @@ dialogue are illustrative, so please confirm they're acceptable to show.
 Campaign copy (from the blueprint redesign, adapted). Please review:
 - Hero: the "Analogue to AI" eyebrow and the "The campaign film" chip.
 - Story chapter names (`story.ts`), shown on the growth rail.
+- Who we serve / By role: the audiences' "need" lines, the Gaming and
+  Microscope Software Integrations descriptions and taglines, "Find your role,
+  then the products built for it.", and the two photos used for Gaming (the
+  hands-on session) and the integrations (the surgeon at the microscope).
 - Hero: "Every doctor started small" above the headline. The headline itself
   is unchanged until the owner decides whether the story line should replace
   it.

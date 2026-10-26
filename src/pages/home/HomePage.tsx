@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { reduceMotion } from "../../motion/env";
 import { usePageMotion } from "../../motion/useMotion";
+import { AudienceMap } from "../../shared/components/AudienceMap";
 import { ChapterMark } from "../../shared/components/ChapterMark";
 import { Header } from "../../shared/components/Header";
 import { BrandStrip } from "./components/BrandStrip";
@@ -51,6 +52,7 @@ export function HomePage() {
       <DiscoveryReveal />
       <ChapterMark id="transformation" />
       <ProductShowcase />
+      <AudienceMap variant="overview" />
       <CoreIdea />
       <ValueCards />
       <ChapterMark id="journey" />

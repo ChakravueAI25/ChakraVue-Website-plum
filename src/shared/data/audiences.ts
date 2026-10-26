@@ -1,0 +1,120 @@
+import { products, type Product } from "../../pages/product-suite/data";
+import { platforms } from "../../pages/product-suite/platforms";
+import { interestOptions } from "../../pages/contact/data";
+
+/**
+ * Who ChakraVue AI is built for, and which products serve each of them: the
+ * owner's mapping (2026-10-26), the single source for the audience sections
+ * on Home and Product Suite (AudienceMap.tsx). Change the mapping here only.
+ *
+ * Products on the Product Suite page are referenced by id, so their names,
+ * taglines, descriptions, images and links come from product-suite/data.ts.
+ * Offerings without a section of their own (Gaming, the microscope
+ * integrations) are written out here in the owner's words and lead to the
+ * Contact page with the matching interest chosen.
+ */
+
+/** One card in an audience group, resolved for display. */
+export type AudienceItem = {
+  key: string;
+  name: string;
+  tagline: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  href: string;
+  /** What the link does, for the detailed view's button. */
+  action: string;
+};
+
+export type Audience = {
+  id: string;
+  label: string;
+  /** What this audience needs, in a line. */
+  need: string;
+  items: AudienceItem[];
+};
+
+/** A Contact page link with an interest chosen in the form (ContactForm reads `interest`). */
+function contactAbout(interest: (typeof interestOptions)[number]) {
+  return `/contact-us?interest=${encodeURIComponent(interest)}`;
+}
+
+function product(id: Product["id"], imageAlt: string): AudienceItem {
+  const p = products.find((candidate) => candidate.id === id);
+  if (!p) throw new Error(`Unknown product "${id}" in the audience mapping`);
+  return {
+    key: p.id,
+    name: p.label,
+    tagline: p.tagline,
+    description: p.description,
+    image: `/images/home/products/${p.id}.webp`,
+    imageAlt,
+    href: `/product-suite#${p.id}`,
+    action: "See it in the suite",
+  };
+}
+
+export const audiences: Audience[] = [
+  {
+    id: "doctors",
+    label: "Doctors & Surgeons",
+    need: "Support for their surgical, clinical and ophthalmic workflows.",
+    items: [
+      product("surgical-assistant", "The Surgical Assistant's live view of an eye during surgery."),
+      product("slit-lamp-module", "The Slit Lamp Module's view of an eye under examination."),
+    ],
+  },
+  {
+    id: "trainees",
+    label: "PG Students & Surgical Trainees",
+    need: "Skill development and surgical training.",
+    items: [
+      {
+        key: "gaming",
+        name: "Gaming",
+        tagline: "Gaming-based surgical training",
+        description: "Supports skill development and surgical training through gaming-based experiences.",
+        image: "/images/campaign/theatres/training.webp",
+        imageAlt: "Clinicians at a hands-on session, one wearing a headset.",
+        href: contactAbout("VR/AR Gaming Environment"),
+        action: "Ask about Gaming",
+      },
+    ],
+  },
+  {
+    id: "institutions",
+    label: "Hospitals & Training Institutions",
+    need: "Clinical documentation and the workflows around it.",
+    items: [product("ai-powered-emr", "The AI Powered EMR's patient dashboard.")],
+  },
+  {
+    id: "oems",
+    label: "OEMs & Medical Device Manufacturers",
+    need: "Software capabilities integrated with their microscopes.",
+    items: [
+      {
+        key: "microscope-integrations",
+        name: "Microscope Software Integrations",
+        tagline: "Software for your microscopes",
+        description: "Software integrations for OEMs and medical device manufacturers who want to add software capabilities to their microscopes.",
+        image: "/images/campaign/theatres/surgeon.webp",
+        imageAlt: "A surgeon operating at the microscope.",
+        href: contactAbout("Partnership / Collaboration"),
+        action: "Talk to us about integration",
+      },
+    ],
+  },
+];
+
+const mapped = new Set(audiences.flatMap((a) => a.items.map((item) => item.key)));
+
+/**
+ * The rest of the portfolio, outside the audience mapping (the products the
+ * mapping doesn't use, and the software platforms), so the audience
+ * view never reads as the whole suite (Product Suite only).
+ */
+export const alsoInTheSuite: Array<{ name: string; href: string }> = [
+  ...products.filter((p) => !mapped.has(p.id)).map((p) => ({ name: p.label, href: `/product-suite#${p.id}` })),
+  ...platforms.map((p) => ({ name: p.title, href: "/product-suite#plat-title" })),
+];
