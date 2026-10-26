@@ -73,6 +73,15 @@ export function closeIris(origin?: Point, text?: string): Promise<void> {
   });
 }
 
+/** Lifts the curtain at once, for an intro that has already opened onto the page itself. */
+export function releaseIris() {
+  if (!root) return;
+  gsap.killTweensOf([iris, ring, label, mark]);
+  iris.r = farthestCorner(window.innerWidth / 2, window.innerHeight / 2);
+  paint();
+  root.classList.remove("is-active");
+}
+
 export function openIris(duration = 1.1): Promise<void> {
   const el = mountIris();
   gsap.killTweensOf([iris, ring, label, mark]);

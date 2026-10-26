@@ -63,7 +63,12 @@ when you change one.
   colours (`#ff8b12`, `#ffb46a`, `#fbd896`, ...) and it comes out Plum.
   Canvases read colours from CSS custom properties, so they're recoloured
   too.
-- **Intro:** a WebGL torn-blueprint film (`motion/webgl/introFilm.ts`), with
+- **Intro:** since 2026-10-26 (owner's request) two films
+  (`motion/introVideo.ts`): the superhero kid says hi with sound, the logo
+  gathers out of a particle burst behind him, and the page opens through
+  the logo's ring. Sound starts on the visitor's first click, tap or key
+  (browser rule), or the "Sound on" chip. If the films can't load, the
+  previous intro below plays instead. Before that it was a WebGL torn-blueprint film (`motion/webgl/introFilm.ts`), with
   a DOM fallback (`motion/introPaper.ts`). Both open (2026-10-26, owner's
   request) with the kid's beat (`motion/introKid.ts`): on the bare sheet,
   no title yet, the superhero toddler flies in, waves with "Hi!" and flies

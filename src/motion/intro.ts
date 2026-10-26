@@ -3,7 +3,8 @@ import { fontsReady } from "./fonts";
 import { reveal } from "./gate";
 import { preloadKid } from "./introKid";
 import { playPaper } from "./introPaper";
-import { mountIris, openIris } from "./iris";
+import { playVideoIntro } from "./introVideo";
+import { mountIris, openIris, releaseIris } from "./iris";
 import { lockScroll } from "./lenis";
 
 const SEEN_KEY = "cv-intro-seen";
@@ -15,6 +16,14 @@ const windowLoaded = () =>
     else window.addEventListener("load", () => resolve(), { once: true });
   });
 
+function seen() {
+  try {
+    sessionStorage.setItem(SEEN_KEY, "1");
+  } catch {
+    /* private mode: the full intro just plays again next time */
+  }
+}
+
 function seenThisSession() {
   try {
     return sessionStorage.getItem(SEEN_KEY) === "1";
@@ -24,13 +33,14 @@ function seenThisSession() {
 }
 
 /**
- * First visit: the intro film (webgl/introFilm.ts), a live-rendered shot from
- * an 1887 engineering sheet, where the campaign's kid first flies in and
- * says hi (introKid.ts), then the sheet is torn open onto "VUE AI", to the
- * ChakraVue AI mark. Without WebGL (or if it can't load in time) the same story plays
- * with DOM layers (introPaper.ts). Either way the page then opens through
- * the iris. Later visits in the same session skip straight to a short iris
- * open.
+ * First visit: the video intro (introVideo.ts): the kid flies in and says
+ * hi, the ChakraVue AI mark gathers behind him, and the page opens through
+ * the mark's ring. If the films can't load in time, the drawn intro plays
+ * instead: the film (webgl/introFilm.ts), a live-rendered shot from an 1887
+ * engineering sheet where the kid says hi (introKid.ts) before the sheet is
+ * torn open onto the mark, or without WebGL the same story with DOM layers
+ * (introPaper.ts), then the iris opens. Later visits in the same session
+ * skip straight to a short iris open.
  */
 export async function runIntro() {
   if (reduceMotion) return;
@@ -48,8 +58,22 @@ export async function runIntro() {
   // The intro runs edge to edge, so the scrollbar is hidden until it opens.
   document.documentElement.classList.add("is-intro");
   const root = mountIris();
-  void preloadKid();
   const ready = Promise.all([fontsReady, Promise.race([windowLoaded(), wait(4500)])]);
+
+  try {
+    await playVideoIntro(root, ready, () => {
+      document.documentElement.classList.remove("is-intro");
+      lockScroll(false);
+      reveal();
+    });
+    releaseIris();
+    seen();
+    return;
+  } catch (error) {
+    if (import.meta.env.DEV) console.warn("[intro] falling back to the drawn intro:", error);
+  }
+
+  void preloadKid();
 
   let finish: (opening: Promise<void>) => void;
   try {
@@ -68,10 +92,6 @@ export async function runIntro() {
   finish(opening);
   lockScroll(false);
   reveal();
-  try {
-    sessionStorage.setItem(SEEN_KEY, "1");
-  } catch {
-    /* private mode: the full intro just plays again next time */
-  }
+  seen();
   await opening;
 }
