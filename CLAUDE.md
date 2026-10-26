@@ -126,7 +126,7 @@ when you change one.
   flies in, then grows into the doctor as the page scrolls. On Home it
   names the story's chapter, paces the growing up by the chapter marks,
   shows from the hero, and hides for the aspiration scene. Elsewhere it
-  appears after the hero. Below 1360px and on Product Suite it's a badge
+  appears after the hero. Below 1360px and on Product Suite and Try Demo it's a badge
   that only shows for about three seconds per chapter (it covered text
   when it stayed), and never over the footer. Keep it clear of content: check
   the right margin whenever a section's layout changes. The kid is also
@@ -196,9 +196,8 @@ when you change one.
     capture must have chip/GPU names, performance readouts, model names
     (for example the segmentation model) and internal detector strings
     painted out.
-  - Between the lead statement and the theater: By role (`AudienceMap`,
-    detailed), the same mapping with each product's description, and
-    "Also in the suite" for the rest of the portfolio.
+  - The "By role" section was removed (2026-10-26, owner's request); the
+    audience picker now lives only on Try Demo.
   - The audience mapping lives only in `shared/data/audiences.ts` (owner,
     2026-10-26): Doctors & Surgeons → Digital Surgical Assistant, Slit Lamp;
     PG Students & Surgical Trainees → Gaming; Hospitals & Training
@@ -213,6 +212,17 @@ when you change one.
   - The closing "Institute creates data…" band and the platforms EMR
     Mobile, Face & Eye, Voice, Data Sender and Secure Edge were removed on
     request.
+- **Try Demo** (`/try-demo`, added 2026-10-26 at the owner's request; README
+  "Try Demo"): hero, "Who Are You?" (the four audiences), "Choose Your
+  Demo" (five cards like a pricing page, one per product, each declaring
+  10,000 demo points), footer. In the header it's a button at the right
+  of the bar. The points are `DEMO_POINTS` in `audiences.ts`, a declared
+  figure only: never present them as money, credits, a balance, or with
+  rules or expiry, and never fake deductions. No product has a demo
+  environment yet, so "Try Demo" opens a request dialog with the Contact
+  page's fields (owner's request) that hands the request to Gmail like the
+  Contact form; when real demo links or a form backend exist, wire them in
+  `DemoRequest.tsx` per product.
 - **About Us:** hero "The Technology Is Only as Strong as the Minds Behind
   It." over a canvas network of minds (`about-us/components/minds.ts`), then
   "Why we exist" with the campaign's height-chart pair (`AboutStory.tsx`),

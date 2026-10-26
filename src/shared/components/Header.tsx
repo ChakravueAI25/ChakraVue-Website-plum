@@ -16,6 +16,9 @@ type HeaderProps = {
 
 /** The phone menu names the last item for what it is, as the footer does. */
 const menuItems = navItems.map((item) => ({ ...item, label: item.label === "More" ? "Privacy Policy" : item.label }));
+/** The bar's links, and Try Demo, which the bar shows as a button beside them. */
+const demoItem = navItems.find((item) => item.href === "/try-demo")!;
+const pageItems = navItems.filter((item) => item !== demoItem);
 const menuContacts = contactDetails.filter((detail) => detail.href && detail.label !== "LinkedIn");
 
 export function Header({ visible = true }: HeaderProps) {
@@ -110,12 +113,22 @@ export function Header({ visible = true }: HeaderProps) {
     <>
       <header ref={ref} className={`header${visible ? "" : " header--hidden"}${scrolled ? " header--scrolled" : ""}${open ? " header--menu" : ""}`}>
         <nav className="header__nav" aria-label="Primary navigation">
-          <div className="header__nav-group header__nav-group--start">{navItems.slice(0, 3).map(renderItem)}</div>
+          <div className="header__nav-group header__nav-group--start">{pageItems.slice(0, 3).map(renderItem)}</div>
           <Link href="/" className="header__brand" aria-label="ChakraVue AI home" data-magnetic="0.18">
             <Logo className="header__logo" />
             ChakraVue AI
           </Link>
-          <div className="header__nav-group header__nav-group--end">{navItems.slice(3).map(renderItem)}</div>
+          <div className="header__nav-group header__nav-group--end">
+            {pageItems.slice(3).map(renderItem)}
+            <Link
+              href={demoItem.href}
+              className={`header__cta${path === demoItem.href ? " is-current" : ""}`}
+              aria-current={path === demoItem.href ? "page" : undefined}
+              data-magnetic="0.2"
+            >
+              {demoItem.label}
+            </Link>
+          </div>
           <button
             ref={toggleRef}
             type="button"

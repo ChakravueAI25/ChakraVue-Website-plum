@@ -1,5 +1,4 @@
 import { usePageMotion } from "../../motion/useMotion";
-import { AudienceMap } from "../../shared/components/AudienceMap";
 import { Header } from "../../shared/components/Header";
 import { InsightStatement } from "../../shared/components/InsightStatement";
 import { PlatformConsole } from "./components/PlatformConsole";
@@ -16,8 +15,6 @@ export function ProductSuitePage() {
       <Header />
       <SuiteHero />
       <InsightStatement lines={suiteLines} className="insight-statement--lead" pin={false} />
-      {/* Who each product is for, before the products themselves. */}
-      <AudienceMap variant="detailed" />
       <ProductTheater />
       <PlatformConsole />
     </main>

@@ -1,5 +1,4 @@
-/* Who ChakraVue AI is built for (AudienceMap.tsx), on Home ("overview") and
-   Product Suite ("detailed"). Same language as the homepage's section headers
+/* Who ChakraVue AI is built for (AudienceMap.tsx), on Home. Same language as the homepage's section headers
    and cards: Audiowide, dark rounded cards with amber hairlines; written in
    the Ember colours so the palette grade turns them Plum. Photos keep their
    own colours. */
@@ -34,18 +33,10 @@
   line-height: 1.7;
 }
 
-.aud__list,
-.aud__items {
+.aud__list {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.aud__index {
-  color: #ffb46a;
-  font-family: var(--font-ui);
-  font-size: 11px;
-  letter-spacing: 0.16em;
 }
 
 .aud__label {
@@ -63,80 +54,6 @@
   color: rgba(255, 243, 231, 0.62);
   font-size: 13px;
   line-height: 1.6;
-}
-
-/* A product: its picture, its name, and the way to it. */
-.aud__item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 214, 170, 0.14);
-  border-radius: 16px;
-  background:
-    radial-gradient(240px circle at var(--mx, -400px) var(--my, -400px), rgba(255, 139, 18, 0.12), transparent 70%),
-    linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
-  color: #fff;
-  transition: border-color 0.35s ease, translate 0.35s var(--ease-out);
-}
-
-.aud__item:hover,
-.aud__item:focus-visible {
-  border-color: rgba(255, 180, 106, 0.6);
-  translate: 0 -2px;
-}
-
-.aud__item:focus-visible {
-  outline: 2px solid #ffb46a;
-  outline-offset: 3px;
-}
-
-.aud__thumb {
-  flex: none;
-  width: 64px;
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #0b0a08;
-}
-
-.aud__thumb img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: scale 0.6s var(--ease-out);
-}
-
-.aud__item:hover .aud__thumb img {
-  scale: 1.06;
-}
-
-.aud__body {
-  display: grid;
-  flex: 1;
-  min-width: 0;
-  gap: 6px;
-}
-
-.aud__name {
-  font-family: var(--font-display);
-  font-size: 13px;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.aud__arrow,
-.aud__action span {
-  color: #ffb46a;
-  transition: translate 0.35s var(--ease-out);
-}
-
-.aud__item:hover .aud__arrow,
-.aud__item:hover .aud__action span {
-  translate: 4px 0;
 }
 
 /* --- Overview (Home): four audience panels -------------------------------- */
@@ -335,108 +252,6 @@
   translate: 3px 0;
 }
 
-/* --- Detailed (Product Suite): one row per audience -------------------------- */
-
-.aud--detailed .aud__list {
-  display: grid;
-  gap: clamp(14px, 1.6vw, 20px);
-}
-
-.aud--detailed .aud__group {
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-  gap: clamp(20px, 3vw, 48px);
-  padding: clamp(22px, 2.4vw, 32px) 0;
-  border-top: 1px solid rgba(255, 214, 170, 0.18);
-}
-
-.aud--detailed .aud__label {
-  font-size: clamp(17px, 1.6vw, 22px);
-}
-
-.aud--detailed .aud__need {
-  max-width: 320px;
-  font-size: 14px;
-}
-
-.aud--detailed .aud__items {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.aud--detailed .aud__item {
-  align-items: stretch;
-  height: 100%;
-  padding: 14px;
-}
-
-.aud--detailed .aud__thumb {
-  width: 108px;
-  aspect-ratio: 4 / 5;
-}
-
-.aud--detailed .aud__name {
-  font-size: 14px;
-}
-
-.aud__tagline {
-  color: #ffb46a;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.aud__desc {
-  color: rgba(255, 243, 231, 0.7);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.aud__action {
-  display: inline-flex;
-  align-self: end;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  color: rgba(255, 243, 231, 0.85);
-  font-family: var(--font-ui);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-/* The rest of the portfolio, outside the mapping. */
-.aud__also {
-  margin-top: clamp(22px, 2.6vw, 34px);
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 214, 170, 0.18);
-  color: rgba(255, 243, 231, 0.55);
-  font-size: 13px;
-  line-height: 1.9;
-}
-
-.aud__also-label {
-  margin-right: 14px;
-  color: rgba(255, 243, 231, 0.75);
-  font-family: var(--font-ui);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.aud__also a {
-  color: rgba(255, 243, 231, 0.85);
-  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
-  transition: color 0.3s ease, background-size 0.45s var(--ease-out);
-}
-
-.aud__also a:hover,
-.aud__also a:focus-visible {
-  color: #ffd29a;
-  background-size: 0% 1px;
-  background-position: 100% 100%;
-}
-
 /* --- Tablets and phones ------------------------------------------------------ */
 
 @media (max-width: 1100px) {
@@ -445,15 +260,8 @@
   }
 }
 
-@media (max-width: 900px) {
-  .aud--detailed .aud__group {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 640px) {
-  .aud--overview .aud__list,
-  .aud--detailed .aud__items {
+  .aud--overview .aud__list {
     grid-template-columns: 1fr;
   }
 
@@ -462,21 +270,13 @@
   .aud-panel__art {
     aspect-ratio: 2 / 1;
   }
-
-  .aud--detailed .aud__thumb {
-    width: 84px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .aud-panel,
   .aud-panel__art img,
   .aud-panel__row,
-  .aud-panel__arrow,
-  .aud__item,
-  .aud__thumb img,
-  .aud__arrow,
-  .aud__action span {
+  .aud-panel__arrow {
     transition: none;
   }
 }

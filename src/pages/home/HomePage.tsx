@@ -52,7 +52,7 @@ export function HomePage() {
       <DiscoveryReveal />
       <ChapterMark id="transformation" />
       <ProductShowcase />
-      <AudienceMap variant="overview" />
+      <AudienceMap />
       <CoreIdea />
       <ValueCards />
       <ChapterMark id="journey" />

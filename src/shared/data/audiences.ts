@@ -1,11 +1,11 @@
 import { products, type Product } from "../../pages/product-suite/data.ts";
-import { platforms } from "../../pages/product-suite/platforms.ts";
 import { interestOptions } from "../../pages/contact/data.ts";
 
 /**
  * Who ChakraVue AI is built for, and which products serve each of them: the
- * owner's mapping (2026-10-26), the single source for the audience sections
- * on Home and Product Suite (AudienceMap.tsx). Change the mapping here only.
+ * owner's mapping (2026-10-26), the single source for Home's audience
+ * section (AudienceMap.tsx), the Try Demo page and the Product Suite rows'
+ * "Built for". Change the mapping here only.
  *
  * Products on the Product Suite page are referenced by id, so their names,
  * taglines, descriptions, images and links come from product-suite/data.ts.
@@ -129,14 +129,9 @@ export const audiences: Audience[] = [
   },
 ];
 
-const mapped = new Set(audiences.flatMap((a) => a.items.map((item) => item.key)));
-
 /**
- * The rest of the portfolio, outside the audience mapping (the products the
- * mapping doesn't use, and the software platforms), so the audience
- * view never reads as the whole suite (Product Suite only).
+ * The demo allocation declared for every product on the Try Demo page
+ * (owner, 2026-10-26): 10,000 points each, per product, not a shared pool.
+ * It's a stated figure only: nothing on the site tracks or spends points.
  */
-export const alsoInTheSuite: Array<{ name: string; href: string }> = [
-  ...products.filter((p) => !mapped.has(p.id)).map((p) => ({ name: p.label, href: `/product-suite#${p.id}` })),
-  ...platforms.map((p) => ({ name: p.title, href: "/product-suite#plat-title" })),
-];
+export const DEMO_POINTS = 10_000;

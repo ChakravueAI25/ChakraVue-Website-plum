@@ -8,6 +8,7 @@ import { HomePage } from "../pages/home/HomePage";
 import { PrivacyPage } from "../pages/privacy/PrivacyPage";
 import { ProductSuitePage } from "../pages/product-suite/ProductSuitePage";
 import { ServicesPage } from "../pages/services/ServicesPage";
+import { TryDemoPage } from "../pages/try-demo/TryDemoPage";
 import { ChatAssistant } from "../shared/components/ChatAssistant";
 import { Footer } from "../shared/components/Footer";
 import { GrowRail } from "../shared/components/GrowRail";
@@ -21,6 +22,7 @@ const routes: Record<string, ComponentType> = {
   "/blog": BlogPage,
   "/contact-us": ContactPage,
   "/privacy-policy": PrivacyPage,
+  "/try-demo": TryDemoPage,
 };
 
 export function App() {

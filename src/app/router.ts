@@ -12,6 +12,7 @@ const LABELS: Record<string, string> = {
   "/blog": "Blog",
   "/contact-us": "Contact Us",
   "/privacy-policy": "Privacy Policy",
+  "/try-demo": "Try Demo",
 };
 
 function normalize(pathname: string) {

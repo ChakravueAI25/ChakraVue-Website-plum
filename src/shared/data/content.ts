@@ -5,6 +5,8 @@ export const navItems = [
   { label: "Blog", href: "/blog" },
   { label: "Contact Us", href: "/contact-us" },
   { label: "More", href: "/privacy-policy" },
+  // Set apart as a button in the header bar (Header.tsx); a plain link in the menu and footer.
+  { label: "Try Demo", href: "/try-demo" },
 ];
 
 /**

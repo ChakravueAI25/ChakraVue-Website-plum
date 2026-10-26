@@ -142,7 +142,7 @@ story code; the growth rail reads the marks. In order:
   the whole product is lit. Opens on hover, click, tap or keyboard; plays by
   itself with a progress line until the visitor picks one. Product shots are
   cut from the Product Suite hero render (`public/images/home/products/`).
-- **Who we serve** (`shared/components/AudienceMap.tsx`, `variant="overview"`).
+- **Who we serve** (`shared/components/AudienceMap.tsx`).
   "Technology Built for Every Role in Surgery": four equal panels, one per
   audience. Each has a picture of its product at work (the product screens
   from the Product Suite hero, the EMR's patient cards in
@@ -182,14 +182,14 @@ and the outcome, with three photos from the stall
 the team). Only what that post says.
 
 **The audience mapping** (`shared/data/audiences.ts`) is the single source
-for both "Who we serve" sections; change it there only. It is the owner's
+for Home's "Who we serve", the Try Demo page and the Product Suite rows' "Built for"; change it there only. It is the owner's
 mapping (2026-10-26):
 
 | Audience | Products | Link |
 | --- | --- | --- |
-| Doctors & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their theater chapters (`/product-suite#…`) |
+| Doctors & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their product rows (`/product-suite#…`) |
 | PG Students & Surgical Trainees | Gaming | `/contact-us?interest=VR/AR Gaming Environment` |
-| Hospitals & Training Institutions | AI Powered EMR | Its theater chapter |
+| Hospitals & Training Institutions | AI Powered EMR | Its product row |
 | OEMs & Medical Device Manufacturers | Microscope Software Integrations | `/contact-us?interest=Partnership / Collaboration` |
 
 Products on the Product Suite page are referenced by id, so their names,
@@ -228,12 +228,6 @@ only; elsewhere the character is just the small growth rail in the margin.
   The scroll fade is desktop-only, so phones never dim the products.
 - "Intelligence, Engineered for the Operating Room." follows the hero as a
   compact band that lights as it passes (not pinned).
-- **By role** (`AudienceMap.tsx`, `variant="detailed"`), between the lead
-  statement and the theater: the same four audiences, one row each, with
-  what they need and a card per product (tagline, the product's own
-  description, and "See it in the suite ↓" to its product row). Under
-  it, "Also in the suite" lists the rest of the portfolio, so the audience
-  view never reads as the whole suite.
 - **The products, as a spec sheet** (`ProductTheater.tsx`, `theater.css`;
   rebuilt 2026-10-26 at the owner's request, after a reference data sheet).
   The four products follow one another, each a row with the copy on the
@@ -390,6 +384,52 @@ adding products.
   Anyone without a profile simply shows no link (Hrushikesh Patki, for now).
 
 **Blog.** The doorway light flickers on, and scrolling walks you toward it.
+
+**Try Demo (new, 2026-10-26).** `/try-demo`, `src/pages/try-demo/`; in the
+nav as a button at the right of the header bar (`.header__cta`, slimmer
+below 1100px) and as a plain link in the phone menu and the footer.
+- **Hero** (`DemoHero.tsx`): "Experience the Future of Surgery.", the
+  supporting line, "Explore Demos" (scrolls to the roles), and the page at a
+  glance (products, roles, demo points per product), all counted from the
+  data. A glow and a faint grid; nothing large.
+- **Who Are You?** (`RolePicker.tsx`): the four audiences from
+  `shared/data/audiences.ts` as buttons (picture, role, need, its products as
+  tags). Choosing one scrolls to the demos and highlights that role's cards
+  (`aria-pressed`). Compact rows on phones.
+- **Choose Your Demo** (`DemoCards.tsx`): five cards, one per product, set
+  like a pricing page: picture with a "For <role>" tag, name, tagline, then
+  **10,000 Demo points** ("Declared allocation for this product"), Try Demo,
+  the description, and a link to the product's row in the suite where it
+  has one. Each card spans six rows of the list (`grid-template-rows:
+  subgrid`), so the allocations and buttons line up across the cards. A
+  role filter above (`All products` + the four roles) stays in step with
+  the picker: the role's cards are outlined, the others dim (still
+  usable); an `aria-live` line says what's highlighted. 5 across on
+  desktop, 3 + 2 to 900px, 2 on tablets, 1 on phones. No featured card.
+- **The allocation** is `DEMO_POINTS` in `audiences.ts`: a stated figure,
+  per product, not a shared pool. Nothing tracks, spends or expires points,
+  and the page never says it does.
+- **Try Demo opens a request dialog** (`DemoRequest.tsx`, a native
+  `<dialog>` with `showModal()`: focus stays inside, the page behind is
+  inert, Esc / Close / Cancel / a click on the backdrop close it, Lenis is
+  stopped while it's open, and focus returns to the card's button). The
+  product is fixed by the card (picture, name, role, allocation in the
+  header). It asks for the Contact page's details (name, phone, email, who
+  you are, from `contact/data.ts`) plus an optional organisation and note.
+  Required fields are checked on blur and on submit with messages under
+  each (`aria-invalid`, `aria-describedby`); the first bad field takes
+  focus. The details carry over to the next product; the first empty
+  field (or Send) takes focus on opening.
+- **Sending**: there are no demo environments and no form backend yet, so,
+  like the Contact form, it hands the finished request ("Demo request:
+  <product> (<name>)", with the role, the allocation and every field) to
+  Gmail's compose view, and the dialog says plainly that the visitor
+  still has to press Send there. If a pop-up blocker stops the tab it says
+  so and offers the link; it also offers a `mailto:` and "copy the request".
+  Swap `send` for a real submit handler (and real demo links) once they
+  exist.
+- The growth rail is a corner badge here, as on Product Suite, so the kid
+  never covers the cards.
 
 **Contact.** Form fields cascade in, labels light up with focus, and the map
 unrolls into view.
@@ -683,9 +723,8 @@ dialogue are illustrative, so please confirm they're acceptable to show.
 Campaign copy (from the blueprint redesign, adapted). Please review:
 - Hero: the "Analogue to AI" eyebrow and the "The campaign film" chip.
 - Story chapter names (`story.ts`), shown on the growth rail.
-- Who we serve / By role: the audiences' "need" lines, the Gaming and
-  Microscope Software Integrations descriptions and taglines, "Find your role,
-  then the products built for it.", and the two photos used for Gaming (the
+- Who we serve / Try Demo: the audiences' "need" lines, the Gaming and
+  Microscope Software Integrations descriptions and taglines, and the two photos used for Gaming (the
   hands-on session) and the integrations (the surgeon at the microscope).
 - Hero: "Every doctor started small" above the headline. The headline itself
   is unchanged until the owner decides whether the story line should replace

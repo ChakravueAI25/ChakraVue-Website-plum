@@ -378,16 +378,18 @@ html.is-menu-open .grow-rail {
   color: #fff3e7;
 }
 
-html[data-page="product-suite"] .grow-rail {
+/* Full-width content (Product Suite's product rows, Try Demo's cards): the
+   kid stays a badge in the corner instead of the chart in the margin. */
+html:is([data-page="product-suite"], [data-page="try-demo"]) .grow-rail {
   right: 14px;
   bottom: max(14px, env(safe-area-inset-bottom));
 }
 
-html[data-page="product-suite"] .grow-rail__chart {
+html:is([data-page="product-suite"], [data-page="try-demo"]) .grow-rail__chart {
   display: none;
 }
 
-html[data-page="product-suite"] .grow-rail.is-on:not(.is-handoff) .grow-rail__badge {
+html:is([data-page="product-suite"], [data-page="try-demo"]) .grow-rail.is-on:not(.is-handoff) .grow-rail__badge {
   opacity: 1;
   visibility: visible;
   translate: 0 0;
