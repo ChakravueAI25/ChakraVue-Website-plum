@@ -46,6 +46,14 @@ export type TheaterOptions = {
   onFocus?: (focus: number) => void;
   /** Inline: where the product's base sits, as a fraction of the canvas height. */
   floor?: number;
+  /**
+   * Inline: paint this colour behind the product instead of leaving the
+   * canvas transparent. Pass the CSS colour as the page shows it (already in
+   * the site's palette): the frame goes through the palette grade like the
+   * stage's, and the backdrop, cleared with alpha 0, is left as it is (as the
+   * screens are), so it matches the CSS panel around it exactly.
+   */
+  backdrop?: string;
 };
 
 export type Theater = {
@@ -53,8 +61,8 @@ export type Theater = {
   setChapter(index: number, progress: number, last?: boolean): void;
   /** Inline mode: dismantle the current product and assemble the next. */
   swap(index: number): Promise<void>;
-  /** Inline mode: open the product part-way to show what's inside. */
-  setPeek(on: boolean): void;
+  /** Inline mode: open the product to show what's inside (`amount`, 0 to 1; part-way by default). */
+  setPeek(on: boolean, amount?: number): void;
   /** Turn the product by a pointer drag (pixels). */
   drag(dx: number): void;
   start(): void;
@@ -290,17 +298,19 @@ function scanner() {
 
 export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions): Theater {
   const stage = options.mode === "stage";
+  const opaque = stage || !!options.backdrop;
   const small = window.matchMedia("(max-width: 760px)").matches;
   const quality: Quality = small ? "low" : "high";
   const dpr = Math.min(window.devicePixelRatio || 1, small ? 1.5 : 1.75);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !stage, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !opaque, powerPreference: "high-performance" });
   renderer.setPixelRatio(dpr);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.localClippingEnabled = true;
-  renderer.setClearColor(0x040302, stage ? 1 : 0);
+  // A backdrop clears with alpha 0 so the grade pass leaves it as given.
+  renderer.setClearColor(options.backdrop ?? 0x040302, stage ? 1 : 0);
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -364,19 +374,22 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   shadow.position.y = 0.004;
   scene.add(shadow);
 
+  // Over a backdrop (alpha 0, left ungraded) the slice's faint light would
+  // keep its original colour, so it's left out there; the parts still gather.
   const scan = scanner();
-  scene.add(scan.mesh);
+  if (!options.backdrop) scene.add(scan.mesh);
 
-  // Bloom makes the chips, rims and screens glow. Desktop stage only.
+  // Bloom makes the chips, rims and screens glow. Desktop stage only. The
+  // grade runs on the stage and on inline views with a backdrop.
   let composer: EffectComposer | null = null;
   let bloom: UnrealBloomPass | null = null;
   // The site palette grades the finished frame (a no-op on the original).
   const grade = gradeUniform();
   let gradePass: ShaderPass | null = null;
-  if (stage) {
+  if (opaque) {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    if (quality === "high") {
+    if (stage && quality === "high") {
       bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.38, 0.45, 1.0);
       composer.addPass(bloom);
     }
@@ -797,9 +810,9 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       });
     },
 
-    setPeek(on) {
+    setPeek(on, amount = 0.55) {
       peek = on;
-      gsap.to(goal, { explode: on ? 0.55 : 0, labels: on ? 1 : 0, duration: 0.9, ease: "cv.out", overwrite: "auto" });
+      gsap.to(goal, { explode: on ? amount : 0, labels: on ? 1 : 0, duration: 0.9, ease: "cv.out", overwrite: "auto" });
     },
 
     drag(dx) {

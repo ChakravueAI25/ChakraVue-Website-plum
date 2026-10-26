@@ -142,8 +142,17 @@ when you change one.
     the links. On tablets and phones (≤900px) the diagram stands upright
     (statement, two products, ring, two products, all linked); the owner
     asked for the phone hero to be as good as desktop (2026-10-19). Then a compact (unpinned) lead statement "Intelligence,
-    Engineered for the Operating Room.", then the 3D product theater
-    (`motion/webgl/theater/`, generic part labels).
+    Engineered for the Operating Room.", then the products.
+  - The products (rebuilt 2026-10-26 at the owner's request, after a
+    reference spec sheet): one row per product, stacked, copy on the left
+    and the product in 3D on the right, in the site's own colours. No
+    scrolling drives them: pointing at a row opens the product up, drag
+    turns it, and "Look inside" does it on touch. The owner asked for the
+    parts not to be named, so no labels. Each row is an inline theater
+    (`motion/webgl/theater/`) with a backdrop matched to the panel. The
+    scroll-driven stage (chapters, labels, focus beat, AI readouts) is no
+    longer on the page; the notes below about it describe the engine's
+    stage mode and the models, which the rows still use.
   - Product stills must never show ratings: the Integrated Devices photo
     used to show the battery's rating and was re-rendered from the 3D
     model (2026-10-19).

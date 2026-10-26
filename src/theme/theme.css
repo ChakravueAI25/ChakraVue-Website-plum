@@ -7,7 +7,7 @@
    deliberately left out.
    ========================================================================== */
 
-html:not([data-theme="original"]) .theater__photo {
+html:not([data-theme="original"]) .spec__photo {
   filter: url(#cv-theme-filter);
 }
 

@@ -72,7 +72,7 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
   chapter above the chart, paces the growing up by the chapters (he grows
   up as the journey begins), and steps aside when the closing scene takes
   over. Elsewhere it appears once the hero has scrolled away. Below 1360px
-  wide, and always on Product Suite (the theater's copy uses that margin),
+  wide, and always on Product Suite (the product rows use that margin),
   it's a 46px badge (ring filling with the page, face changing) that shows
   for about three seconds at each new chapter and then fades, so it never
   sits on what's being read. Decorative (`aria-hidden`), on every page. The
@@ -231,17 +231,26 @@ only; elsewhere the character is just the small growth rail in the margin.
 - **By role** (`AudienceMap.tsx`, `variant="detailed"`), between the lead
   statement and the theater: the same four audiences, one row each, with
   what they need and a card per product (tagline, the product's own
-  description, and "See it in the suite ↓" to its theater chapter). Under
+  description, and "See it in the suite ↓" to its product row). Under
   it, "Also in the suite" lists the rest of the portfolio, so the audience
   view never reads as the whole suite.
-- **3D product theater** (replaces the four podium sections). A studio stage
-  stays fixed while each product's chapter scrolls over it: the product builds
-  up through a glowing scan line, turns, comes apart into labelled internal
-  parts, reassembles, and hands over to the next. There's a product rail on the
-  right, drag to turn, and the parts list writes itself in beside the copy.
-  Each chapter's copy fades as it hands over, so it never slides across the
-  label or the product. With reduced motion or no WebGL it becomes a plain list
-  with the photographs.
+- **The products, as a spec sheet** (`ProductTheater.tsx`, `theater.css`;
+  rebuilt 2026-10-26 at the owner's request, after a reference data sheet).
+  The four products follow one another, each a row with the copy on the
+  left (count, name, tagline, then hairline cells: Overview, Built for from
+  `shared/data/audiences.ts`, and a hint) and the product in 3D on the right,
+  on a dark panel with its large outlined index. Nothing is driven by
+  scrolling: pointing at a row opens the product up (the engine's inline
+  mode, `setPeek(true, 0.9)`), leaving closes it, and dragging turns it. The
+  parts are not named (no label layer, `anatomy: []`). Touch screens and the
+  keyboard use the "Look inside" / "Close it up" button, and the hint
+  changes with it. Each row builds its own small theater when it nears the
+  screen, assembling once as it arrives. The canvas clears to the panel's
+  computed colour with alpha 0, so the grade pass leaves it alone and it
+  matches the CSS panel exactly; the scan slice is left out there for the
+  same reason. Rows keep the product ids as anchors (`/product-suite#…`).
+  At 900px and below the product sits above its copy. With reduced motion
+  or no WebGL each row shows the product photograph instead.
 
 **Services (new, replaces "What We Do" in the nav).** `/services`,
 `src/pages/services/`.
@@ -263,14 +272,17 @@ only; elsewhere the character is just the small growth rail in the margin.
 - **Case studies, "Why work with us" and a contact call to action.** The
   diagrams are illustrative, not simulation output.
 
-**Product Suite: software platforms.** A console under the 3D theater
+**Product Suite: software platforms.** A console under the product rows
 (`PlatformConsole.tsx`, data in `product-suite/platforms.ts`) with three
 platforms: Dental Implant Planning; the ChakraVue Doctor Patient App, one
 bundle showing the Doctor App and the Patient App side by side; and
 ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
 decoding title and a self-drawing line icon.
 
-**3D products.** The Surgical Assistant, the Slit Lamp Module and the AI
+**3D products.** The page now shows the models in the inline spec rows
+above. The engine's stage mode (fixed stage, chapters, leader labels, the
+focus beat and readout cards, described below) is kept but no longer used
+on any page. The Surgical Assistant, the Slit Lamp Module and the AI
 Powered EMR are the same rugged field case, standing open
 (`models/briefcase.ts`, modelled on the owner's reference photo). They
 differ only in the interface on the display (`models/interfaces.ts`).
@@ -356,7 +368,7 @@ the model, captured with the palette set to "original" (the page's CSS
 grades them) at chapter progress 0.12, assembled. The Slit Lamp Module's
 and the EMR's homepage panels still show their earlier renders.
 
-**Confidentiality.** Public copy and the exploded-view labels name parts only
+**Confidentiality.** Public copy and part names (no longer shown in the exploded view, but still in `data.ts` and so in the bundle) name parts only
 generically (Port, Battery, Bluetooth, Compute unit…): no part numbers,
 ratings, chipsets or security implementation details. Keep it that way when
 adding products.
@@ -602,8 +614,9 @@ rather than a product that shares a word with it ("surgical").
 ## The 3D products
 
 The four models are **stylised stand-ins built in code**, modelled on the
-product renders, not engineering CAD. The part names in the exploded view
-live in `src/pages/product-suite/data.ts` (`anatomy`). They're drawn from each
+product renders, not engineering CAD. The part names (`anatomy` in
+`src/pages/product-suite/data.ts`) are no longer shown on the page, which
+opens the products without naming parts. They're drawn from each
 product's own description; have the product team confirm them before this
 ships. When real models exist, export them as GLB and replace the builders in
 `motion/webgl/theater/models/`: the engine only needs a group, a list of parts
