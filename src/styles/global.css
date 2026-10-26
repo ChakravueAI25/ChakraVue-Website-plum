@@ -665,16 +665,62 @@ p {
   margin-right: clamp(16px, 4.9vw, 71px);
 }
 
-.featured-strip__track img {
-  display: block;
-  width: 79px;
+/* Every channel on a tile of the same height: NDTV's logo is its own red
+   square; India TV's dark lettering sits on a light tile. */
+.featured-strip__logo {
+  display: grid;
   height: 79px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 6px;
   transition: transform 0.35s ease, filter 0.35s ease;
 }
 
-.featured-strip__track li:hover img {
+.featured-strip__logo img {
+  display: block;
+  width: auto;
+}
+
+/* Fixed heights: a percentage doesn't resolve inside the tile's grid. */
+.featured-strip__logo--square img {
+  height: 79px;
+}
+
+.featured-strip__logo--light {
+  padding: 0 18px;
+  background: #fff;
+}
+
+.featured-strip__logo--light img {
+  height: 34px;
+}
+
+.featured-strip__track li:hover {
   transform: translateY(-6px);
   filter: drop-shadow(0 10px 18px rgba(255, 30, 20, 0.45));
+}
+
+.featured-strip__note {
+  max-width: 640px;
+  margin: 22px auto 0;
+  color: rgba(255, 243, 231, 0.62);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.featured-strip__note a {
+  margin-left: 6px;
+  color: #ffb46a;
+  white-space: nowrap;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size 0.45s var(--ease-out), color 0.3s ease;
+}
+
+.featured-strip__note a:hover,
+.featured-strip__note a:focus-visible {
+  color: #ffd29a;
+  background-size: 0% 1px;
+  background-position: 100% 100%;
 }
 
 @keyframes marquee {
@@ -705,9 +751,20 @@ p {
     margin-right: 14px;
   }
 
-  .featured-strip__track img {
-    width: 56px;
+  .featured-strip__logo {
     height: 56px;
+  }
+
+  .featured-strip__logo--light {
+    padding: 0 12px;
+  }
+
+  .featured-strip__logo--square img {
+    height: 56px;
+  }
+
+  .featured-strip__logo--light img {
+    height: 24px;
   }
 }
 

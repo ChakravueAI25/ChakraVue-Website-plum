@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { gsap, ScrollTrigger } from "../../motion/gsap";
 import { useMotion } from "../../motion/useMotion";
-import { featuredLogos } from "../data/content";
+import { featuredLogos, featuredMedia } from "../data/content";
+import { Link } from "./Link";
 
 type FeaturedInStripProps = {
   className?: string;
@@ -88,8 +89,8 @@ export function FeaturedInStrip({ className = "" }: FeaturedInStripProps) {
               the animated paint position) — lazy-loading it left it blank
               well after the page loaded, showing as a gap in the loop. */}
           {loop.map((logo, i) => (
-            <li key={i}>
-              <img src={logo.src} alt="" width={79} height={79} loading="eager" />
+            <li key={i} className={`featured-strip__logo featured-strip__logo--${logo.tile}`}>
+              <img src={logo.src} alt="" loading="eager" />
             </li>
           ))}
         </ul>
@@ -97,10 +98,18 @@ export function FeaturedInStrip({ className = "" }: FeaturedInStripProps) {
 
       {/* Real, non-duplicated list for assistive tech; the marquee above is decorative. */}
       <ul className="sr-only">
-        {featuredLogos.map((logo, i) => (
-          <li key={i}>{logo.name}</li>
+        {featuredMedia.map((logo) => (
+          <li key={logo.name}>{logo.name}</li>
         ))}
       </ul>
+
+      {/* Where the coverage came from, with the full story on the Blog page. */}
+      <p className="featured-strip__note">
+        National TV and digital media interviews at the AI Impact Summit 2026, New Delhi.{" "}
+        <Link href="/blog#media">
+          Read about it <span aria-hidden="true">→</span>
+        </Link>
+      </p>
     </section>
   );
 }

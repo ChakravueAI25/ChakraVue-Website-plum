@@ -100,7 +100,14 @@ story code; the growth rail reads the marks. In order:
   film fills the top half and fades into the copy, so the boy stays in
   view. Nothing in the hero moves with scroll. The full campaign film
   (`analogue-to-ai.mp4`) is no longer used.
-- **Featured in** marquee (homepage only).
+- **Featured in** marquee (homepage only): NDTV and India TV in turn, from
+  `featuredMedia` in `shared/data/content.ts` (owner, 2026-10-26; India TV is
+  confirmed by its microphone and camera in the AI Impact Summit photos, and
+  its logo is the one on Wikipedia, a non-free logo). Each sits on a tile of
+  the same height: NDTV's red square, India TV on white. Under them, "National
+  TV and digital media interviews at the AI Impact Summit 2026, New Delhi.
+  Read about it →" links to `/blog#media`. Add a channel there only when the
+  coverage is confirmed.
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
   Healthcare Can See, Understand, and Do." under a short rule.
@@ -159,6 +166,15 @@ story code; the growth rail reads the marks. In order:
   drawn from its product's own description: "Every case captured. Every
   examination remembered. Every patient on one timeline. Every instrument
   connected. Join the revolution." Then Explore products / Contact us.
+
+**In the media** (`blog/components/MediaFeature.tsx`, `mediaAppearance` in
+`blog/data.ts`), at the top of the Blog page (`/blog#media`), above the
+placeholder posts: the AI Impact Summit 2026 (New Delhi, 16–21 February),
+from the post on the live site (chakravue.ai/blog-page): what was shown
+live, the channels ("Featured on", the same `featuredMedia`), the coverage
+and the outcome, with three photos from the stall
+(`public/images/media/`: the India TV interview, a camera crew at the demo,
+the team). Only what that post says.
 
 **The audience mapping** (`shared/data/audiences.ts`) is the single source
 for both "Who we serve" sections; change it there only. It is the owner's

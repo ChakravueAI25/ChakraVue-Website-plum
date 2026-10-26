@@ -7,7 +7,22 @@ export const navItems = [
   { label: "More", href: "/privacy-policy" },
 ];
 
-export const featuredLogos = Array.from({ length: 9 }, () => ({ name: "NDTV", src: "/images/brands/ndtv.png" }));
+/**
+ * The channels ChakraVue AI has been featured on (owner, 2026-10-26: NDTV,
+ * and India TV, whose microphone and camera are in the AI Impact Summit
+ * photos). Each logo sits on its own tile: NDTV's is its red square,
+ * India TV's dark lettering needs a light one. Add a channel here only when
+ * the coverage is confirmed.
+ */
+export type MediaLogo = { name: string; src: string; tile: "square" | "light" };
+
+export const featuredMedia: MediaLogo[] = [
+  { name: "NDTV", src: "/images/brands/ndtv.png", tile: "square" },
+  { name: "India TV", src: "/images/brands/india-tv.webp", tile: "light" },
+];
+
+/** The marquee's run of logos: the channels in turn, enough to fill a wide screen. */
+export const featuredLogos = Array.from({ length: 5 }, () => featuredMedia).flat();
 
 export const clinicalCopy =
   "Medical systems generate enormous amounts of visual, clinical and operational data. ChakraVue AI connects that data to intelligent software layers that help devices understand, assist and respond within the clinical workflow.";

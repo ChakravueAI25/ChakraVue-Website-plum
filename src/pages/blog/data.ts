@@ -85,3 +85,33 @@ export const posts: Post[] = [
     initials: "HP",
   },
 ];
+
+/**
+ * ChakraVue AI in the media: the AI Impact Summit 2026, from the post on the
+ * live site (chakravue.ai/blog-page). Only what that post says; the channels
+ * are the ones in shared/data/content.ts (`featuredMedia`).
+ */
+export const mediaAppearance = {
+  eyebrow: "In the media",
+  event: "AI Impact Summit 2026",
+  place: "New Delhi",
+  dates: "16–21 February 2026",
+  title: "ChakraVue AI Showcases the Future of Real-Time Surgical Intelligence",
+  summary:
+    "At the AI Impact Summit 2026 in New Delhi, ChakraVue AI presented its Real-Time Surgical Assistant for Ophthalmology to innovators, clinicians, investors and technology leaders, with live demonstrations at its stall over the five-day summit.",
+  shown: [
+    "Real-time surgical step recognition",
+    "AI visual overlays during procedures",
+    "Surgeon Performance Scoring (SPS) framework",
+    "Data-driven analytics for surgical performance and training",
+  ],
+  coverage:
+    "A key highlight was strong media engagement: ChakraVue AI took part in several television and digital media interviews, bringing attention to AI-assisted surgery and what it can mean for surgical safety, training and outcomes.",
+  outcome:
+    "The summit widened ChakraVue AI's network across healthcare and technology, opened early talks on clinical collaborations, pilot deployments and technology partnerships, and raised its national profile in AI-assisted surgery.",
+  photos: [
+    { src: "/images/media/summit-interview.webp", alt: "A television reporter with an India TV microphone interviewing at the ChakraVue AI stall." },
+    { src: "/images/media/summit-interview-crew.webp", alt: "A camera crew filming the Surgical Assistant demonstration at the stall." },
+    { src: "/images/media/summit-team.webp", alt: "The ChakraVue AI team at its stall at the summit." },
+  ],
+};
