@@ -1,0 +1,260 @@
+/* The kid growing up beside the page (GrowRail.tsx). Scroll sets the
+   custom properties; everything here only reads them. The figures keep
+   their own colours (the palette grade leaves images alone); the chart is
+   written in Ember amber like the rest of the site and comes out Plum. */
+
+.grow-rail {
+  --frame: 0;
+  --p: 0;
+  --morph: 0;
+  --burst: 0;
+  --kid-h: 96px;
+  --doc-h: 150px;
+  --top: 93px;
+  position: fixed;
+  left: 22px;
+  /* Clear of the footer's legal row at the bottom of the page. */
+  bottom: 60px;
+  z-index: 40;
+  opacity: 0;
+  translate: 0 18px;
+  pointer-events: none;
+  transition: opacity 0.6s ease, translate 0.6s var(--ease-out);
+}
+
+.grow-rail.is-on {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* --- Wide screens: the height chart ---------------------------------------- */
+
+.grow-rail__chart {
+  position: relative;
+  width: 104px;
+  height: 280px;
+}
+
+/* A tape measure like the one on the campaign's doorframe: a spine, a tick
+   every 14px, a longer one every 70px, and the reached height lit. */
+.grow-rail__ruler {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 12px;
+  height: 100%;
+  border-left: 1px solid rgba(255, 214, 170, 0.28);
+  background:
+    linear-gradient(0deg, rgba(255, 214, 170, 0.5) 0 1px, transparent 1px) 0 100% / 12px 70px repeat-y,
+    linear-gradient(0deg, rgba(255, 214, 170, 0.32) 0 1px, transparent 1px) 0 100% / 6px 14px repeat-y;
+}
+
+.grow-rail__ruler::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  bottom: 0;
+  width: 1px;
+  height: var(--top);
+  background: linear-gradient(0deg, #ff8b12, #ffb46a);
+  box-shadow: 0 0 8px rgba(255, 139, 18, 0.7);
+}
+
+/* The reading rides just above the figure's head. */
+.grow-rail__mark {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--top) + 6px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.grow-rail__mark::before {
+  content: "";
+  width: 16px;
+  height: 1px;
+  background: #ffb46a;
+  box-shadow: 0 0 6px rgba(255, 139, 18, 0.8);
+}
+
+.grow-rail__reading {
+  padding: 3px 6px;
+  border: 1px solid rgba(255, 180, 106, 0.35);
+  border-radius: 999px;
+  background: rgba(10, 5, 2, 0.6);
+  color: #fbd896;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.grow-rail__stage {
+  position: absolute;
+  left: 18px;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.grow-rail__kid,
+.grow-rail__doctor,
+.grow-rail__burst {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+}
+
+/* The toddler: one cell of the strip per scroll step. */
+.grow-rail__kid {
+  height: var(--kid-h);
+  aspect-ratio: 245 / 280;
+  background: url("/images/campaign/grow/toddler-seq.webp") 0 calc(var(--frame) * 100% / 34) / 100% 3500% no-repeat;
+  opacity: calc(1 - var(--morph));
+  scale: calc(1 + var(--morph) * 0.18);
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.45)) blur(calc(var(--morph) * 6px)) brightness(calc(1 + var(--morph) * 0.8));
+}
+
+.grow-rail__doctor {
+  height: var(--doc-h);
+  aspect-ratio: 217 / 560;
+  background: url("/images/campaign/grow/doctor.webp") center bottom / contain no-repeat;
+  opacity: var(--morph);
+  scale: calc(0.86 + var(--morph) * 0.14);
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.45)) blur(calc((1 - var(--morph)) * 6px)) brightness(calc(1.8 - var(--morph) * 0.8));
+}
+
+/* A warm flare at the moment he grows up, like the sparkle trail in the clip. */
+.grow-rail__burst {
+  bottom: 40px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 210, 154, 0.9), rgba(255, 139, 18, 0.35) 38%, transparent 70%);
+  opacity: var(--burst);
+  scale: calc(0.4 + var(--burst) * 0.8);
+  pointer-events: none;
+}
+
+.grow-rail__note {
+  position: absolute;
+  left: 18px;
+  bottom: calc(var(--top) + 26px);
+  width: max-content;
+  max-width: 180px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 214, 170, 0.24);
+  border-radius: 10px;
+  background: rgba(10, 5, 2, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff3e7;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 1.3;
+  opacity: 0;
+  translate: 0 6px;
+  transition: opacity 0.35s ease, translate 0.35s var(--ease-out);
+}
+
+.grow-rail__chart:has(.grow-rail__stage:hover) .grow-rail__note {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* --- Narrow screens: the badge --------------------------------------------- */
+
+.grow-rail__badge {
+  position: relative;
+  display: none;
+  width: 46px;
+  height: 46px;
+}
+
+.grow-rail__ring {
+  position: absolute;
+  inset: 0;
+  rotate: -90deg;
+}
+
+.grow-rail__ring circle {
+  fill: rgba(10, 5, 2, 0.7);
+  stroke: rgba(255, 214, 170, 0.22);
+  stroke-width: 2;
+}
+
+.grow-rail__ring .grow-rail__ring-fill {
+  fill: none;
+  stroke: #ffb46a;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--p));
+  stroke-linecap: round;
+}
+
+.grow-rail__face {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: center / cover no-repeat;
+}
+
+.grow-rail__face--kid {
+  background-image: url("/images/campaign/grow/face-toddler.webp");
+  opacity: calc(1 - var(--morph));
+}
+
+.grow-rail__face--doctor {
+  background-image: url("/images/campaign/grow/face-doctor.webp");
+  opacity: var(--morph);
+}
+
+/* The chart needs the margin beside the content; below that, the badge.
+   The Product Suite theater sets its copy in that margin, so it always
+   gets the badge. */
+@media (max-width: 1359px) {
+  .grow-rail {
+    left: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
+
+  .grow-rail__chart {
+    display: none;
+  }
+
+  .grow-rail__badge {
+    display: block;
+  }
+
+  .grow-rail.is-at-footer {
+    opacity: 0;
+  }
+}
+
+html[data-page="product-suite"] .grow-rail.is-at-footer {
+  opacity: 0;
+}
+
+html[data-page="product-suite"] .grow-rail {
+  left: 14px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+}
+
+html[data-page="product-suite"] .grow-rail__chart {
+  display: none;
+}
+
+html[data-page="product-suite"] .grow-rail__badge {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grow-rail,
+  .grow-rail__note {
+    transition: none;
+  }
+}

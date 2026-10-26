@@ -92,9 +92,16 @@ when you change one.
     the field for every hospital.", Explore products / Contact us.
   - Campaign art lives in `public/images/campaign/`, copied selectively
     from `blueprint-site/` (the separate static redesign on the
-    `blueprint-site` branch). The kid appears on Home and About only, never
-    on Product Suite or Services. Don't bring over the blueprint's serif
-    fonts, navy/cyan palette, wordmark PNG or burn-on-click buttons.
+    `blueprint-site` branch). Campaign scenes appear on Home and About
+    only. Don't bring over the blueprint's serif fonts, navy/cyan palette,
+    wordmark PNG or burn-on-click buttons.
+- **Growth rail** (`shared/components/GrowRail.tsx`, every page, added
+  2026-10-26 at the owner's request): a fixed height chart in the left
+  margin where the superhero toddler (frames cut from the owner's clip)
+  grows into the doctor as the page scrolls. Badge below 1360px and on
+  Product Suite (the theater's copy sits in that margin); it hides over the
+  hero and, as a badge, over the footer. Keep it clear of content: check
+  the left margin whenever a section's layout changes.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**

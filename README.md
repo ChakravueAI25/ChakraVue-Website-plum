@@ -52,6 +52,19 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
   (two short columns), Reach us in the middle and Office on the right, over
   the large faint mark centred behind them, then the wordmark, which rises
   letter by letter.
+- **The kid growing up** (`shared/components/GrowRail.tsx`, `growRail.css`).
+  A fixed height chart in the left margin, shown once the hero has scrolled
+  away. The page's scroll plays the superhero toddler from the campaign clip
+  (landing, waving, pointing, thumbs-up: 35 cut-out frames in
+  `public/images/campaign/grow/toddler-seq.webp`), then at about two-thirds
+  down a warm flare turns him into the doctor, who grows to full height by
+  the footer. A reading above his head goes from 0.95 m to 1.74 m. Hovering
+  him shows "Every doctor started small." and the toddler waves. Below
+  1360px wide, and always on Product Suite (the theater's copy uses that
+  margin), it's a 46px badge whose ring fills with the page and whose face
+  changes from toddler to doctor; it steps aside for the footer.
+  Decorative (`aria-hidden`), on every page. The frames were cut from the
+  supplied clip; the clip itself isn't shipped.
 - **Film grain.** A faint moving grain over the glows (desktop only).
 - **One typeface.** Audiowide everywhere (see Typography below).
 
@@ -100,8 +113,8 @@ sections animate in as they arrive. In order:
 The campaign art comes from the blueprint redesign (`blueprint-site/` on the
 `blueprint-site` branch); only the pieces used here are copied into
 `public/images/campaign/`. Illustrations keep their own colours (the palette
-grade leaves images alone). The character appears on Home and About only;
-Product Suite and Services stay technical.
+grade leaves images alone). The campaign scenes appear on Home and About
+only; elsewhere the character is just the small growth rail in the margin.
 
 **Product Suite**
 - **Hero** (`SuiteHero.tsx`): ChakraVue AI at the centre, with the page's
@@ -393,6 +406,7 @@ Campaign copy (from the blueprint redesign, adapted). Please review:
   captions under the height chart.
 - The film shows the boy striking a match; confirm that's acceptable for a
   healthcare brand.
+- Growth rail: "Every doctor started small." and the height readings.
 
 New on the homepage. Please review before launch:
 - "How it works" / "From the instrument to the decision." (above the value cards)

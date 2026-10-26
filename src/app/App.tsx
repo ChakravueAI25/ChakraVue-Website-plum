@@ -9,6 +9,7 @@ import { PrivacyPage } from "../pages/privacy/PrivacyPage";
 import { ProductSuitePage } from "../pages/product-suite/ProductSuitePage";
 import { ServicesPage } from "../pages/services/ServicesPage";
 import { Footer } from "../shared/components/Footer";
+import { GrowRail } from "../shared/components/GrowRail";
 import { useRoute } from "./router";
 
 const routes: Record<string, ComponentType> = {
@@ -33,6 +34,7 @@ export function App() {
       <Page key={path} />
       {/* Keyed by route so its entrance replays on every page. */}
       <Footer key={`footer-${path}`} />
+      <GrowRail />
       <PointerFX />
       <Grain />
     </>
