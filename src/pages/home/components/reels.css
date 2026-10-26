@@ -1,0 +1,195 @@
+/* The beginning of the kid's story: the campaign's problem reels
+   (ProblemReels.tsx). The illustrations keep their own colours; the palette
+   grade leaves images alone. --after (0 to 1) turns a scene into its
+   answer; hovering a card peeks back at the old day. */
+
+.reels {
+  padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgba(255, 139, 18, 0.08), transparent 70%),
+    #030102;
+}
+
+.reels__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reel {
+  --after: 1;
+  --peek: 0;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 22px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+  color: #fff;
+  transition: border-color 0.35s ease, translate 0.35s var(--ease-out);
+}
+
+.reel:hover,
+.reel:focus-visible {
+  --peek: 1;
+  border-color: rgba(255, 180, 106, 0.6);
+  translate: 0 -3px;
+}
+
+.reel:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+}
+
+.reel__art {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.reel__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 35%;
+  transition: scale 0.8s var(--ease-out);
+}
+
+.reel__img--after {
+  opacity: calc(var(--after) * (1 - var(--peek)));
+  transition: opacity 0.45s ease, scale 0.8s var(--ease-out);
+}
+
+.reel:hover .reel__img {
+  scale: 1.03;
+}
+
+/* "Before" / "With ChakraVue AI", following the scene. */
+.reel__state {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: grid;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 214, 170, 0.3);
+  border-radius: 999px;
+  background: rgba(10, 5, 2, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.reel__state > span {
+  grid-area: 1 / 1;
+  transition: opacity 0.45s ease;
+}
+
+.reel__state-before {
+  color: rgba(255, 243, 231, 0.8);
+  opacity: calc(1 - var(--after) * (1 - var(--peek)));
+}
+
+.reel__state-after {
+  color: #fbd896;
+  opacity: calc(var(--after) * (1 - var(--peek)));
+}
+
+.reel__body {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: 8px;
+  padding: 20px 22px 22px;
+}
+
+.reel__area {
+  color: rgba(255, 243, 231, 0.55);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.reel__hook {
+  font-family: var(--font-display);
+  font-size: clamp(17px, 1.4vw, 20px);
+  line-height: 1.3;
+}
+
+.reel__punch {
+  color: #ffb46a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.reel__link {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  color: rgba(255, 243, 231, 0.8);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reel__link span {
+  color: #ffb46a;
+  transition: translate 0.4s var(--ease-out);
+}
+
+.reel:hover .reel__link span,
+.reel:focus-visible .reel__link span {
+  translate: 4px 0;
+}
+
+@media (max-width: 900px) {
+  .reels__grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  /* Side by side on a phone-width card: the scene beside its words. */
+  .reel {
+    flex-direction: row;
+  }
+
+  .reel__art {
+    flex: 0 0 42%;
+    aspect-ratio: auto;
+    min-height: 168px;
+  }
+
+  .reel__body {
+    padding: 16px;
+  }
+
+  .reel__state {
+    left: 8px;
+    bottom: 8px;
+    padding: 4px 8px;
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel,
+  .reel__img,
+  .reel__img--after,
+  .reel__state > span {
+    transition: none;
+  }
+}

@@ -53,25 +53,33 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
   the large faint mark centred behind them, then the wordmark, which rises
   letter by letter.
 - **The kid growing up** (`shared/components/GrowRail.tsx`, `growRail.css`).
-  A fixed height chart in the right margin, shown once the hero has scrolled
-  away. The page's scroll plays the superhero toddler from the campaign clip
-  (landing, waving, pointing, thumbs-up: 35 cut-out frames in
-  `public/images/campaign/grow/toddler-seq.webp`), then at about two-thirds
-  down a warm flare turns him into the doctor, who grows to full height by
-  the footer. A reading above his head goes from 0.95 m to 1.74 m. Hovering
-  him shows "Every doctor started small." and the toddler waves. Below
-  1360px wide, and always on Product Suite (the theater's copy uses that
-  margin), it's a 46px badge whose ring fills with the page and whose face
-  changes from toddler to doctor; it steps aside for the footer.
-  Decorative (`aria-hidden`), on every page. The frames were cut from the
-  supplied clip; the clip itself isn't shipped.
+  A fixed height chart in the right margin. The page's scroll plays the
+  superhero toddler from the campaign clip (landing, waving, pointing,
+  thumbs-up: 35 cut-out frames in `grow/toddler-seq.webp`); he becomes the
+  doctor in a warm flare and grows to full height. A reading above his head
+  goes from 0.95 m to 1.74 m. The first time the chart appears he flies in
+  from the screen's edge (the clip's flight, `grow/toddler-fly.webp`).
+  Hovering him shows "Every doctor started small." and the toddler waves.
+  On the homepage it tells the story: it shows from the hero, names the
+  chapter above the chart, paces the growing up by the chapters (he grows
+  up as the journey begins), and steps aside when the closing scene takes
+  over. Elsewhere it appears once the hero has scrolled away. Below 1360px
+  wide, and always on Product Suite (the theater's copy uses that margin),
+  it's a 46px badge (ring filling with the page, face changing) that shows
+  for about three seconds at each new chapter and then fades, so it never
+  sits on what's being read. Decorative (`aria-hidden`), on every page. The
+  frames were cut from the supplied clip; the clip itself isn't shipped.
 - **Film grain.** A faint moving grain over the glows (desktop only).
 - **One typeface.** Audiowide everywhere (see Typography below).
 
 **Home.** A company homepage built on the original design: the original
 sections and art, plus the parts a company site needs (clear calls to action,
 product shortcuts, the team, the latest posts). Nothing on the homepage pins;
-sections animate in as they arrive. In order:
+sections animate in as they arrive. It tells the kid's story in six
+chapters (`shared/data/story.ts`): The dream, The beginning, The discovery,
+The transformation, The journey, The aspiration. Each starts at a
+`ChapterMark` placed between sections, so the technical sections carry no
+story code; the growth rail reads the marks. In order:
 - **Hero** (`Hero.tsx`, `home.css`). The "Analogue to AI" campaign film fills
   the hero (`public/images/campaign/analogue-to-ai.mp4`, 11.6s, silent
   loop): the campaign's character, a small boy, walks across an old
@@ -90,6 +98,22 @@ sections animate in as they arrive. In order:
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
   Healthcare Can See, Understand, and Do." under a short rule.
+- **The beginning: problem reels** (`ProblemReels.tsx`, `reels.css`). "Still
+  on the old blueprint? / Every hospital knows these days." Three scenes
+  from the campaign's reel wall, each linking to the product that answers
+  it: an old car (Integrated Devices), a clerk buried in paperwork (AI
+  Powered EMR), a wobbly tower (Dental Implant Planning). The car and the
+  clerk turn into their "after" (jet engine; clear desk) as the card
+  arrives, with a "Before" / "With ChakraVue AI" tag; hovering peeks back at
+  the old day. Images in `public/images/campaign/reels/`, retouched: the
+  State Emblem on the government files and the car maker's badge are
+  painted out.
+- **The discovery** (`DiscoveryReveal.tsx`, `discovery.css`), from the
+  blueprint redesign's logo reveal. The burnt blueprint (`burn-hole.webp`)
+  hangs over the scene; as the section arrives it opens out past the screen
+  and the boy is there at the glowing circuit (`circuit-reveal.jpg`), then
+  "Underneath it all / Not to burn the past. / To see what was underneath it
+  all along." Plays once, with Replay; open from the start without motion.
 - **Product suite showcase.** "Four products, one connected line of
   sight." Four dark panels, each crossed by a slit of
   light (a nod to the slit lamp) showing a sliver of its product. Opening a
@@ -100,13 +124,19 @@ sections animate in as they arrive. In order:
 - **The core idea** (original).
 - **How it works.** Capture → Connect → Analyse → Assist on one line; a signal
   of light travels through the stages as you scroll and lights each one.
+- **The journey: real theatres** (`RealTheatres.tsx`, `theatres.css`). "Not
+  a render / In real theatres, with real surgeons.": four real photographs
+  (`public/images/campaign/theatres/`): the Surgical Assistant at the
+  microscope, the Slit Lamp Module, the AI Impact Summit, a hands-on
+  session. The microscope maker's marks, its REF/SN plate and an on-screen
+  FPS readout are painted out or cropped.
 - **Team.** The three leaders and the wider team, linking to About.
 - **Blog.** The three latest posts, linking to the blog.
-- **Campaign close** (`CampaignClose.tsx`). The film's last frame (the boy
-  beside the burnt-open blueprint, `circuit-reveal.jpg`) fading into the
-  page, then "Levelling the field for every hospital.", "Not to burn the
-  past. To see what was underneath it all along." and Explore products /
-  Contact us.
+- **The aspiration** (`CampaignClose.tsx`, `campaign.css`). A height chart:
+  the toddler at 0.95 m and, beside him, the doctor he grows into rising to
+  1.74 m as the section arrives, the tape lighting with him. "Every doctor
+  started small / Levelling the field for every hospital. / Join the
+  revolution." and Explore products / Contact us.
 
 The campaign art comes from the blueprint redesign (`blueprint-site/` on the
 `blueprint-site` branch); only the pieces used here are copied into
@@ -396,8 +426,16 @@ dialogue are illustrative, so please confirm they're acceptable to show.
 
 Campaign copy (from the blueprint redesign, adapted). Please review:
 - Hero: the "Analogue to AI" eyebrow and the "The campaign film" chip.
-- Closing band: "Levelling the field for every hospital." / "Not to burn the
-  past. To see what was underneath it all along."
+- Story chapter names (`story.ts`), shown on the growth rail.
+- Reels: "Still on the old blueprint?", "Every hospital knows these days.",
+  each card's hook and punchline, and which product each links to.
+- Discovery: "Underneath it all" / "Not to burn the past." / "To see what was
+  underneath it all along."
+- Real theatres: "Not a render", "In real theatres, with real surgeons." and
+  the four captions. Confirm consent for the people shown, and that the
+  summit appearance can be named.
+- Aspiration: "Every doctor started small" / "Levelling the field for every
+  hospital." / "Join the revolution."
 - About: "Why we exist", the blueprint's About hero lines, and the two
   captions under the height chart.
 - The film shows the boy striking a match; confirm that's acceptable for a

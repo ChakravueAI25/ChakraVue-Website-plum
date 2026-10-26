@@ -74,13 +74,28 @@ when you change one.
     in the hero moves with scroll. (The separate film band that sat under
     the hero was removed in the same change.)
   - Featured-in (NDTV) marquee: home only.
+  - The page tells the kid's story in six chapters (`shared/data/story.ts`,
+    added 2026-10-26 at the owner's request): dream, beginning, discovery,
+    transformation, journey, aspiration. `ChapterMark`s sit between
+    sections, so technical sections carry no story code; keep it that way
+    (the owner asked for the technical content to stay exactly as it is).
   - Statement band: "Built From Experience. / Guided by Science. / Elevated
     by Intelligence.", closed by the coda "Shaping What Healthcare Can See,
     Understand, and Do." (the `coda` prop of `InsightStatement`).
+  - The beginning: problem reels (`ProblemReels.tsx`), three campaign
+    scenes linking to products; the car and clerk turn into their "after".
+  - The discovery (`DiscoveryReveal.tsx`): the burnt blueprint opens out
+    onto the boy at the circuit, once, with Replay. Not pinned.
   - Product showcase: "Four products, one connected line of sight."
-  - The core idea (eclipse glow), then How it works, Team and Latest posts.
-  - Campaign close (`CampaignClose.tsx`): the film's last frame, "Levelling
-    the field for every hospital.", Explore products / Contact us.
+  - The core idea (eclipse glow), then How it works.
+  - The journey: real theatres (`RealTheatres.tsx`), four real photos.
+  - Team and Latest posts.
+  - The aspiration (`CampaignClose.tsx`): toddler and doctor at a height
+    chart, the doctor rising to full height; Explore products / Contact us.
+  - Campaign and reel art is retouched before it ships: no State Emblem,
+    no car or microscope maker's marks, no REF/SN plates, no FPS or GPU
+    readouts on screens (the summit setup photo was left out for a GPU
+    name). Do the same for any new photo or illustration.
   - Campaign art lives in `public/images/campaign/`, copied selectively
     from `blueprint-site/` (the separate static redesign on the
     `blueprint-site` branch). Campaign scenes appear on Home and About
@@ -89,9 +104,12 @@ when you change one.
 - **Growth rail** (`shared/components/GrowRail.tsx`, every page, added
   2026-10-26 at the owner's request, moved to the right the same day): a
   fixed height chart in the right margin where the superhero toddler (frames cut from the owner's clip)
-  grows into the doctor as the page scrolls. Badge below 1360px and on
-  Product Suite (the theater's copy sits in that margin); it hides over the
-  hero and, as a badge, over the footer. Keep it clear of content: check
+  flies in, then grows into the doctor as the page scrolls. On Home it
+  names the story's chapter, paces the growing up by the chapter marks,
+  shows from the hero, and hides for the aspiration scene. Elsewhere it
+  appears after the hero. Below 1360px and on Product Suite it's a badge
+  that only shows for about three seconds per chapter (it covered text
+  when it stayed), and never over the footer. Keep it clear of content: check
   the right margin whenever a section's layout changes.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.

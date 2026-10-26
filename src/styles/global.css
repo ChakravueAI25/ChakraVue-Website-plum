@@ -1181,3 +1181,9 @@ p {
   }
 
 }
+
+/* Where a chapter of the homepage story begins (ChapterMark.tsx). */
+.chapter-mark {
+  display: block;
+  height: 0;
+}

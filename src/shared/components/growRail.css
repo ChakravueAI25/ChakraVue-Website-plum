@@ -27,6 +27,13 @@
   translate: 0 0;
 }
 
+/* The homepage's closing scene (the aspiration) has the grown-up doctor,
+   so the rail hands him over and steps aside. */
+.grow-rail.is-on.is-handoff {
+  opacity: 0;
+  translate: 0 18px;
+}
+
 /* --- Wide screens: the height chart ---------------------------------------- */
 
 .grow-rail__chart {
@@ -128,6 +135,29 @@
   opacity: var(--morph);
   scale: calc(0.86 + var(--morph) * 0.14);
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.45)) blur(calc((1 - var(--morph)) * 6px)) brightness(calc(1.8 - var(--morph) * 0.8));
+}
+
+/* The toddler's flight from the clip, on the chart's first appearance.
+   Its cells share the standing strip's scale and left edge (the flight
+   runs on to the right), so the last cell is exactly where he stands. */
+.grow-rail__fly {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - var(--kid-h) * 245 / 280 / 2);
+  display: none;
+  height: var(--kid-h);
+  aspect-ratio: 380 / 280;
+  background: url("/images/campaign/grow/toddler-fly.webp") 0 calc(var(--fly, 0) * 100% / 12) / 100% 1300% no-repeat;
+  translate: var(--fly-x, 0) 0;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.45));
+}
+
+.grow-rail.is-flying .grow-rail__fly {
+  display: block;
+}
+
+.grow-rail.is-flying .grow-rail__kid {
+  visibility: hidden;
 }
 
 /* A warm flare at the moment he grows up, like the sparkle trail in the clip. */
@@ -232,13 +262,52 @@
     display: block;
   }
 
+  /* Only for a moment (is-cue), so it never sits on what's being read. */
+  .grow-rail.is-on:not(.is-cue),
   .grow-rail.is-at-footer {
     opacity: 0;
+    translate: 0 18px;
   }
 }
 
+html[data-page="product-suite"] .grow-rail.is-on:not(.is-cue),
 html[data-page="product-suite"] .grow-rail.is-at-footer {
   opacity: 0;
+  translate: 0 18px;
+}
+
+/* The chapter beside the badge while it shows. */
+.grow-rail__cue {
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  display: none;
+  gap: 8px;
+  align-items: baseline;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 214, 170, 0.24);
+  border-radius: 999px;
+  background: rgba(10, 5, 2, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  translate: 0 -50%;
+}
+
+.grow-rail.has-chapter .grow-rail__cue {
+  display: flex;
+}
+
+.grow-rail__cue-no {
+  color: #ffb46a;
+}
+
+.grow-rail__cue-title {
+  color: #fff3e7;
 }
 
 html[data-page="product-suite"] .grow-rail {
@@ -258,5 +327,58 @@ html[data-page="product-suite"] .grow-rail__badge {
   .grow-rail,
   .grow-rail__note {
     transition: none;
+  }
+}
+
+/* --- The story's chapter (pages with ChapterMarks) ------------------------- */
+
+.grow-rail__chapter {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 14px);
+  display: none;
+  /* Narrow enough to stay inside the margin, beside the content column. */
+  width: 104px;
+  text-align: right;
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+}
+
+.grow-rail.has-chapter .grow-rail__chapter {
+  display: grid;
+  gap: 5px;
+}
+
+.grow-rail__chapter-no {
+  color: #ffb46a;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+
+.grow-rail__chapter-title {
+  color: rgba(255, 243, 231, 0.86);
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+}
+
+.grow-rail.is-turning .grow-rail__chapter > * {
+  animation: chapterTurn 0.7s var(--ease-out) both;
+}
+
+.grow-rail.is-turning .grow-rail__chapter-title {
+  animation-delay: 0.08s;
+}
+
+@keyframes chapterTurn {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grow-rail.is-turning .grow-rail__chapter > * {
+    animation: none;
   }
 }
