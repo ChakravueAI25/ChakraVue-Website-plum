@@ -139,26 +139,200 @@
   translate: 4px 0;
 }
 
-/* --- Overview (Home): four audiences side by side ---------------------------- */
+/* --- Overview (Home): four audience panels -------------------------------- */
 
+/* The panels share three rows (picture, who, products) through subgrid, so
+   the labels and product lists line up across the row whatever wraps. */
 .aud--overview .aud__list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(14px, 1.6vw, 22px);
+  gap: clamp(14px, 1.4vw, 20px);
 }
 
-.aud--overview .aud__group {
+.aud-panel {
+  position: relative;
   display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 18px;
-  padding: 22px 18px 18px;
-  border-top: 1px solid rgba(255, 214, 170, 0.22);
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 22px;
+  background:
+    radial-gradient(320px circle at var(--mx, -400px) var(--my, -400px), rgba(255, 139, 18, 0.1), transparent 70%),
+    linear-gradient(170deg, #17110b 0%, #0b0a08 70%);
+  transition: border-color 0.4s ease, translate 0.4s var(--ease-out), box-shadow 0.4s ease;
 }
 
-.aud--overview .aud__items {
+.aud-panel:hover,
+.aud-panel:focus-within {
+  border-color: rgba(255, 180, 106, 0.45);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 139, 18, 0.08);
+  translate: 0 -4px;
+}
+
+/* The picture: each product's at the same spot, the first one showing. */
+.aud-panel__art {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: #0b0a08;
+}
+
+.aud-panel__art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  opacity: 0;
+  scale: 1.02;
+  transition: opacity 0.5s ease, scale 0.9s var(--ease-out);
+}
+
+.aud-panel__art img:first-child {
+  opacity: 1;
+}
+
+.aud-panel:hover .aud-panel__art img {
+  scale: 1.07;
+}
+
+/* Pointing at the second product shows its picture instead. */
+.aud-panel:has(.aud-panel__items li:nth-child(2) .aud-panel__row:is(:hover, :focus-visible)) .aud-panel__art img:nth-child(1) {
+  opacity: 0;
+}
+
+.aud-panel:has(.aud-panel__items li:nth-child(2) .aud-panel__row:is(:hover, :focus-visible)) .aud-panel__art img:nth-child(2) {
+  opacity: 1;
+}
+
+/* Fades into the panel, so the picture and the words read as one card. */
+.aud-panel__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(11, 10, 8, 0.25) 0%, transparent 30%, transparent 55%, #120e09 100%);
+  pointer-events: none;
+}
+
+.aud-panel__index,
+.aud-panel__count {
+  position: absolute;
+  z-index: 1;
+  top: 14px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 214, 170, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 5, 2, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.aud-panel__index {
+  left: 14px;
+  color: #fbd896;
+}
+
+.aud-panel__count {
+  right: 14px;
+  color: rgba(255, 243, 231, 0.82);
+}
+
+.aud-panel__who {
+  padding: 18px 22px 20px;
+}
+
+.aud-panel .aud__label {
+  margin-top: 0;
+}
+
+/* The products: rows at the foot of the panel, each its own link. */
+.aud-panel__items {
+  align-self: end;
+  margin: 0;
+  padding: 0 12px 12px;
+  list-style: none;
+}
+
+.aud-panel__row {
   display: grid;
-  align-content: start;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name arrow"
+    "hint arrow";
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 14px 12px;
+  border-top: 1px solid rgba(255, 214, 170, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.aud-panel__items li:first-child .aud-panel__row {
+  border-top-color: rgba(255, 214, 170, 0.18);
+}
+
+.aud-panel__row:hover,
+.aud-panel__row:focus-visible {
+  border-color: transparent;
+  background: rgba(255, 139, 18, 0.1);
+}
+
+.aud-panel__items li:has(.aud-panel__row:is(:hover, :focus-visible)) + li .aud-panel__row {
+  border-top-color: transparent;
+}
+
+.aud-panel__row:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: -2px;
+}
+
+.aud-panel__name {
+  grid-area: name;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.aud-panel__hint {
+  grid-area: hint;
+  color: rgba(255, 243, 231, 0.5);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.aud-panel__arrow {
+  grid-area: arrow;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255, 180, 106, 0.35);
+  border-radius: 50%;
+  color: #ffb46a;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, translate 0.35s var(--ease-out);
+}
+
+.aud-panel__row:hover .aud-panel__arrow,
+.aud-panel__row:focus-visible .aud-panel__arrow {
+  border-color: #ffb46a;
+  background: #ffb46a;
+  color: #140b04;
+  translate: 3px 0;
 }
 
 /* --- Detailed (Product Suite): one row per audience -------------------------- */
@@ -283,8 +457,10 @@
     grid-template-columns: 1fr;
   }
 
-  .aud--overview .aud__group {
-    padding: 20px 0 6px;
+  /* One panel per screen width: a wider, shorter picture, so four
+     stacked panels don't make the section long. */
+  .aud-panel__art {
+    aspect-ratio: 2 / 1;
   }
 
   .aud--detailed .aud__thumb {
@@ -293,6 +469,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .aud-panel,
+  .aud-panel__art img,
+  .aud-panel__row,
+  .aud-panel__arrow,
   .aud__item,
   .aud__thumb img,
   .aud__arrow,

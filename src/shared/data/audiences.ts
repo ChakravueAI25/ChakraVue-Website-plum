@@ -20,11 +20,18 @@ export type AudienceItem = {
   name: string;
   tagline: string;
   description: string;
+  /** A thumbnail (the detailed view). */
   image: string;
+  /** A larger, brighter picture of the product at work (the overview's panels). */
+  cover: string;
+  /** Where the panel's crop of `cover` is anchored (CSS object-position). */
+  coverPosition?: string;
   imageAlt: string;
   href: string;
   /** What the link does, for the detailed view's button. */
   action: string;
+  /** Where the link goes, in two words, for the overview: into the suite, or to a conversation. */
+  hint: string;
 };
 
 export type Audience = {
@@ -40,7 +47,7 @@ function contactAbout(interest: (typeof interestOptions)[number]) {
   return `/contact-us?interest=${encodeURIComponent(interest)}`;
 }
 
-function product(id: Product["id"], imageAlt: string): AudienceItem {
+function product(id: Product["id"], imageAlt: string, coverPosition?: string): AudienceItem {
   const p = products.find((candidate) => candidate.id === id);
   if (!p) throw new Error(`Unknown product "${id}" in the audience mapping`);
   return {
@@ -49,9 +56,13 @@ function product(id: Product["id"], imageAlt: string): AudienceItem {
     tagline: p.tagline,
     description: p.description,
     image: `/images/home/products/${p.id}.webp`,
+    // The product's own screen, as on the Product Suite hero.
+    cover: `/images/product-suite/hero/${p.id}.webp`,
+    coverPosition,
     imageAlt,
     href: `/product-suite#${p.id}`,
     action: "See it in the suite",
+    hint: "In the suite",
   };
 }
 
@@ -76,9 +87,11 @@ export const audiences: Audience[] = [
         tagline: "Gaming-based surgical training",
         description: "Supports skill development and surgical training through gaming-based experiences.",
         image: "/images/campaign/theatres/training.webp",
+        cover: "/images/campaign/theatres/training.webp",
         imageAlt: "Clinicians at a hands-on session, one wearing a headset.",
         href: contactAbout("VR/AR Gaming Environment"),
         action: "Ask about Gaming",
+        hint: "Talk to us",
       },
     ],
   },
@@ -86,7 +99,11 @@ export const audiences: Audience[] = [
     id: "institutions",
     label: "Hospitals & Training Institutions",
     need: "Clinical documentation and the workflows around it.",
-    items: [product("ai-powered-emr", "The AI Powered EMR's patient dashboard.")],
+    items: [{
+        ...product("ai-powered-emr", "The AI Powered EMR's patient dashboard."),
+        // The dashboard's patient cards, below its title bar (which a corner badge would cover).
+        cover: "/images/campaign/audience/emr-cover.webp",
+      }],
   },
   {
     id: "oems",
@@ -99,9 +116,11 @@ export const audiences: Audience[] = [
         tagline: "Software for your microscopes",
         description: "Software integrations for OEMs and medical device manufacturers who want to add software capabilities to their microscopes.",
         image: "/images/campaign/theatres/surgeon.webp",
+        cover: "/images/campaign/theatres/surgeon.webp",
         imageAlt: "A surgeon operating at the microscope.",
         href: contactAbout("Partnership / Collaboration"),
         action: "Talk to us about integration",
+        hint: "Talk to us",
       },
     ],
   },

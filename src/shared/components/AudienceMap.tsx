@@ -1,13 +1,14 @@
-import { alsoInTheSuite, audiences } from "../data/audiences";
+import { alsoInTheSuite, audiences, type Audience } from "../data/audiences";
 import { BrandText } from "./BrandText";
 import { Link } from "./Link";
 import "./audienceMap.css";
 
 type AudienceMapProps = {
   /**
-   * "overview" (Home): the four audiences side by side, each with its
-   * products as links. "detailed" (Product Suite): one row per audience,
-   * each product with its tagline, description and a way to it.
+   * "overview" (Home): the four audiences as panels side by side, each with a
+   * picture of its products at work and its products as links. "detailed"
+   * (Product Suite): one row per audience, each product with its tagline,
+   * description and a way to it.
    */
   variant: "overview" | "detailed";
 };
@@ -41,45 +42,9 @@ export function AudienceMap({ variant }: AudienceMapProps) {
         </header>
 
         <ol className="aud__list">
-          {audiences.map((audience, i) => (
-            <li key={audience.id} className="aud__group" data-reveal>
-              <div className="aud__who">
-                <span className="aud__index">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="aud__label">{audience.label}</h3>
-                <p className="aud__need">{audience.need}</p>
-              </div>
-
-              <ul className="aud__items">
-                {audience.items.map((item) => (
-                  <li key={item.key}>
-                    <Link href={item.href} className="aud__item" data-spotlight>
-                      <span className="aud__thumb">
-                        <img src={item.image} alt={item.imageAlt} loading="lazy" decoding="async" />
-                      </span>
-                      <span className="aud__body">
-                        <span className="aud__name">
-                          <BrandText text={item.name} />
-                        </span>
-                        {detailed && <span className="aud__tagline">{item.tagline}</span>}
-                        {detailed && <span className="aud__desc">{item.description}</span>}
-                        {detailed && (
-                          <span className="aud__action">
-                            {item.action}
-                            <span aria-hidden="true">{item.href.startsWith("/product-suite#") ? "↓" : "→"}</span>
-                          </span>
-                        )}
-                      </span>
-                      {!detailed && (
-                        <span className="aud__arrow" aria-hidden="true">
-                          →
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
+          {audiences.map((audience, i) =>
+            detailed ? <DetailedGroup key={audience.id} audience={audience} index={i} /> : <Panel key={audience.id} audience={audience} index={i} />,
+          )}
         </ol>
 
         {detailed && (
@@ -97,5 +62,86 @@ export function AudienceMap({ variant }: AudienceMapProps) {
         )}
       </div>
     </section>
+  );
+}
+
+const number = (i: number) => String(i + 1).padStart(2, "0");
+
+/**
+ * Home: one panel per audience. Its picture shows its first product at work;
+ * pointing at (or tabbing to) another product's row shows that one instead.
+ * The panels share rows (subgrid), so labels and product lists line up
+ * across the four however their text wraps.
+ */
+function Panel({ audience, index }: { audience: Audience; index: number }) {
+  return (
+    <li className="aud-panel" data-reveal data-spotlight>
+      <div className="aud-panel__art" aria-hidden="true">
+        {audience.items.map((item) => (
+          <img key={item.key} src={item.cover} alt="" loading="lazy" decoding="async" style={item.coverPosition ? { objectPosition: item.coverPosition } : undefined} />
+        ))}
+        <span className="aud-panel__index">{number(index)}</span>
+        <span className="aud-panel__count">
+          {audience.items.length} {audience.items.length === 1 ? "offering" : "offerings"}
+        </span>
+      </div>
+
+      <div className="aud-panel__who">
+        <h3 className="aud__label">{audience.label}</h3>
+        <p className="aud__need">{audience.need}</p>
+      </div>
+
+      <ul className="aud-panel__items">
+        {audience.items.map((item) => (
+          <li key={item.key}>
+            <Link href={item.href} className="aud-panel__row">
+              <span className="aud-panel__name">
+                <BrandText text={item.name} />
+              </span>
+              <span className="aud-panel__hint">{item.hint}</span>
+              <span className="aud-panel__arrow" aria-hidden="true">
+                →
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </li>
+  );
+}
+
+/** Product Suite: one row per audience, each product as a described card. */
+function DetailedGroup({ audience, index }: { audience: Audience; index: number }) {
+  return (
+    <li className="aud__group" data-reveal>
+      <div className="aud__who">
+        <span className="aud__index">{number(index)}</span>
+        <h3 className="aud__label">{audience.label}</h3>
+        <p className="aud__need">{audience.need}</p>
+      </div>
+
+      <ul className="aud__items">
+        {audience.items.map((item) => (
+          <li key={item.key}>
+            <Link href={item.href} className="aud__item" data-spotlight>
+              <span className="aud__thumb">
+                <img src={item.image} alt={item.imageAlt} loading="lazy" decoding="async" />
+              </span>
+              <span className="aud__body">
+                <span className="aud__name">
+                  <BrandText text={item.name} />
+                </span>
+                <span className="aud__tagline">{item.tagline}</span>
+                <span className="aud__desc">{item.description}</span>
+                <span className="aud__action">
+                  {item.action}
+                  <span aria-hidden="true">{item.href.startsWith("/product-suite#") ? "↓" : "→"}</span>
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </li>
   );
 }

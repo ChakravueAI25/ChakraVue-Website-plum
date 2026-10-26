@@ -128,9 +128,16 @@ story code; the growth rail reads the marks. In order:
   itself with a progress line until the visitor picks one. Product shots are
   cut from the Product Suite hero render (`public/images/home/products/`).
 - **Who we serve** (`shared/components/AudienceMap.tsx`, `variant="overview"`).
-  "Technology Built for Every Role in Surgery": four audiences side by side,
-  each with its products as linked cards (a thumbnail, the name, an arrow).
-  2×2 on tablets, stacked on phones.
+  "Technology Built for Every Role in Surgery": four equal panels, one per
+  audience. Each has a picture of its product at work (the product screens
+  from the Product Suite hero, the EMR's patient cards in
+  `campaign/audience/emr-cover.webp`, and the two photos), its number and
+  how many offerings it has, the role and its need, then its products as
+  rows at the foot, each with where it leads ("In the suite" / "Talk to us")
+  and a round arrow. Pointing at a panel's second product shows that
+  product's picture. The panels share rows (CSS subgrid), so the roles and
+  product rows line up across the four. 2×2 on tablets, stacked on phones
+  with a shorter picture.
 - **The core idea** (original).
 - **How it works.** Capture → Connect → Analyse → Assist on one line; a signal
   of light travels through the stages as you scroll and lights each one.
