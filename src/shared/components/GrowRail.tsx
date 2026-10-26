@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useRoute } from "../../app/router";
 import { reduceMotion } from "../../motion/env";
 import { whenRevealed } from "../../motion/gate";
 import { gsap, ScrollTrigger } from "../../motion/gsap";
@@ -8,8 +9,8 @@ import "./growRail.css";
 
 /** Cells in the toddler strip (frames of the campaign clip, cut out). */
 const FRAMES = 35;
-/** The cells where he waves, played when the pointer finds him. */
-const WAVE = [6, 7, 8, 9, 10, 11, 10, 9, 8, 7, 6];
+/** The cells where he waves, played when the pointer finds him or when saying hi. */
+const WAVE = [6, 7, 8, 9, 10, 11, 10, 9, 8, 7, 6, 7, 8, 9, 10, 11, 10, 9, 8, 7, 6];
 /** Cells in the flight strip; its last cell is the standing strip's first. */
 const FLY_FRAMES = 13;
 
@@ -31,17 +32,14 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
- * The campaign's kid growing up beside the page as it scrolls: a fixed
- * height chart in the right margin with the toddler from the clip (flying in,
- * waving, pointing), who becomes the doctor and grows to full height by the
- * end of the page. On narrower screens it's a small badge whose ring fills
- * as you read, its chapter shown for a moment at each turn of the story.
- * Either way the kid is the Product Assistant's button: press him to ask
- * about the products (ChatAssistant.tsx); he waves when it opens and bobs
- * while it searches.
+ * The campaign's superhero kid on every page as the interactive Product Assistant:
+ * floating on the right side with his cape, saying "Hi!" with an animated wave,
+ * and inviting visitors to ask questions with an interactive speech bubble.
+ * On wide screens on the homepage, the story height chart accompanies him.
  */
 export function GrowRail() {
   const ref = useRef<HTMLElement>(null);
+  const path = useRoute();
   const { open, searching } = useAssistant();
   const waveRef = useRef<() => void>(() => {});
 
@@ -54,9 +52,7 @@ export function GrowRail() {
     const cueNo = root.querySelector<HTMLElement>(".grow-rail__cue-no");
     const cueTitle = root.querySelector<HTMLElement>(".grow-rail__cue-title");
     let cueTimer = 0;
-    // On narrow screens the badge would sit on the content, so it only
-    // shows for a moment: when it first appears, at each new chapter, and
-    // when he grows up.
+
     const cue = () => {
       root.classList.add("is-cue");
       window.clearTimeout(cueTimer);
@@ -65,16 +61,13 @@ export function GrowRail() {
     };
     let frame = 0;
     let pace = { kidEnd: KID_END, morphEnd: MORPH_END, growEnd: 1 };
-    // Each chapter's start, as the scroll progress at which it reaches mid-screen.
     let marks: Array<{ id: string; at: number }> = [];
     let chapter = "";
 
-    // Re-read on every refresh: images loading and resizes move the markers.
     const measure = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       marks = [...document.querySelectorAll<HTMLElement>("[data-chapter]")].map((el) => ({
         id: el.dataset.chapter ?? "",
-        // Capped, so a chapter near the foot of the page is still reached.
         at: max > 0 ? Math.min((el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2) / max, 0.985) : 0,
       }));
       const at = (id: string) => marks.find((m) => m.id === id)?.at;
@@ -90,7 +83,6 @@ export function GrowRail() {
       const current = marks.filter((m) => m.at <= p + 1e-4).pop()?.id ?? "";
       if (current === chapter) return;
       chapter = current;
-      // The closing scene takes over the story, so the rail steps aside.
       root.classList.toggle("is-handoff", current === "aspiration");
       show();
       const index = chapters.findIndex((c) => c.id === current);
@@ -103,7 +95,6 @@ export function GrowRail() {
         cueTitle.textContent = chapterTitle.textContent;
       }
       if (root.classList.contains("is-on")) cue();
-      // Replays the label's entrance for the new chapter.
       root.classList.remove("is-turning");
       void root.offsetWidth;
       root.classList.add("is-turning");
@@ -126,7 +117,6 @@ export function GrowRail() {
       if (!waving) root.style.setProperty("--frame", String(frame));
       root.style.setProperty("--p", p.toFixed(4));
       root.style.setProperty("--morph", morph.toFixed(4));
-      // The chat window shows the same face as the rail (chat.css).
       document.documentElement.style.setProperty("--rail-morph", morph.toFixed(3));
       root.style.setProperty("--burst", (1 - Math.abs(2 * morph - 1)).toFixed(4));
       root.style.setProperty("--kid-h", `${kidPx.toFixed(1)}px`);
@@ -139,13 +129,11 @@ export function GrowRail() {
       name(p);
     };
 
-    // The dream: the first time the chart appears, the toddler flies in
-    // from the edge of the screen, as he does in the clip, and lands on it.
     const chart = root.querySelector<HTMLElement>(".grow-rail__chart");
-    // Then, for a few seconds, he invites a question.
     let inviteTimer = 0;
     const invite = () => {
       root.classList.add("is-inviting");
+      window.clearTimeout(inviteTimer);
       inviteTimer = window.setTimeout(() => root.classList.remove("is-inviting"), 4500);
     };
     const flyIn = (delay: number) => {
@@ -170,24 +158,23 @@ export function GrowRail() {
         .to(step, { x: 0, duration: 1.5, ease: "power2.out", onUpdate: () => root.style.setProperty("--fly-x", `${step.x.toFixed(1)}px`) }, 0);
     };
 
-    // The chart shows once the hero has scrolled away; on a page that tells
-    // the story it's there from the start, beside the hero. The curtain
-    // (intro, page transition) has to have opened first. Whenever the chart
-    // isn't showing, the badge is (growRail.css), so the assistant is always
-    // a press away.
+    // The chatbot is visible and ready on every page. On wide screens on the
+    // homepage with chapters, the story ruler chart appears alongside him.
     const show = () => {
-      const story = marks.length > 0 && !!chart && getComputedStyle(chart).display !== "none";
-      const on = story || window.scrollY > window.innerHeight * 0.55;
-      // The chat window opens beside whichever form of the kid is showing.
-      const chartShows = on && !root.classList.contains("is-handoff") && !!chart && getComputedStyle(chart).display !== "none";
+      const isHome = path === "/" || window.location.pathname === "/" || document.documentElement.dataset.page === "home";
+      const story = isHome && marks.length > 0 && !!chart && getComputedStyle(chart).display !== "none";
+      const on = true;
+      const chartShows = story && !root.classList.contains("is-handoff") && !!chart && getComputedStyle(chart).display !== "none";
       document.documentElement.classList.toggle("has-rail-chart", chartShows);
       if (on && !root.classList.contains("is-on")) cue();
       root.classList.toggle("is-on", on);
-      // At the top of the page, wait for the hero's headline to land first.
-      if (on && !flown) flyIn(window.scrollY < 10 ? 1.1 : 0);
+      if (chartShows && !flown) flyIn(window.scrollY < 10 ? 1.1 : 0);
       const footer = document.querySelector("footer");
-      root.classList.toggle("is-at-footer", !!footer && footer.getBoundingClientRect().top < window.innerHeight - 120);
+      root.classList.toggle("is-at-footer", !!footer && footer.getBoundingClientRect().top < window.innerHeight - 130);
     };
+
+    measure();
+    show();
 
     const off = whenRevealed(() => {
       trigger = ScrollTrigger.create({
@@ -206,24 +193,59 @@ export function GrowRail() {
       });
     });
 
-    // The toddler waves back at the pointer (not under reduced motion).
+    // The toddler waves hello ("saying hi") at the pointer and on greetings.
     const stage = root.querySelector<HTMLElement>(".grow-rail__stage");
+    const guyBtn = root.querySelector<HTMLElement>(".grow-rail__guy-btn");
+    const bubble = root.querySelector<HTMLElement>(".grow-rail__bubble");
+    const chartBubble = root.querySelector<HTMLElement>(".grow-rail__bubble--chart");
+
     const wave = () => {
-      if (reduceMotion || waving || root.classList.contains("is-doctor") || root.classList.contains("is-flying")) return;
+      if (reduceMotion || waving || root.classList.contains("is-flying")) return;
       const step = { i: 0 };
       waving = gsap.to(step, {
         i: WAVE.length - 1,
-        duration: 1.1,
+        duration: 1.25,
         ease: "none",
-        onUpdate: () => root.style.setProperty("--frame", String(WAVE[Math.round(step.i)])),
+        onUpdate: () => {
+          const f = WAVE[Math.round(step.i)];
+          root.style.setProperty("--frame", String(f));
+          root.style.setProperty("--bot-frame", String(f));
+        },
         onComplete: () => {
           waving = undefined;
           root.style.setProperty("--frame", String(frame));
+          root.style.setProperty("--bot-frame", "0");
         },
       });
     };
+
     stage?.addEventListener("pointerenter", wave);
+    guyBtn?.addEventListener("pointerenter", wave);
+    bubble?.addEventListener("pointerenter", wave);
+    chartBubble?.addEventListener("pointerenter", wave);
+
+    const onBotClick = () => {
+      wave();
+    };
+    guyBtn?.addEventListener("click", onBotClick);
+    bubble?.addEventListener("click", onBotClick);
+    chartBubble?.addEventListener("click", onBotClick);
+
     waveRef.current = wave;
+
+    // Welcome greeting wave and speech bubble shortly after page appears
+    const welcomeTimer = window.setTimeout(() => {
+      show();
+      wave();
+      invite();
+    }, 1000);
+
+    // Periodic gentle wave when idle to remind the user he is there
+    const idleTimer = window.setInterval(() => {
+      if (ref.current && !ref.current.classList.contains("is-chatting") && !waving) {
+        wave();
+      }
+    }, 22000);
 
     return () => {
       off();
@@ -232,14 +254,20 @@ export function GrowRail() {
       flight?.kill();
       window.clearTimeout(cueTimer);
       window.clearTimeout(inviteTimer);
+      window.clearTimeout(welcomeTimer);
+      window.clearInterval(idleTimer);
       stage?.removeEventListener("pointerenter", wave);
+      guyBtn?.removeEventListener("pointerenter", wave);
+      bubble?.removeEventListener("pointerenter", wave);
+      chartBubble?.removeEventListener("pointerenter", wave);
+      guyBtn?.removeEventListener("click", onBotClick);
+      bubble?.removeEventListener("click", onBotClick);
+      chartBubble?.removeEventListener("click", onBotClick);
       document.documentElement.classList.remove("has-rail-chart");
     };
   }, []);
 
-  // He waves hello when the chat opens. The classes are toggled here, not
-  // rendered: the scroll code sets the rail's other classes directly, and a
-  // rendered className would wipe them.
+  // He waves hello when the chat opens.
   useEffect(() => {
     ref.current?.classList.toggle("is-chatting", open);
     if (open) waveRef.current();
@@ -248,6 +276,18 @@ export function GrowRail() {
   useEffect(() => {
     ref.current?.classList.toggle("is-searching", searching);
   }, [searching]);
+
+  // Wave and invite when navigating between pages
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const t = window.setTimeout(() => {
+      waveRef.current();
+      root.classList.add("is-inviting");
+      window.setTimeout(() => root.classList.remove("is-inviting"), 4500);
+    }, 900);
+    return () => window.clearTimeout(t);
+  }, [path]);
 
   const launcher = {
     "data-assistant-launcher": "",
@@ -260,11 +300,10 @@ export function GrowRail() {
   return (
     <aside
       ref={ref}
-      className="grow-rail"
+      className="grow-rail is-on"
       aria-label="Product Assistant"
     >
-      {/* Wide screens: the height chart and the figure growing beside it.
-          The figure is the Product Assistant's button. */}
+      {/* Wide screens on Home: the height chart and the figure growing beside it */}
       <div className="grow-rail__chart">
         <span className="grow-rail__ruler" aria-hidden="true" />
         <span className="grow-rail__mark" aria-hidden="true">
@@ -276,9 +315,27 @@ export function GrowRail() {
           <span className="grow-rail__fly" aria-hidden="true" />
           <span className="grow-rail__doctor" aria-hidden="true" />
         </button>
-        <span className="grow-rail__note" aria-hidden="true">
-          Ask me about our products
-        </span>
+        {/* Interactive speech bubble */}
+        <div
+          className="grow-rail__bubble grow-rail__bubble--chart"
+          onClick={assistant.toggle}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              assistant.toggle();
+            }
+          }}
+          aria-label="Ask questions about our products"
+        >
+          <div className="grow-rail__bubble-row">
+            <span className="grow-rail__bubble-tag">Hi! 👋</span>
+            <span className="grow-rail__bubble-title">Ask me questions</span>
+          </div>
+          <span className="grow-rail__bubble-sub">Product Assistant</span>
+          <span className="grow-rail__bubble-tail" aria-hidden="true" />
+        </div>
         {/* The story's chapter on screen (story.ts), on pages that tell it. */}
         <span className="grow-rail__chapter" aria-hidden="true">
           <span className="grow-rail__chapter-no" />
@@ -286,21 +343,48 @@ export function GrowRail() {
         </span>
       </div>
 
-      {/* Elsewhere (narrow screens, Product Suite, or while the chart is
-          away): the kid's face, whose ring fills as the page is read, as the
-          Product Assistant's button. */}
-      <button type="button" className="grow-rail__badge" {...launcher}>
-        <svg viewBox="0 0 52 52" className="grow-rail__ring" aria-hidden="true">
-          <circle cx="26" cy="26" r="24" pathLength="1" />
-          <circle cx="26" cy="26" r="24" pathLength="1" className="grow-rail__ring-fill" />
-        </svg>
-        <span className="grow-rail__face grow-rail__face--kid" aria-hidden="true" />
-        <span className="grow-rail__face grow-rail__face--doctor" aria-hidden="true" />
+      {/* Floating Interactive Chatbot Guy: displayed on all pages */}
+      <div className="grow-rail__bot" aria-label="Product Assistant">
+        {/* Interactive Speech Bubble: "Hi! Ask me questions" */}
+        <div
+          className="grow-rail__bubble"
+          onClick={assistant.toggle}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              assistant.toggle();
+            }
+          }}
+          aria-label="Ask questions about our products"
+        >
+          <div className="grow-rail__bubble-row">
+            <span className="grow-rail__bubble-tag">Hi! 👋</span>
+            <span className="grow-rail__bubble-title">Ask me questions</span>
+          </div>
+          <span className="grow-rail__bubble-sub">Product Assistant</span>
+          <span className="grow-rail__bubble-tail" aria-hidden="true" />
+        </div>
+
+        {/* The Superhero Kid Chatbot Character Button */}
+        <button
+          type="button"
+          className="grow-rail__guy-btn"
+          {...launcher}
+        >
+          <div className="grow-rail__guy-stage">
+            <span className="grow-rail__guy-sprite" aria-hidden="true" />
+            <span className="grow-rail__guy-shadow" aria-hidden="true" />
+          </div>
+        </button>
+
+        {/* Chapter cue if on a chapter page */}
         <span className="grow-rail__cue" aria-hidden="true">
           <span className="grow-rail__cue-no" />
           <span className="grow-rail__cue-title" />
         </span>
-      </button>
+      </div>
     </aside>
   );
 }

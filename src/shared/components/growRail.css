@@ -5,6 +5,7 @@
 
 .grow-rail {
   --frame: 0;
+  --bot-frame: 0;
   --p: 0;
   --morph: 0;
   --burst: 0;
@@ -13,10 +14,14 @@
   --top: 93px;
   position: fixed;
   right: 22px;
-  /* Clear of the footer's legal row at the bottom of the page. */
-  bottom: 60px;
+  bottom: 28px;
   z-index: 40;
   pointer-events: none;
+  transition: bottom 0.4s var(--ease-out);
+}
+
+.grow-rail.is-at-footer {
+  bottom: 84px;
 }
 
 /* The full-screen phone menu covers the page; the kid steps out of its way. */
@@ -24,17 +29,21 @@ html.is-menu-open .grow-rail {
   display: none;
 }
 
-/* The chart shows once it's "on", except while the homepage's closing
-   scene (the aspiration) has the grown-up doctor; then it hands him over
-   and the badge stands in. */
+/* Wide screens on Home with story chapters show the ruler chart; everywhere
+   else the interactive floating chatbot guy takes the stage. */
 .grow-rail__chart {
+  display: none;
   opacity: 0;
   visibility: hidden;
   translate: 0 18px;
   transition: opacity 0.6s ease, translate 0.6s var(--ease-out), visibility 0s linear 0.6s;
 }
 
-.grow-rail.is-on:not(.is-handoff) .grow-rail__chart {
+html.has-rail-chart .grow-rail__chart {
+  display: block;
+}
+
+html.has-rail-chart .grow-rail.is-on:not(.is-handoff) .grow-rail__chart {
   opacity: 1;
   visibility: visible;
   translate: 0 0;
@@ -202,142 +211,251 @@ html.is-menu-open .grow-rail {
   pointer-events: none;
 }
 
-.grow-rail__note {
-  position: absolute;
-  right: 18px;
-  text-align: right;
-  bottom: calc(var(--top) + 26px);
-  width: max-content;
-  max-width: 180px;
-  padding: 7px 10px;
-  border: 1px solid rgba(255, 214, 170, 0.24);
-  border-radius: 10px;
-  background: rgba(10, 5, 2, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+/* --- Interactive Speech Bubble ("Hi! Ask me questions") -------------------- */
+
+.grow-rail__bubble {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 14px 9px 12px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 180, 106, 0.45);
+  border-radius: 14px 14px 2px 14px;
+  background: rgba(14, 8, 4, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65), 0 0 18px rgba(255, 139, 18, 0.28);
   color: #fff3e7;
   font-family: var(--font-ui);
-  font-size: 11px;
-  line-height: 1.3;
-  opacity: 0;
-  translate: 0 6px;
-  transition: opacity 0.35s ease, translate 0.35s var(--ease-out);
-}
-
-/* "Ask me": on hover or focus, and for a few seconds once he has landed
-   (is-inviting). Never while the chat is open. */
-.grow-rail:not(.is-chatting) .grow-rail__chart:has(.grow-rail__stage:is(:hover, :focus-visible)) .grow-rail__note,
-.grow-rail.is-inviting:not(.is-chatting) .grow-rail__note {
-  opacity: 1;
-  translate: 0 0;
-}
-
-/* --- Narrow screens: the badge --------------------------------------------- */
-
-/* The badge: the kid's face in a ring that fills as the page is read, and
-   the Product Assistant's button wherever the chart isn't showing. */
-.grow-rail__badge {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  display: block;
-  width: 52px;
-  height: 52px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: none;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 22px rgba(255, 139, 18, 0.3);
-  cursor: pointer;
+  white-space: nowrap;
   pointer-events: auto;
-  transition: opacity 0.4s ease, translate 0.4s var(--ease-out), box-shadow 0.3s ease, visibility 0s;
+  cursor: pointer;
+  outline: none;
+  transform-origin: 100% 100%;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.35s ease;
+  animation: botBubbleBreathe 3.4s ease-in-out infinite;
 }
 
-.grow-rail__badge:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 32px rgba(255, 139, 18, 0.5);
+.grow-rail__bubble:hover,
+.grow-rail__bubble:focus-visible {
+  transform: translateY(-3px) scale(1.03);
+  border-color: #ffb46a;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 139, 18, 0.5);
 }
 
-.grow-rail__badge:focus-visible {
+.grow-rail__bubble:focus-visible {
   outline: 2px solid #ffb46a;
   outline-offset: 3px;
 }
 
-/* On wide screens it stands in only while the chart is away. */
-.grow-rail.is-on:not(.is-handoff) .grow-rail__badge {
+.grow-rail__bubble-tail {
+  position: absolute;
+  right: -6px;
+  bottom: 10px;
+  width: 10px;
+  height: 10px;
+  background: rgba(14, 8, 4, 0.9);
+  border-right: 1px solid rgba(255, 180, 106, 0.45);
+  border-bottom: 1px solid rgba(255, 180, 106, 0.45);
+  transform: rotate(-45deg);
+}
+
+.grow-rail__bubble-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.grow-rail__bubble-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 139, 18, 0.25);
+  border: 1px solid rgba(255, 180, 106, 0.45);
+  color: #ffb46a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.grow-rail__bubble-title {
+  color: #fff3e7;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.grow-rail__bubble-sub {
+  color: rgba(255, 214, 170, 0.7);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* In the story chart on homepage: */
+.grow-rail__bubble--chart {
+  position: absolute;
+  right: 18px;
+  bottom: calc(var(--top) + 26px);
+  margin-bottom: 0;
+  opacity: 1;
+  translate: 0 0;
+  transition: opacity 0.35s ease, translate 0.35s var(--ease-out);
+}
+
+.grow-rail__bubble--chart:hover,
+.grow-rail__bubble--chart:focus-visible {
+  transform: translateY(-3px) scale(1.03);
+  border-color: #ffb46a;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 139, 18, 0.5);
+}
+
+/* When chat window is open, hide speech bubbles so they don't overlap */
+.grow-rail.is-chatting .grow-rail__bubble {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* --- Floating Interactive Chatbot Guy (On all pages) ----------------------- */
+
+.grow-rail__bot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  translate: 0 18px;
-  transition: opacity 0.4s ease, translate 0.4s var(--ease-out), visibility 0s linear 0.4s;
+  translate: 0 16px;
+  transition: opacity 0.5s ease, translate 0.5s var(--ease-out), visibility 0s linear 0.5s;
 }
 
-.grow-rail.is-searching .grow-rail__badge .grow-rail__ring {
-  animation: railRing 1.2s linear infinite;
+/* Shown on all pages whenever the height ruler chart is not showing */
+.grow-rail.is-on .grow-rail__bot {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition: opacity 0.5s ease, translate 0.5s var(--ease-out), visibility 0s;
 }
 
-@keyframes railRing {
-  to {
-    rotate: 270deg;
+html.has-rail-chart .grow-rail__bot {
+  display: none !important;
+}
+
+/* The interactive superhero character button */
+.grow-rail__guy-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  outline: none;
+  transition: transform 0.3s var(--ease-out);
+}
+
+.grow-rail__guy-btn:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 6px;
+  border-radius: 16px;
+}
+
+.grow-rail__guy-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.grow-rail__guy-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Floating animation for the superhero toddler */
+.grow-rail__guy-stage {
+  position: relative;
+  width: 92px;
+  height: 105px;
+  animation: botFloat 3.2s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes botFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
   }
 }
 
-.grow-rail__ring {
+@keyframes botShadowScale {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(0.78);
+    opacity: 0.35;
+  }
+}
+
+@keyframes botBubbleBreathe {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* The sprite of the superhero toddler boy */
+.grow-rail__guy-sprite {
   position: absolute;
   inset: 0;
-  rotate: -90deg;
+  aspect-ratio: 245 / 280;
+  background-image: url("/images/campaign/grow/toddler-seq.webp");
+  background-position: 0 calc(var(--bot-frame, 0) * 100% / 34);
+  background-size: 100% 3500%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 14px rgba(255, 139, 18, 0.35));
+  transition: filter 0.3s ease;
 }
 
-.grow-rail__ring circle {
-  fill: rgba(10, 5, 2, 0.7);
-  stroke: rgba(255, 214, 170, 0.22);
-  stroke-width: 2;
+.grow-rail__guy-btn:hover .grow-rail__guy-sprite {
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 22px rgba(255, 139, 18, 0.6));
 }
 
-.grow-rail__ring .grow-rail__ring-fill {
-  fill: none;
-  stroke: #ffb46a;
-  stroke-dasharray: 1;
-  stroke-dashoffset: calc(1 - var(--p));
-  stroke-linecap: round;
-}
-
-.grow-rail__face {
+/* Ground shadow below his feet while hovering */
+.grow-rail__guy-shadow {
   position: absolute;
-  inset: 5px;
+  left: 20%;
+  right: 20%;
+  bottom: -2px;
+  height: 8px;
   border-radius: 50%;
-  background: center / cover no-repeat;
+  background: radial-gradient(closest-side, rgba(255, 139, 18, 0.45), rgba(0, 0, 0, 0.65) 60%, transparent);
+  animation: botShadowScale 3.2s ease-in-out infinite;
 }
 
-.grow-rail__face--kid {
-  background-image: url("/images/campaign/grow/face-toddler.webp");
-  opacity: calc(1 - var(--morph));
+/* Active thinking animation while searching the product document */
+.grow-rail.is-searching .grow-rail__guy-stage {
+  animation: botThink 0.8s ease-in-out infinite;
 }
 
-.grow-rail__face--doctor {
-  background-image: url("/images/campaign/grow/face-doctor.webp");
-  opacity: var(--morph);
-}
-
-/* The chart needs the margin beside the content; below that, the badge,
-   always there. The Product Suite theater sets its copy in that margin, so
-   it always gets the badge. */
-@media (max-width: 1359px) {
-  .grow-rail {
-    right: 14px;
-    bottom: max(14px, env(safe-area-inset-bottom));
+@keyframes botThink {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
   }
-
-  .grow-rail__chart {
-    display: none;
-  }
-
-  .grow-rail.is-on:not(.is-handoff) .grow-rail__badge {
-    opacity: 1;
-    visibility: visible;
-    translate: 0 0;
+  50% {
+    transform: translateY(-8px) rotate(-3.5deg);
   }
 }
 
-/* The chapter beside the badge, for a moment at each turn of the story. */
+/* The chapter cue beside the guy, for a moment at each turn of the story */
 .grow-rail__cue {
   position: absolute;
   right: calc(100% + 8px);
@@ -378,34 +496,86 @@ html.is-menu-open .grow-rail {
   color: #fff3e7;
 }
 
-/* Full-width content (Product Suite's product rows, Try Demo's cards): the
-   kid stays a badge in the corner instead of the chart in the margin. */
-html:is([data-page="product-suite"], [data-page="try-demo"]) .grow-rail {
-  right: 14px;
-  bottom: max(14px, env(safe-area-inset-bottom));
+/* Responsive: screen widths <= 1359px (laptops, tablets) */
+@media (max-width: 1359px) {
+  .grow-rail {
+    right: 18px;
+    bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .grow-rail__chart {
+    display: none !important;
+  }
+
+  .grow-rail.is-on .grow-rail__bot {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+  }
 }
 
-html:is([data-page="product-suite"], [data-page="try-demo"]) .grow-rail__chart {
-  display: none;
-}
+/* Phones & small mobile viewports */
+@media (max-width: 768px) {
+  .grow-rail {
+    right: 12px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
 
-html:is([data-page="product-suite"], [data-page="try-demo"]) .grow-rail.is-on:not(.is-handoff) .grow-rail__badge {
-  opacity: 1;
-  visibility: visible;
-  translate: 0 0;
+  .grow-rail .grow-rail__bot,
+  .grow-rail.is-on .grow-rail__bot {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .grow-rail__guy-stage {
+    width: 64px;
+    height: 74px;
+  }
+
+  .grow-rail__bubble {
+    padding: 5px 9px 6px 8px;
+    margin-bottom: 0;
+    gap: 2px;
+    border-radius: 12px 12px 2px 12px;
+    max-width: min(200px, calc(100vw - 28px));
+  }
+
+  .grow-rail__bubble-tail {
+    right: 22px;
+    bottom: -5px;
+    transform: rotate(45deg);
+  }
+
+  .grow-rail__bubble-tag {
+    font-size: 8px;
+    padding: 1px 5px;
+  }
+
+  .grow-rail__bubble-title {
+    font-size: 8.5px;
+  }
+
+  .grow-rail__bubble-sub {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .grow-rail__chart,
-  .grow-rail__badge,
-  .grow-rail__note,
+  .grow-rail__bot,
+  .grow-rail__bubble,
+  .grow-rail__guy-stage,
+  .grow-rail__guy-shadow,
   .grow-rail__cue {
     transition: none;
+    animation: none;
   }
 
   .grow-rail.is-searching .grow-rail__kid,
   .grow-rail.is-searching .grow-rail__doctor,
-  .grow-rail.is-searching .grow-rail__badge .grow-rail__ring {
+  .grow-rail.is-searching .grow-rail__guy-stage {
     animation: none;
   }
 }
