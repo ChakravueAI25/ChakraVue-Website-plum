@@ -633,3 +633,97 @@
     font-size: 10px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Why we exist — the campaign's height chart, before and after
+   (AboutStory.tsx). The illustrations keep their own colours.
+   -------------------------------------------------------------------------- */
+
+.about-story {
+  padding: clamp(88px, 9vw, 130px) 0;
+  background:
+    radial-gradient(50% 70% at 80% 40%, rgba(255, 139, 18, 0.12), transparent 66%),
+    #030202;
+}
+
+.about-story__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(36px, 5vw, 80px);
+  align-items: center;
+}
+
+.about-story__title {
+  margin-top: 18px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.5vw, 36px);
+  font-weight: 400;
+  line-height: 1.28;
+  text-transform: uppercase;
+}
+
+.about-story__title em {
+  color: #ffb46a;
+  font-style: normal;
+}
+
+.about-story__lead {
+  max-width: 460px;
+  margin-top: 22px;
+  color: rgba(255, 242, 232, 0.78);
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.6;
+}
+
+.about-story__frames {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 22px);
+}
+
+.about-story__frame {
+  margin: 0;
+}
+
+.about-story__frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 900 / 933;
+  object-fit: cover;
+  border: 1px solid rgba(255, 214, 170, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+}
+
+.about-story__frame figcaption {
+  margin-top: 14px;
+  color: rgba(255, 242, 232, 0.7);
+  font-size: 12px;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.about-story__frame + .about-story__frame figcaption {
+  color: #ffb46a;
+}
+
+@media (max-width: 900px) {
+  .about-story__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-story__lead {
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 760px) {
+  .about-story__frame img {
+    border-radius: 14px;
+  }
+
+  .about-story__frame figcaption {
+    font-size: 11px;
+  }
+}

@@ -76,12 +76,25 @@ when you change one.
       travels round the glyphs.
     - The owner iterated on this many times. They want it big, clearly
       visible, even and centred behind the text, with the text readable.
+  - "Analogue to AI" campaign film band (`CampaignFilm.tsx`, added
+    2026-10-26) directly under the hero: the campaign's kid character
+    walks a blueprint, strikes a match, and it burns open onto AI
+    circuitry. Lazy, silent, pauses off screen, poster under reduced
+    motion. The owner approved this placement over putting the kid in the
+    hero itself.
   - Featured-in (NDTV) marquee: home only.
   - Statement band: "Built From Experience. / Guided by Science. / Elevated
     by Intelligence.", closed by the coda "Shaping What Healthcare Can See,
     Understand, and Do." (the `coda` prop of `InsightStatement`).
   - Product showcase: "Four products, one connected line of sight."
   - The core idea (eclipse glow), then How it works, Team and Latest posts.
+  - Campaign close (`CampaignClose.tsx`): the film's last frame, "Levelling
+    the field for every hospital.", Explore products / Contact us.
+  - Campaign art lives in `public/images/campaign/`, copied selectively
+    from `blueprint-site/` (the separate static redesign on the
+    `blueprint-site` branch). The kid appears on Home and About only, never
+    on Product Suite or Services. Don't bring over the blueprint's serif
+    fonts, navy/cyan palette, wordmark PNG or burn-on-click buttons.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**
@@ -146,7 +159,8 @@ when you change one.
     request.
 - **About Us:** hero "The Technology Is Only as Strong as the Minds Behind
   It." over a canvas network of minds (`about-us/components/minds.ts`), then
-  the leaders and the team. Each card links to the person's LinkedIn profile
+  "Why we exist" with the campaign's height-chart pair (`AboutStory.tsx`),
+  then the leaders and the team. Each card links to the person's LinkedIn profile
   (`linkedin` in `about-us/data.ts`). Hrushikesh Patki has none yet.
 - **Services:** FEA and tobacco cessation only. The hero reads "Research,
   Intelligence, and Technology Working Toward Better Health."

@@ -66,6 +66,15 @@ sections animate in as they arrive. In order:
   horizon, softer behind the words (which carry a soft shadow), with a glint
   of light travelling round the ring. Headline, one-line summary, "Explore products"
   and "Contact us", and shortcuts to the four products on the lit ground.
+- **"Analogue to AI" campaign film** (`CampaignFilm.tsx`, `campaign.css`).
+  The campaign's character, a small boy, walks across an old engineering
+  blueprint, strikes a match, and the paper burns open onto AI circuitry
+  (`public/images/campaign/analogue-to-ai.mp4`, 11.6s, silent loop). Beside
+  it: "Your equipment has served you well. Now give it an engine." and a link
+  to the Product Suite. The film loads only when it's on screen and never
+  during the intro (`preload="none"`, gated on the curtain); it pauses off
+  screen and has its own play/pause button. Under reduced motion it waits on
+  its poster.
 - **Featured in** marquee (homepage only).
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
@@ -82,6 +91,17 @@ sections animate in as they arrive. In order:
   of light travels through the stages as you scroll and lights each one.
 - **Team.** The three leaders and the wider team, linking to About.
 - **Blog.** The three latest posts, linking to the blog.
+- **Campaign close** (`CampaignClose.tsx`). The film's last frame (the boy
+  beside the burnt-open blueprint, `circuit-reveal.jpg`) fading into the
+  page, then "Levelling the field for every hospital.", "Not to burn the
+  past. To see what was underneath it all along." and Explore products /
+  Contact us.
+
+The campaign art comes from the blueprint redesign (`blueprint-site/` on the
+`blueprint-site` branch); only the pieces used here are copied into
+`public/images/campaign/`. Illustrations keep their own colours (the palette
+grade leaves images alone). The character appears on Home and About only;
+Product Suite and Services stay technical.
 
 **Product Suite**
 - **Hero** (`SuiteHero.tsx`): ChakraVue AI at the centre, with the page's
@@ -231,6 +251,10 @@ adding products.
   Behind It." over a live network of minds (`about-us/components/minds.ts`):
   points drift, link up and pass signals; the pointer draws the nearest ones
   together.
+- "Why we exist" (`AboutStory.tsx`): "Built inside a working eye hospital.
+  For every hospital." beside the campaign's height-chart pair: the boy well
+  short of an older boy, then on a stool and taller ("The same hospital, with
+  ChakraVue AI").
 - Leader cards swing in, with the portrait wiping up inside them.
 - The team portraits pop in.
 - Each leader card has a "LinkedIn" pill under the role, and each team card
@@ -358,6 +382,17 @@ The summaries and "A method you can put in front of a design review." are
 new; the hero line is the supplied quote. The FEA contour
 view, the 0 to 300 N load scale, the pubic-gap readings and the chat
 dialogue are illustrative, so please confirm they're acceptable to show.
+
+Campaign copy (from the blueprint redesign, adapted). Please review:
+- Film band: "Your equipment has served you well. Now give it an engine." /
+  "AI on the devices your hospital already owns. ChakraVue AI levels the field
+  for every hospital, large or small." / "See what it adds".
+- Closing band: "Levelling the field for every hospital." / "Not to burn the
+  past. To see what was underneath it all along."
+- About: "Why we exist", the blueprint's About hero lines, and the two
+  captions under the height chart.
+- The film shows the boy striking a match; confirm that's acceptable for a
+  healthcare brand.
 
 New on the homepage. Please review before launch:
 - "How it works" / "From the instrument to the decision." (above the value cards)
