@@ -53,7 +53,7 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
   the large faint mark centred behind them, then the wordmark, which rises
   letter by letter.
 - **The kid growing up** (`shared/components/GrowRail.tsx`, `growRail.css`).
-  A fixed height chart in the left margin, shown once the hero has scrolled
+  A fixed height chart in the right margin, shown once the hero has scrolled
   away. The page's scroll plays the superhero toddler from the campaign clip
   (landing, waving, pointing, thumbs-up: 35 cut-out frames in
   `public/images/campaign/grow/toddler-seq.webp`), then at about two-thirds
@@ -72,22 +72,20 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
 sections and art, plus the parts a company site needs (clear calls to action,
 product shortcuts, the team, the latest posts). Nothing on the homepage pins;
 sections animate in as they arrive. In order:
-- **Hero.** The original sunset, with a live particle landscape that breathes
-  and ripples under the pointer. Nothing in the hero moves with scroll. The logo, as
-  supplied and never turned, is centred behind the copy, as large as fits
-  between the nav and the horizon: cream glyphs deepening to amber toward the
-  horizon, softer behind the words (which carry a soft shadow), with a glint
-  of light travelling round the ring. Headline, one-line summary, "Explore products"
-  and "Contact us", and shortcuts to the four products on the lit ground.
-- **"Analogue to AI" campaign film** (`CampaignFilm.tsx`, `campaign.css`).
-  The campaign's character, a small boy, walks across an old engineering
-  blueprint, strikes a match, and the paper burns open onto AI circuitry
-  (`public/images/campaign/analogue-to-ai.mp4`, 11.6s, silent loop). Beside
-  it: "Your equipment has served you well. Now give it an engine." and a link
-  to the Product Suite. The film loads only when it's on screen and never
-  during the intro (`preload="none"`, gated on the curtain); it pauses off
-  screen and has its own play/pause button. Under reduced motion it waits on
-  its poster.
+- **Hero** (`Hero.tsx`, `home.css`). The "Analogue to AI" campaign film fills
+  the hero (`public/images/campaign/analogue-to-ai.mp4`, 11.6s, silent
+  loop): the campaign's character, a small boy, walks across an old
+  engineering blueprint, strikes a match, and the paper burns open onto AI
+  circuitry. It replaced the sunset, the particle landscape and the centred
+  logo (2026-10-26, at the owner's request). Framed into the site: the
+  nav's band and the copy's corner are shaded, the edges vignetted, the
+  bottom melts into the page over a warm hairline. Over it, low on the
+  left: "Analogue to AI", the headline, the one-line summary, "Explore
+  products" and "Contact us"; on the right a "The campaign film" chip with
+  play/pause; and the four product shortcuts along the bottom. The film
+  starts once the curtain opens (never under the intro), pauses off screen,
+  and waits on its poster under reduced motion. On phones it's framed on
+  the boy. Nothing in the hero moves with scroll.
 - **Featured in** marquee (homepage only).
 - **Statement.** "Built From Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
@@ -304,7 +302,7 @@ src/motion/            the motion system
   reveal.ts            declarative entrances (data-split, data-scramble, …)
   useMotion.ts         hooks components use to add choreography
   PointerFX.tsx        cursor tag, magnetic, spotlight
-  webgl/dataHorizon.ts home hero particle landscape
+  webgl/dataHorizon.ts particle landscape (the old home hero; no longer used)
   webgl/theater/       3D products: engine.ts (stage + inline modes),
                        kit.ts (materials, explode parts), models/*.ts
                        (briefcase.ts + computeUnit.ts + interfaceStack.ts +
@@ -397,9 +395,7 @@ view, the 0 to 300 N load scale, the pubic-gap readings and the chat
 dialogue are illustrative, so please confirm they're acceptable to show.
 
 Campaign copy (from the blueprint redesign, adapted). Please review:
-- Film band: "Your equipment has served you well. Now give it an engine." /
-  "AI on the devices your hospital already owns. ChakraVue AI levels the field
-  for every hospital, large or small." / "See what it adds".
+- Hero: the "Analogue to AI" eyebrow and the "The campaign film" chip.
 - Closing band: "Levelling the field for every hospital." / "Not to burn the
   past. To see what was underneath it all along."
 - About: "Why we exist", the blueprint's About hero lines, and the two

@@ -63,25 +63,16 @@ when you change one.
   less brightness, so don't brighten it.
   `sessionStorage.cv-intro-seen = "1"` skips it.
 - **Home**, in order:
-  - Hero (`pages/home/components/Hero.tsx`):
-    - Sunset gradient plus the WebGL particle landscape
-      (`motion/webgl/dataHorizon.ts`), which breathes and ripples under
-      the pointer. Nothing in the hero moves with scroll; the owner asked
-      for this.
-    - The logo sits whole and centred behind the copy (`.hero__mark` in
-      `home.css`): up to 680px wide, set 36px below centre, with cream
-      glyphs deepening to amber toward the horizon.
-    - The ring is softer behind the words (a vertical mask band, aligned
-      to the copy), the copy carries a soft text-shadow, and a glint
-      travels round the glyphs.
-    - The owner iterated on this many times. They want it big, clearly
-      visible, even and centred behind the text, with the text readable.
-  - "Analogue to AI" campaign film band (`CampaignFilm.tsx`, added
-    2026-10-26) directly under the hero: the campaign's kid character
-    walks a blueprint, strikes a match, and it burns open onto AI
-    circuitry. Lazy, silent, pauses off screen, poster under reduced
-    motion. The owner approved this placement over putting the kid in the
-    hero itself.
+  - Hero (`pages/home/components/Hero.tsx`), rebuilt 2026-10-26 at the
+    owner's request: the "Analogue to AI" campaign film fills it (the kid
+    walks a blueprint, strikes a match, it burns open onto AI circuitry),
+    replacing the sunset, the particle landscape (`dataHorizon.ts`, now
+    unused) and the centred logo. Copy low on the left, a "The campaign
+    film" play/pause chip on the right, product shortcuts along the
+    bottom; shading keeps the nav and copy readable. Silent, starts after
+    the curtain, pauses off screen, poster under reduced motion. Nothing
+    in the hero moves with scroll. (The separate film band that sat under
+    the hero was removed in the same change.)
   - Featured-in (NDTV) marquee: home only.
   - Statement band: "Built From Experience. / Guided by Science. / Elevated
     by Intelligence.", closed by the coda "Shaping What Healthcare Can See,
@@ -96,12 +87,12 @@ when you change one.
     only. Don't bring over the blueprint's serif fonts, navy/cyan palette,
     wordmark PNG or burn-on-click buttons.
 - **Growth rail** (`shared/components/GrowRail.tsx`, every page, added
-  2026-10-26 at the owner's request): a fixed height chart in the left
-  margin where the superhero toddler (frames cut from the owner's clip)
+  2026-10-26 at the owner's request, moved to the right the same day): a
+  fixed height chart in the right margin where the superhero toddler (frames cut from the owner's clip)
   grows into the doctor as the page scrolls. Badge below 1360px and on
   Product Suite (the theater's copy sits in that margin); it hides over the
   hero and, as a badge, over the footer. Keep it clear of content: check
-  the left margin whenever a section's layout changes.
+  the right margin whenever a section's layout changes.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**

@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { reduceMotion } from "../../../motion/env";
 import { whenRevealed } from "../../../motion/gate";
 import { gsap, SplitText } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
-import type { DataHorizon } from "../../../motion/webgl/dataHorizon";
-import { Logo } from "../../../brand/Logo";
 import { Link } from "../../../shared/components/Link";
 import { products } from "../../product-suite/data";
+
+const FILM = "/images/campaign/analogue-to-ai.mp4";
+const POSTER = "/images/campaign/analogue-to-ai-poster.jpg";
 
 type HeroProps = {
   /** Called as the headline lands, so the nav can follow it in. */
@@ -14,71 +15,83 @@ type HeroProps = {
 };
 
 /**
- * The original sunset hero, working as a company homepage hero: the
- * headline, one line on what ChakraVue does, the two next steps, and a
- * direct way into each product along the horizon.
+ * The homepage hero, set over the "Analogue to AI" campaign film: the boy
+ * walks across an old engineering blueprint, strikes a match, and the paper
+ * burns open onto the intelligence underneath. Over it: the headline, one
+ * line on what ChakraVue does, the two next steps, and a direct way into
+ * each product. The film starts once the curtain opens (never under the
+ * intro), pauses when the hero is off screen, and waits on its poster under
+ * reduced motion until someone presses play.
  */
 export function Hero({ onIntroDone }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const horizon = useRef<DataHorizon | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const introDone = useRef(onIntroDone);
   introDone.current = onIntroDone;
+  const [playing, setPlaying] = useState(false);
+  // Someone pressed pause: scrolling back up doesn't override them.
+  const held = useRef(reduceMotion);
 
-  // The WebGL landscape loads after first paint as its own chunk. The painted
-  // CSS gradient underneath is the hero until then, and stays the hero if
-  // WebGL isn't available.
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let cancelled = false;
-    let offReveal = () => {};
-    import("../../../motion/webgl/dataHorizon")
-      .then(({ createDataHorizon }) => {
-        if (cancelled) return;
-        horizon.current = createDataHorizon(canvas, { reduced: reduceMotion });
-        offReveal = whenRevealed(() => horizon.current?.start());
-      })
-      .catch((error) => console.warn("[hero] WebGL unavailable; keeping the painted hero.", error));
+    const video = videoRef.current;
+    if (!video) return;
+    let observer: IntersectionObserver | undefined;
+    const off = whenRevealed(() => {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !held.current) video.play().catch(() => {});
+          else if (!entry.isIntersecting) video.pause();
+        },
+        { threshold: 0.2 },
+      );
+      observer.observe(video);
+    });
     return () => {
-      cancelled = true;
-      offReveal();
-      horizon.current?.destroy();
-      horizon.current = null;
+      off();
+      observer?.disconnect();
     };
   }, []);
+
+  const toggle = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      held.current = false;
+      video.play().catch(() => {});
+    } else {
+      held.current = true;
+      video.pause();
+    }
+  };
 
   useMotion(ref, (root) => {
     const title = root.querySelector<HTMLElement>("h1");
     if (!title) return;
 
-    // Letters flip up out of a blur; then the line, the buttons and the
-    // product shortcuts follow in order.
+    // Letters flip up out of a blur; then the line, the buttons, the film's
+    // caption and the product shortcuts follow in order.
     const split = SplitText.create(title, { type: "words,chars", charsClass: "hero-char" });
     gsap.set(title, { autoAlpha: 1 });
     gsap
       .timeline({ delay: 0.2 })
-      .from(split.chars, {
-        yPercent: 90,
-        rotationX: -75,
-        autoAlpha: 0,
-        filter: "blur(12px)",
-        transformOrigin: "50% 100%",
-        transformPerspective: 700,
-        duration: 1.5,
-        stagger: 0.032,
-      })
-      // The mark settles in behind the copy, then its glyphs light in turn
-      // round the ring.
-      .from(root.querySelector(".hero__emblem"), { autoAlpha: 0, scale: 0.92, duration: 2.2, ease: "cv.out" }, 0.2)
+      .from(root.querySelector(".hero__film"), { autoAlpha: 0, scale: 1.04, duration: 2.2, ease: "cv.out" }, 0)
       .from(
-        root.querySelectorAll(".hero__emblem .logo__glyph"), // in order round the ring
-        { opacity: 0.1, duration: 0.5, stagger: 0.03, ease: "power1.out" },
-        0.6,
+        split.chars,
+        {
+          yPercent: 90,
+          rotationX: -75,
+          autoAlpha: 0,
+          filter: "blur(12px)",
+          transformOrigin: "50% 100%",
+          transformPerspective: 700,
+          duration: 1.5,
+          stagger: 0.032,
+        },
+        0.2,
       )
       .add(() => introDone.current?.(), 0.95)
       .from(
-        root.querySelectorAll(".hero__lead, .hero__actions > *"),
+        root.querySelectorAll(".hero__eyebrow, .hero__lead, .hero__actions > *, .hero__chip"),
         { autoAlpha: 0, y: 18, duration: 1, stagger: 0.08, clearProps: "transform,opacity,visibility" },
         0.9,
       )
@@ -92,26 +105,30 @@ export function Hero({ onIntroDone }: HeroProps) {
   });
 
   return (
-    <section ref={ref} className="hero section">
-      <canvas ref={canvasRef} className="hero__canvas" aria-hidden="true" />
-      {/* The mark as supplied (never turned), whole and centred behind the
-          copy: its top and bottom arcs lit, quiet where the words sit. */}
-      <div className="hero__mark" aria-hidden="true">
-        {/* Light glyphs on the dark sky, deepening to amber toward the
-            bright horizon, so the whole ring reads on both. */}
-        <svg className="hero__mark-defs" width="0" height="0">
-          <linearGradient id="hero-mark-fill" gradientUnits="userSpaceOnUse" x1="0" y1="100" x2="0" y2="870">
-            <stop className="hero__mark-stop hero__mark-stop--top" offset="0" />
-            <stop className="hero__mark-stop hero__mark-stop--mid" offset="0.55" />
-            <stop className="hero__mark-stop hero__mark-stop--low" offset="1" />
-          </linearGradient>
-        </svg>
-        <Logo className="hero__emblem" disc={false} />
-      </div>
-      <div className="hero__glow" />
+    <section ref={ref} className="hero section" aria-labelledby="hero-title">
+      <video
+        ref={videoRef}
+        className="hero__film"
+        src={FILM}
+        poster={POSTER}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-describedby="hero-film-desc"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+      />
+      <p id="hero-film-desc" className="sr-only">
+        A short film without sound: a boy walks across an old engineering blueprint, strikes a match, and the burning paper opens onto glowing
+        AI circuitry underneath.
+      </p>
+      <div className="hero__shade" aria-hidden="true" />
+
       <div className="section__inner hero__content">
         <div className="hero__copy">
-          <h1>
+          <p className="hero__eyebrow">Analogue to AI</p>
+          <h1 id="hero-title">
             Add <em>Intelligence</em> To Your Practice
           </h1>
           <p className="hero__lead">
@@ -126,6 +143,22 @@ export function Hero({ onIntroDone }: HeroProps) {
               Contact us
             </Link>
           </div>
+        </div>
+
+        <div className="hero__chip">
+          <span className="hero__chip-label">The campaign film</span>
+          <button type="button" className="hero__chip-toggle" onClick={toggle} aria-label={playing ? "Pause the film" : "Play the film"}>
+            {playing ? (
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12">
+                <rect x="6" y="5" width="4" height="14" />
+                <rect x="14" y="5" width="4" height="14" />
+              </svg>
+            ) : (
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 

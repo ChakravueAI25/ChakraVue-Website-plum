@@ -25,7 +25,7 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
  * The campaign's kid growing up beside the page as it scrolls: a fixed
- * height chart on the left with the toddler from the clip (flying in,
+ * height chart in the right margin with the toddler from the clip (flying in,
  * waving, pointing), who becomes the doctor and grows to full height by the
  * end of the page. On narrower screens it's a small badge whose ring fills
  * as you read. Decorative: hidden from assistive tech, never focusable.

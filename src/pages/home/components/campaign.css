@@ -1,127 +1,6 @@
-/* The "Analogue to AI" campaign on the homepage: the film band under the
-   hero (CampaignFilm.tsx) and the closing band (CampaignClose.tsx). The
+/* The "Analogue to AI" campaign's closing band on the homepage
+   (CampaignClose.tsx); its film is the hero (Hero.tsx, home.css). The
    illustrations keep their own colours; the palette grade leaves them be. */
-
-/* --- The film band ------------------------------------------------------- */
-
-.campaign-film {
-  padding: clamp(88px, 9vw, 136px) 0 clamp(80px, 8vw, 120px);
-  background:
-    radial-gradient(60% 70% at 78% 50%, rgba(255, 139, 18, 0.1), transparent 70%),
-    #030102;
-}
-
-.campaign-film__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: clamp(32px, 4.5vw, 72px);
-}
-
-.campaign-film__title {
-  margin: 18px 0 0;
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: clamp(26px, 2.6vw, 38px);
-  font-weight: 400;
-  line-height: 1.25;
-}
-
-.campaign-film__title em,
-.campaign-close__title em {
-  color: #ffb46a;
-  font-style: normal;
-}
-
-.campaign-film__lead {
-  max-width: 460px;
-  margin: 22px 0 0;
-  color: rgba(255, 242, 232, 0.78);
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.6;
-}
-
-.campaign-film__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 30px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 180, 106, 0.5);
-  color: #ffb46a;
-  font-family: var(--font-display);
-  font-size: 13px;
-  line-height: 1;
-  text-transform: uppercase;
-  transition: border-color 0.35s ease, color 0.35s ease;
-}
-
-.campaign-film__link span {
-  transition: translate 0.4s var(--ease-out);
-}
-
-.campaign-film__link:hover,
-.campaign-film__link:focus-visible {
-  border-color: #ffb46a;
-  color: #fbd896;
-}
-
-.campaign-film__link:hover span,
-.campaign-film__link:focus-visible span {
-  translate: 4px 0;
-}
-
-.campaign-film__frame {
-  position: relative;
-  margin: 0;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
-  border: 1px solid rgba(255, 214, 170, 0.22);
-  border-radius: 22px;
-  background: #0b0a10 url("/images/campaign/analogue-to-ai-poster.jpg") center / cover no-repeat;
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.4);
-}
-
-.campaign-film__video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.campaign-film__toggle {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  padding: 0;
-  border: 1px solid rgba(255, 236, 220, 0.45);
-  border-radius: 50%;
-  background: rgba(10, 5, 2, 0.5);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  color: #fff;
-  cursor: pointer;
-  transition: border-color 0.35s ease, background-color 0.35s ease;
-}
-
-.campaign-film__toggle svg {
-  fill: currentColor;
-}
-
-.campaign-film__toggle:hover,
-.campaign-film__toggle:focus-visible {
-  border-color: #fff;
-  background: rgba(10, 5, 2, 0.7);
-}
-
-.campaign-film__toggle:focus-visible {
-  outline: 2px solid #ffb46a;
-  outline-offset: 3px;
-}
 
 /* --- The closing band ---------------------------------------------------- */
 
@@ -192,28 +71,9 @@
   margin-top: 34px;
 }
 
-/* --- Tablets and phones -------------------------------------------------- */
-
-@media (max-width: 900px) {
-  .campaign-film__inner {
-    grid-template-columns: 1fr;
-  }
-
-  .campaign-film__lead {
-    max-width: 560px;
-  }
-}
+/* --- Phones -------------------------------------------------------------- */
 
 @media (max-width: 760px) {
-  .campaign-film__frame {
-    border-radius: 16px;
-  }
-
-  .campaign-film__toggle {
-    right: 10px;
-    bottom: 10px;
-  }
-
   /* Phones see the boy and the chip, not the whole burn. */
   .campaign-close__art {
     height: 340px;

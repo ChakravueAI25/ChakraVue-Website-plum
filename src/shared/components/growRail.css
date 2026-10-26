@@ -1,4 +1,4 @@
-/* The kid growing up beside the page (GrowRail.tsx). Scroll sets the
+/* The kid growing up beside the page, in its right margin (GrowRail.tsx). Scroll sets the
    custom properties; everything here only reads them. The figures keep
    their own colours (the palette grade leaves images alone); the chart is
    written in Ember amber like the rest of the site and comes out Plum. */
@@ -12,7 +12,7 @@
   --doc-h: 150px;
   --top: 93px;
   position: fixed;
-  left: 22px;
+  right: 22px;
   /* Clear of the footer's legal row at the bottom of the page. */
   bottom: 60px;
   z-index: 40;
@@ -39,20 +39,20 @@
    every 14px, a longer one every 70px, and the reached height lit. */
 .grow-rail__ruler {
   position: absolute;
-  left: 0;
+  right: 0;
   bottom: 0;
   width: 12px;
   height: 100%;
-  border-left: 1px solid rgba(255, 214, 170, 0.28);
+  border-right: 1px solid rgba(255, 214, 170, 0.28);
   background:
-    linear-gradient(0deg, rgba(255, 214, 170, 0.5) 0 1px, transparent 1px) 0 100% / 12px 70px repeat-y,
-    linear-gradient(0deg, rgba(255, 214, 170, 0.32) 0 1px, transparent 1px) 0 100% / 6px 14px repeat-y;
+    linear-gradient(0deg, rgba(255, 214, 170, 0.5) 0 1px, transparent 1px) 100% 100% / 12px 70px repeat-y,
+    linear-gradient(0deg, rgba(255, 214, 170, 0.32) 0 1px, transparent 1px) 100% 100% / 6px 14px repeat-y;
 }
 
 .grow-rail__ruler::after {
   content: "";
   position: absolute;
-  left: -1px;
+  right: -1px;
   bottom: 0;
   width: 1px;
   height: var(--top);
@@ -63,7 +63,8 @@
 /* The reading rides just above the figure's head. */
 .grow-rail__mark {
   position: absolute;
-  left: 0;
+  right: 0;
+  flex-direction: row-reverse;
   bottom: calc(var(--top) + 6px);
   display: flex;
   align-items: center;
@@ -93,8 +94,8 @@
 
 .grow-rail__stage {
   position: absolute;
-  left: 18px;
-  right: 0;
+  left: 0;
+  right: 18px;
   bottom: 0;
   height: 100%;
   pointer-events: auto;
@@ -143,7 +144,8 @@
 
 .grow-rail__note {
   position: absolute;
-  left: 18px;
+  right: 18px;
+  text-align: right;
   bottom: calc(var(--top) + 26px);
   width: max-content;
   max-width: 180px;
@@ -218,7 +220,7 @@
    gets the badge. */
 @media (max-width: 1359px) {
   .grow-rail {
-    left: 14px;
+    right: 14px;
     bottom: max(14px, env(safe-area-inset-bottom));
   }
 
@@ -240,7 +242,7 @@ html[data-page="product-suite"] .grow-rail.is-at-footer {
 }
 
 html[data-page="product-suite"] .grow-rail {
-  left: 14px;
+  right: 14px;
   bottom: max(14px, env(safe-area-inset-bottom));
 }
 
