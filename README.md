@@ -9,6 +9,9 @@ npm install
 npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
 ```
 
+The Product Assistant chat needs an admin password in `.env` to upload its
+product PDF (see "Product Assistant" below). It uses no AI service or API key.
+
 ## What's in it
 
 **Across the site**
@@ -59,7 +62,7 @@ npm run dev      # http://127.0.0.1:5175  (main site stays on 5173)
   doctor in a warm flare and grows to full height. A reading above his head
   goes from 0.95 m to 1.74 m. The first time the chart appears he flies in
   from the screen's edge (the clip's flight, `grow/toddler-fly.webp`).
-  Hovering him shows "Every doctor started small." and the toddler waves.
+  He is also the Product Assistant's button (see "Product Assistant" below): hovering him shows "Ask me about our products" and the toddler waves.
   On the homepage it tells the story: it shows from the hero, names the
   chapter above the chart, paces the growing up by the chapters (he grows
   up as the journey begins), and steps aside when the closing scene takes
@@ -411,6 +414,169 @@ Changes to existing files are limited to motion hooks and attributes, plus CSS
 that moved from `transform` to `translate`/`scale` so it doesn't fight the
 animations. One side effect fixed an existing bug: the top and bottom
 system-map nodes no longer jump sideways on hover.
+
+## Product Assistant (PDF chatbot)
+
+The campaign's kid on the growth rail is the chat button, on every page
+(`GrowRail.tsx`, `ChatAssistant.tsx`, `shared/chat/assistantState.ts`):
+pressing the kid in the height chart, or his face badge wherever the chart
+isn't showing, opens the "Product Assistant", which answers visitors' questions from one PDF: the
+product document the administrator uploads at `/admin`. Answers are
+sentences copied word for word from that PDF, each with its page number.
+
+It uses no AI. There is no language model, API key, embedding model or
+outside service: a small search engine on the site's own server (TF-IDF,
+cosine similarity, keyword, phrase and model-number matching) finds the
+passages, and the answer is built from their sentences. Nothing is
+generated or paraphrased, and questions and the PDF never leave the server.
+
+**Setup**
+
+```bash
+npm install
+npm run admin:password -- "choose a long password"   # prints ADMIN_PASSWORD_HASH=...
+cp .env.example .env                                  # paste that line into .env
+npm run dev                                           # site + assistant on http://127.0.0.1:5175
+```
+
+Production: `npm run build && npm run serve` (Node 22.9+) serves `dist/`, the
+chat API and the admin page on port 4175 (`PORT` and `HOST` in `.env`). The
+Vite build alone is a static site with no assistant; it needs this Node
+server, or the same routes (`server/routes.ts`) mounted in another Node
+host. Serve it over HTTPS (behind a reverse proxy, for example): the admin
+sign-in is HTTP Basic authentication, which is only private over HTTPS.
+
+Without `ADMIN_PASSWORD_HASH` (or `ADMIN_PASSWORD` for local use) the admin
+area is switched off. Until a PDF is uploaded, the chat says it can't answer
+yet.
+
+**Updating the product information**
+
+1. Open `/admin` (for example http://127.0.0.1:5175/admin) and sign in with
+   `ADMIN_USERNAME` (default `admin`) and the password.
+2. Choose the new PDF and press "Upload and process".
+3. A green message confirms it, and "Document in use" shows the file name and
+   when it was last updated. Every question from then on uses the new
+   document. No code change or restart is needed. "Try a question" on the
+   same page checks it.
+
+If a file is refused (not a PDF, damaged, password-protected, scanned, or over
+`PDF_MAX_MB`, default 10 MB), a red message says why and the previous document
+stays in use. Only text-based PDFs work (exported from Word, Google Docs and
+so on). A scanned PDF is pictures of pages with no text, and there is no
+OCR. Export a text PDF instead, or run it through OCR first.
+
+A starter document can be made from the website itself: `npm run
+assistant:site-pdf` (`server/sitePdf.ts`) writes
+`docs/ChakraVue-AI-Product-Guide.pdf` from the page data files (products,
+platforms, services, team and contact details; nothing the site doesn't
+publish). Run it again after editing those files, then upload the new PDF.
+
+Writing the PDF so it answers well: give each product its own heading (its
+name and model number, such as "Alpha Monitor (Model AM-200)"), and put specs
+in short "Label: value" lines ("Price: $1,299", "Warranty: 2 years"). A
+question that names a product is answered from that product's section only.
+
+**How it answers**
+
+1. The question is checked (1–500 characters, rate-limited per visitor),
+   lower-cased, tokenised, stop words removed and words reduced to a stem
+   ("batteries" → "battery"). Numbers and model numbers stay whole, and are
+   also matched without their hyphen ("BS-310" = "bs310"). A short list of
+   everyday wordings maps onto document words ("how much" → price, "how
+   heavy" → weight). An amount of money in the PDF also counts as "price".
+2. Every passage is scored: cosine similarity of TF-IDF vectors (40%), how
+   much of the question it covers, weighted by rarity (35%), exact phrases
+   (10%), model numbers (15%), plus a bonus when the question names its
+   heading. A model number the passage lacks reduces the score.
+3. Passages under `CHAT_MIN_SCORE` are dropped. If none is left, the reply
+   is "Sorry, I couldn't find a relevant answer in the current product
+   document. Please try rephrasing your question or contact our support
+   team."
+4. Inside the best passages each sentence is scored. A sentence has to
+   mention what was asked about ("price", "battery") itself; the product may
+   come from its heading ("It supports USB-C charging." under "Alpha
+   Monitor"). The best sentence is kept, then others that answer another
+   part of the question or answer it as fully, up to `CHAT_MAX_SENTENCES`,
+   without duplicates.
+5. A short question that fits several products equally ("What's the
+   warranty?") shows each product's sentence and asks which one was meant.
+   "Which…", "compare…" and "all…" questions list them without asking. When
+   two pages give different figures for the same thing, both are shown with
+   a note naming the pages. Several questions in one message are answered in
+   turn; a follow-up such as "What is its price?" is read with the question
+   before it.
+
+**Files** (`server/assistant/`)
+
+| File | Does |
+| --- | --- |
+| `pdf.ts` | Text extraction with PDF.js (`pdfjs-dist`), as lines with their size and spacing. |
+| `passages.ts` | Headings, paragraphs, bullets and sentences; passages of about `CHAT_PASSAGE_WORDS` words that never cross a page, so page numbers are exact. Drops running headers, footers and page numbers. |
+| `text.ts` | Normalising, tokenising, stop words, stemming, everyday synonyms, sentence splitting (keeps "5.3", "Rs. 499", "e.g." intact). |
+| `search.ts` | The index (document frequencies, TF-IDF vector lengths, phrases, headings) and the scoring. |
+| `respond.ts` | Sentence selection, duplicates, ambiguity, conflicts and the fixed messages. |
+| `knowledge.ts` | The PDF manager: validates, processes and swaps in a new document; loads the current one. |
+| `admin.ts`, `adminPage.ts`, `auth.ts` | `/admin` and `GET`/`POST /api/admin/document`, behind Basic authentication with a salted scrypt hash. Ten wrong passwords lock that address out for 15 minutes; uploads from other sites are refused. |
+| `chatHandler.ts` | `POST /api/chat` `{ question }` → `{ status, quotes: [{ text, page, heading }], message, note, document }`. |
+| `config.ts` | The settings below. |
+| `../routes.ts` | Mounts the routes in the dev server (`vite.config.ts`) and the production server (`index.ts`). |
+
+The chat window is `src/shared/components/ChatAssistant.tsx` (`chat.css`,
+classes `.assist-*`), talking to `src/shared/chat/api.ts`.
+
+**Storage and updates.** The processed document lives in `data/`
+(`DATA_DIR`): `knowledge.json` (file details, the text of each page, the
+passages and the search index) and `document.pdf` (a copy of the upload). The
+folder is git-ignored and never served: the production server only serves
+`dist/`, and the dev server answers 404 for it. An upload is extracted,
+split, indexed and checked in memory first, then written beside the old files
+and renamed over them, so a failed upload changes nothing and two versions
+never mix. Uploads are processed one at a time. Answers are never cached, and
+each question uses the document in memory, reloading it if `knowledge.json`
+changed on disk. The chat keeps no history between visits.
+
+**Settings** (`.env`, all optional)
+
+| Variable | Default | |
+| --- | --- | --- |
+| `ADMIN_USERNAME` | `admin` | |
+| `ADMIN_PASSWORD_HASH` | (none) | From `npm run admin:password`. `ADMIN_PASSWORD` (plain) works for local use. |
+| `PDF_MAX_MB` | 10 | Largest upload. |
+| `DATA_DIR` | `./data` | Never inside `dist/` or `public/`. |
+| `CHAT_MIN_SCORE` | 0.3 | Raise it if unrelated passages are quoted, lower it if real answers are missed. |
+| `CHAT_MIN_SENTENCE_SCORE` | 0.25 | The same for single sentences. |
+| `CHAT_MAX_PASSAGES` / `CHAT_MAX_SENTENCES` | 4 / 4 | Size of one answer. |
+| `CHAT_PASSAGE_WORDS` / `CHAT_PASSAGE_MAX_WORDS` | 80 / 160 | Passage length. Applies to the next upload. |
+| `CHAT_RATE_PER_MINUTE` / `CHAT_RATE_PER_HOUR` | 20 / 300 | Questions per visitor. |
+| `TRUST_PROXY` | off | `1` behind your own reverse proxy, so limits use `X-Forwarded-For`. |
+
+**Tests.** `npm run test:assistant` writes sample PDFs, uploads them through
+the protected endpoint and asks questions through `/api/chat`: a direct
+answer returned as the single relevant sentence; different wording; prices;
+specifications; model numbers with and without hyphens; answers from several
+passages and two questions in one message; questions with no answer;
+ambiguous questions; a replacement PDF (the old price and battery life never
+come back); invalid uploads (not a PDF, damaged, no text, wrong type, too
+large, from another site, no password) leaving the previous document in use;
+page numbers; conflicting prices on two pages; and the sign-in lockout.
+
+**The kid as the assistant (merger, 2026-10-26).** The owner asked for the
+growth rail's kid to be the chatbot. He invites a question for a few
+seconds after he lands ("Ask me about our products", also on hover), waves
+when the chat opens, and bobs while it searches; his face (toddler, or the
+doctor once grown up) heads the chat window. The window opens beside him:
+left of the height chart on wide screens, above his badge elsewhere, full
+screen on phones. Wherever the chart isn't showing (narrow screens, Product
+Suite, the hero on other pages, the homepage's closing scene) the badge stays
+on screen as the button. Escape closes the chat and puts focus back on him.
+The header, welcome and not-found texts are the owner's wording, unchanged.
+
+The starter guide (`npm run assistant:site-pdf`) also carries the audience
+mapping (`shared/data/audiences.ts`): each audience under its own heading,
+named with its products, and each product's section says who it's for, so
+a question like "Which product is for surgical trainees?" finds Gaming
+rather than a product that shares a word with it ("surgical").
 
 ## The 3D products
 

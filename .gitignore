@@ -1,2 +1,5 @@
 node_modules/
 dist/
+.env
+# The Product Assistant's uploaded document (repo root only; src/shared/data is source).
+/data/

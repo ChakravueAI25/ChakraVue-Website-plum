@@ -1,6 +1,6 @@
-import { products, type Product } from "../../pages/product-suite/data";
-import { platforms } from "../../pages/product-suite/platforms";
-import { interestOptions } from "../../pages/contact/data";
+import { products, type Product } from "../../pages/product-suite/data.ts";
+import { platforms } from "../../pages/product-suite/platforms.ts";
+import { interestOptions } from "../../pages/contact/data.ts";
 
 /**
  * Who ChakraVue AI is built for, and which products serve each of them: the
@@ -12,6 +12,9 @@ import { interestOptions } from "../../pages/contact/data";
  * Offerings without a section of their own (Gaming, the microscope
  * integrations) are written out here in the owner's words and lead to the
  * Contact page with the matching interest chosen.
+ *
+ * Imports keep their .ts extension: the Product Assistant's guide generator
+ * (server/sitePdf.ts) reads this file under Node too.
  */
 
 /** One card in an audience group, resolved for display. */

@@ -8,6 +8,7 @@ import { HomePage } from "../pages/home/HomePage";
 import { PrivacyPage } from "../pages/privacy/PrivacyPage";
 import { ProductSuitePage } from "../pages/product-suite/ProductSuitePage";
 import { ServicesPage } from "../pages/services/ServicesPage";
+import { ChatAssistant } from "../shared/components/ChatAssistant";
 import { Footer } from "../shared/components/Footer";
 import { GrowRail } from "../shared/components/GrowRail";
 import { useRoute } from "./router";
@@ -34,7 +35,10 @@ export function App() {
       <Page key={path} />
       {/* Keyed by route so its entrance replays on every page. */}
       <Footer key={`footer-${path}`} />
+      {/* Outside the keyed page, so a conversation carries on across pages.
+          The kid on the growth rail opens it. */}
       <GrowRail />
+      <ChatAssistant />
       <PointerFX />
       <Grain />
     </>

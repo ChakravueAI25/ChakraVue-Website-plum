@@ -15,7 +15,11 @@ when you change one.
 
 - `npm install`, then `npm run dev`: http://127.0.0.1:5175 (5173 is the
   original site, 5174 the About Us colour lab).
-- `npm run build` must pass; `npx tsc --noEmit -p .` for types.
+- `npm run build` must pass; `npx tsc --noEmit -p .` for types (covers
+  `server/` too). `npm run test:assistant` for the Product Assistant.
+- Production: `npm run build && npm run serve` (Node 22.9+, `server/index.ts`
+  runs as TypeScript via type stripping, so no enums or constructor
+  parameter properties there, and imports keep their `.ts` extension).
 
 ## Standing rules from the owner (always apply)
 
@@ -122,7 +126,9 @@ when you change one.
   appears after the hero. Below 1360px and on Product Suite it's a badge
   that only shows for about three seconds per chapter (it covered text
   when it stayed), and never over the footer. Keep it clear of content: check
-  the right margin whenever a section's layout changes.
+  the right margin whenever a section's layout changes. The kid is also
+  the Product Assistant's button (below), so the badge now stays on screen
+  wherever the chart isn't showing.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**
@@ -214,6 +220,21 @@ when you change one.
 - **Phone menu** (`Header.tsx`, `.menu` in `global.css`): up to 960px the
   six links don't fit, so the bar is the brand plus a menu button that opens
   a full-screen menu. Before 2026-10-19 phones only showed two links.
+- **Product Assistant** (from the `chatbot` branch, 2026-10-23; README
+  "Product Assistant"): answers from one product PDF the admin uploads at
+  `/admin` (Basic auth, scrypt hash in `.env`). The owner ruled out any LLM,
+  API key, embeddings or outside service: answers are sentences quoted from
+  the PDF with page numbers, found by local TF-IDF and keyword search
+  (`server/assistant/`). Never add generated or paraphrased text, and never
+  let it invent prices or specs. Its fixed texts (header, welcome,
+  not-found message) are the owner's wording. Classes are `.assist-*`,
+  because Services owns `.chat`. On merger (2026-10-26, owner's request)
+  the growth rail's kid is its button: the kid in the chart, or his face
+  badge wherever the chart isn't showing; there is no separate launcher.
+  The rail's state classes are set imperatively, so never render its
+  `className` from React state (it wipes `is-on` and the rest).
+  `shared/data/audiences.ts` imports keep `.ts` extensions because
+  `server/sitePdf.ts` reads it under Node.
 - **Cursor:** the standard system cursor, with grab/grabbing on 3D models.
   `PointerFX.tsx` only adds a small tag ("View", "Drag") beside the pointer
   over `[data-cursor]`, plus magnetic buttons and card spotlights. The owner
