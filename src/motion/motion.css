@@ -667,3 +667,90 @@ a:focus-visible .roll__char {
     display: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   The intro's first beat (introKid.ts): the campaign's kid flies in over the
+   bare sheet, says hi, and flies off. Above the film canvas, below its
+   skip hint. Sprite cells are set from the script (background-position).
+   -------------------------------------------------------------------------- */
+
+.intro-kid {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  --kid-h: min(52vh, 460px);
+}
+
+.intro-kid__spot {
+  position: absolute;
+  left: 50%;
+  bottom: 16vh;
+  width: calc(var(--kid-h) * 245 / 280);
+  height: var(--kid-h);
+  margin-left: calc(var(--kid-h) * -245 / 280 / 2);
+}
+
+/* The flight's cells share the standing strip's scale and left edge (the
+   flight runs on to the right), so landing is seamless. */
+.intro-kid__fly,
+.intro-kid__stand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.55));
+}
+
+.intro-kid__fly {
+  aspect-ratio: 380 / 280;
+  background-image: url("/images/campaign/grow/toddler-fly.webp");
+  background-size: 100% 1300%;
+}
+
+.intro-kid__stand {
+  aspect-ratio: 245 / 280;
+  background-image: url("/images/campaign/grow/toddler-seq.webp");
+  background-size: 100% 3500%;
+}
+
+/* A soft shadow on the paper where he lands. */
+.intro-kid__shadow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -2%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(20, 10, 4, 0.55), transparent);
+}
+
+.intro-kid__hi {
+  position: absolute;
+  right: -18%;
+  top: 4%;
+  padding: 14px 24px;
+  border: 1px solid rgba(255, 214, 170, 0.5);
+  border-radius: 18px 18px 18px 4px;
+  background: rgba(16, 8, 4, 0.82);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  color: #fff3e7;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.4vh, 36px);
+  line-height: 1;
+  white-space: nowrap;
+  transform-origin: 0 100%;
+}
+
+@media (max-width: 760px) {
+  .intro-kid {
+    --kid-h: min(36vh, 300px);
+  }
+
+  .intro-kid__hi {
+    right: -22%;
+    top: -10%;
+    padding: 10px 18px;
+  }
+}

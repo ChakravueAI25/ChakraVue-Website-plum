@@ -1,6 +1,7 @@
 import { reduceMotion } from "./env";
 import { fontsReady } from "./fonts";
 import { reveal } from "./gate";
+import { preloadKid } from "./introKid";
 import { playPaper } from "./introPaper";
 import { mountIris, openIris } from "./iris";
 import { lockScroll } from "./lenis";
@@ -24,8 +25,9 @@ function seenThisSession() {
 
 /**
  * First visit: the intro film (webgl/introFilm.ts), a live-rendered shot from
- * an 1887 engineering sheet, torn open onto "VUE AI", to the ChakraVue AI
- * mark. Without WebGL (or if it can't load in time) the same story plays
+ * an 1887 engineering sheet, where the campaign's kid first flies in and
+ * says hi (introKid.ts), then the sheet is torn open onto "VUE AI", to the
+ * ChakraVue AI mark. Without WebGL (or if it can't load in time) the same story plays
  * with DOM layers (introPaper.ts). Either way the page then opens through
  * the iris. Later visits in the same session skip straight to a short iris
  * open.
@@ -46,6 +48,7 @@ export async function runIntro() {
   // The intro runs edge to edge, so the scrollbar is hidden until it opens.
   document.documentElement.classList.add("is-intro");
   const root = mountIris();
+  void preloadKid();
   const ready = Promise.all([fontsReady, Promise.race([windowLoaded(), wait(4500)])]);
 
   let finish: (opening: Promise<void>) => void;

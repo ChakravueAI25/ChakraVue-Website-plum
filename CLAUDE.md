@@ -64,7 +64,10 @@ when you change one.
   Canvases read colours from CSS custom properties, so they're recoloured
   too.
 - **Intro:** a WebGL torn-blueprint film (`motion/webgl/introFilm.ts`), with
-  a DOM fallback (`motion/introPaper.ts`). The name's glow was deliberately
+  a DOM fallback (`motion/introPaper.ts`). Both open (2026-10-26, owner's
+  request) with the kid's beat (`motion/introKid.ts`): on the bare sheet,
+  no title yet, the superhero toddler flies in, waves with "Hi!" and flies
+  off; then the title and the tear. The name's glow was deliberately
   softened (`hot` 1.02, bloom 0.24 once lit). The owner asked twice for
   less brightness, so don't brighten it.
   `sessionStorage.cv-intro-seen = "1"` skips it.

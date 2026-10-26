@@ -18,7 +18,12 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
 - **Iris page transitions.** The screen closes like an eye onto the link you
   clicked, shows the destination's name, then opens onto the new page from the
   centre. Back and forward buttons get the same treatment.
-- **Intro film (first visit per session).** One continuous shot, rendered
+- **Intro film (first visit per session).** It opens on the bare engineering
+  sheet: the campaign's kid (the superhero toddler from the owner's clip)
+  flies in, lands, waves and says "Hi!", then flies off
+  (`motion/introKid.ts`, the growth rail's sprites; about 5 s, hurried by
+  the intro's skip). Then the film carries on as before. One continuous
+  shot, rendered
   live in WebGL (`motion/webgl/introFilm.ts`). Lamp light on an 1887
   engineering sheet (`public/images/intro/`): the camera starts close on the
   gears and drifts back while "Transformation / from Analog to AI" tracks in,
