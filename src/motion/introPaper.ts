@@ -1,6 +1,5 @@
 import { finePointer } from "./env";
 import { fontsReady } from "./fonts";
-import { playKid } from "./introKid";
 import { gsap } from "./gsap";
 import { logoMarkup } from "../brand/logoData";
 import "../brand/logo.css";
@@ -127,28 +126,15 @@ export async function playPaper(root: HTMLElement, ready: Promise<unknown>): Pro
   const stage = intro.querySelector<HTMLElement>(".intro__stage")!;
   gsap.set([paper, stage], { autoAlpha: 0 });
   await Promise.race([Promise.all([imageReady(sheet, 1800), fontsReady]), wait(2200)]);
-  // 0. The bare sheet (caption and skip hint not written yet), and the
-  // campaign's kid flies in, says hi and flies off.
-  gsap.set(caption, { clipPath: "inset(-14px 100% -48px -14px)" });
-  gsap.set(q(".intro__skip"), { autoAlpha: 0 });
-  await new Promise<void>((resolve) => gsap.to(paper, { autoAlpha: 1, duration: 0.8, ease: "power2.out", onComplete: () => resolve() }));
-  await playKid(intro, () => skipped);
   read = gsap
     .timeline()
     .to(paper, { autoAlpha: 1, duration: 0.8, ease: "power2.out" }, 0)
     .from(q(".intro__sheet"), { scale: 1.07, duration: 3.6, ease: "cv.out" }, 0)
-    // An explicit end state: tweening to the sheet's own "none" passes
-    // through a near-black frame, which shows now that the paper is already up.
-    .fromTo(
-      q(".intro__sheet"),
-      { filter: "sepia(0.6) contrast(0.5) brightness(1.2) blur(2px)" },
-      { filter: "sepia(0) contrast(1) brightness(1) blur(0px)", duration: 1.6, ease: "power2.out" },
-      0,
-    )
+    .from(q(".intro__sheet"), { filter: "sepia(0.6) contrast(0.5) brightness(1.2) blur(2px)", duration: 1.6, ease: "power2.out" }, 0)
     .fromTo(caption, { clipPath: "inset(-14px 100% -48px -14px)" }, { clipPath: "inset(-14px -14px -48px -14px)", duration: 0.9, ease: "cv.inOut" }, 0.55)
     .from(q(".intro__word i"), { yPercent: 110, rotate: 3, duration: 0.9, stagger: 0.09, ease: "cv.out" }, 0.9)
     .fromTo(q(".intro__ai"), { textShadow: "0 0 0px rgba(255,138,40,0)" }, { textShadow: "0 0 18px rgba(255,138,40,0.75)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.inOut" }, 1.9)
-    .to(q(".intro__skip"), { autoAlpha: 1, duration: 0.6 }, 1.4)
+    .from(q(".intro__skip"), { autoAlpha: 0, duration: 0.6 }, 1.4)
     .to({}, { duration: 0.01 }, 3.6);
   if (skipped) read.timeScale(8);
 

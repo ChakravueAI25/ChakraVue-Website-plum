@@ -9,7 +9,6 @@ import { getGrade } from "../../theme/theme";
 import { finePointer } from "../env";
 import { fontsReady } from "../fonts";
 import { gsap } from "../gsap";
-import { playKid } from "../introKid";
 
 /*
  * The intro as one continuous shot, rendered live.
@@ -771,14 +770,7 @@ export async function playFilm(root: HTMLElement, ready: Promise<unknown>): Prom
   const chars = title.querySelectorAll(".film__t1 span");
   const t2 = title.querySelector(".film__t2")!;
 
-  // 0. The lamp comes up on the bare sheet (no title yet), and the
-  //    campaign's kid flies in, says hi and flies off (introKid.ts).
-  gsap.set([chars, t2, hint], { autoAlpha: 0 });
-  current = gsap.timeline().to(S, { fade: 1, duration: 1.1, ease: "power2.out" });
-  await played(current);
-  await playKid(root, () => skipped);
-
-  // 1. The camera drifts back as the title tracks in.
+  // 1. Lamp light on the sheet; the camera drifts back as the title tracks in.
   current = gsap
     .timeline()
     .to(S, { fade: 1, duration: 1.3, ease: "power2.out" }, 0)

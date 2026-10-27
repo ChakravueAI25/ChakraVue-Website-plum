@@ -79,17 +79,3 @@ ffmpeg -i analogue-to-ai.mp4 -t 5.5 -an -vf "scale=1280:-2:flags=lanczos" -c:v l
 ```
 
 The second is the phone version (`Hero.tsx` picks it below 760 px).
-
-## The intro films
-
-The owner's two clips: the kid saying hi (10 s, 1280×720, with sound) and the
-logo's particle burst (5 s, 1080×1080, silent), straight re-encodes into
-`public/images/intro/`:
-
-```
-ffmpeg -i kid.mp4 -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p -profile:v high -c:a aac -b:a 96k -movflags +faststart intro-kid.mp4
-ffmpeg -i logo.mp4 -an -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -profile:v high -movflags +faststart intro-logo.mp4
-```
-
-`introVideo.ts` assumes the logo film's background is `#06050a` and that the
-ring's clear centre is about 15% of its width; check both if the clip changes.

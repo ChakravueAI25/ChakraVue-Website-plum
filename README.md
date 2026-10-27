@@ -18,28 +18,7 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
 - **Iris page transitions.** The screen closes like an eye onto the link you
   clicked, shows the destination's name, then opens onto the new page from the
   centre. Back and forward buttons get the same treatment.
-- **Intro (first visit per session): two films** (`motion/introVideo.ts`,
-  2026-10-26, owner's request). The superhero kid's clip plays full screen
-  with its sound: he flies in, says hi and talks to camera
-  (`public/images/intro/intro-kid.mp4`, 10 s). At 8 s the ChakraVue AI mark
-  starts gathering out of a particle burst behind him
-  (`intro-logo.mp4`, 5 s, silent) and he fades back into it while he
-  finishes speaking. Then the camera flies through the ring: the film
-  scales up while a hole held inside the ring's clear centre opens onto the
-  hero (the iris is lifted with `releaseIris()`). The logo is only scaled
-  and faded. Browsers refuse sound before the visitor touches the page, so
-  usually the kid starts muted with a "Sound on" chip, and the first click,
-  tap or key anywhere turns the sound on; "Skip intro" or Esc goes straight
-  to the fly-through. On upright screens the kid's wide shot is set smaller
-  and the space above and below takes the colour of its edges. About 12 s
-  in all. Encodes: `tools/campaign-art/README.md`.
-- **The drawn intro (fallback).** If the films can't load within about 4 s,
-  the previous intro plays. It opens on the bare engineering
-  sheet: the campaign's kid (the superhero toddler from the owner's clip)
-  flies in, lands, waves and says "Hi!", then flies off
-  (`motion/introKid.ts`, the growth rail's sprites; about 5 s, hurried by
-  the intro's skip). Then the film carries on as before. One continuous
-  shot, rendered
+- **Intro film (first visit per session).** One continuous shot, rendered
   live in WebGL (`motion/webgl/introFilm.ts`). Lamp light on an 1887
   engineering sheet (`public/images/intro/`): the camera starts close on the
   gears and drifts back while "Transformation / from Analog to AI" tracks in,
@@ -469,7 +448,7 @@ src/motion/            the motion system
   lenis.ts             smooth scroll
   iris.ts              the iris overlay (transitions + preloader curtain)
   transition.ts        page-transition sequence
-  intro.ts             first-visit intro (introVideo.ts; falls back to introFilm.ts, or introPaper.ts without WebGL)
+  intro.ts             first-visit intro (introFilm.ts, or introPaper.ts without WebGL)
   gate.ts              holds entrance animations until the curtain opens
   reveal.ts            declarative entrances (data-split, data-scramble, …)
   useMotion.ts         hooks components use to add choreography
