@@ -36,7 +36,7 @@ export const products: Product[] = [
       "A surgical assistance system that augments the surgeon’s field of view with real-time visual overlays, guidance, and procedural information while capturing structured data for surgical analysis.",
     image: `${IMG}/surgical-briefcase.webp`,
     imageFit: "photo",
-    cta: { label: "Enter the system", href: "#" },
+    cta: { label: "Request a demo", href: "/try-demo#demos" },
     focus: true,
     anatomy: [
       { id: "case", label: "Rugged case" },
@@ -57,7 +57,7 @@ export const products: Product[] = [
       "An intelligence module for the slit lamp that captures every examination in high fidelity, highlights clinically relevant findings in real time, and files structured records straight into the patient history.",
     image: `${IMG}/slit-lamp-case.webp`,
     imageFit: "photo",
-    cta: { label: "Enter the system", href: "#" },
+    cta: { label: "Request a demo", href: "/try-demo#demos" },
     focus: true,
     anatomy: [
       { id: "case", label: "Rugged case" },
@@ -78,7 +78,7 @@ export const products: Product[] = [
       "An electronic medical record built around ophthalmic workflows that brings imaging, device output and clinical notes into one timeline, surfacing the insight each consultation needs.",
     image: `${IMG}/emr-case.webp`,
     imageFit: "photo",
-    cta: { label: "Enter the system", href: "#" },
+    cta: { label: "Request a demo", href: "/try-demo#demos" },
     focus: true,
     anatomy: [
       { id: "case", label: "Rugged case" },
@@ -100,7 +100,7 @@ export const products: Product[] = [
       "A connectivity module for the equipment you already own. It captures data from existing devices over a wired or wireless link and routes it into your EMR or EHR in real time, with no replacement hardware and no manual transcription.",
     image: `${IMG}/integration-module.webp`,
     imageFit: "render",
-    cta: { label: "Enter the system", href: "#" },
+    cta: { label: "Talk to us", href: "/contact-us" },
     anatomy: [
       { id: "enclosure", label: "Enclosure" },
       { id: "port", label: "Port" },

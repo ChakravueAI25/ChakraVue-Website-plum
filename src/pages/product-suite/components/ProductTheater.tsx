@@ -3,6 +3,7 @@ import { reduceMotion } from "../../../motion/env";
 import { whenRevealed } from "../../../motion/gate";
 import type { Theater } from "../../../motion/webgl/theater/engine";
 import { BrandText } from "../../../shared/components/BrandText";
+import { Link } from "../../../shared/components/Link";
 import { audiences } from "../../../shared/data/audiences";
 import { products, type Product } from "../data";
 import "./theater.css";
@@ -157,10 +158,10 @@ function ProductRow({ product }: { product: Product }) {
           </div>
         </dl>
 
-        <a className="spec__cta" href={product.cta.href} data-magnetic="0.25">
+        <Link className="spec__cta" href={product.cta.href} data-magnetic="0.25">
           {product.cta.label}
           <span aria-hidden="true">→</span>
-        </a>
+        </Link>
       </div>
 
       <div

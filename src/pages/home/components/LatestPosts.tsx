@@ -14,7 +14,7 @@ export function LatestPosts() {
               Blog
             </h2>
             <h3 id="hnews-title" className="hsec-title" data-split>
-              The Future, With Us.
+              Latest from the team.
             </h3>
           </div>
           <Link href="/blog" className="hsec-link" data-reveal>

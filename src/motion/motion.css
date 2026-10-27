@@ -123,9 +123,8 @@ html.lenis body {
 }
 
 /* --------------------------------------------------------------------------
-   Preloader: the archive sheet full screen, torn open onto the name
-   (see intro.ts). Paper colours are tokens set inline on .intro, so the
-   archive keeps its sepia under every palette.
+   Preloader: the logo gathers out of a particle burst, then the page opens
+   through its ring (introLogo.ts). --lr is the hole's radius.
    -------------------------------------------------------------------------- */
 
 html.is-intro {
@@ -136,336 +135,57 @@ html.is-intro::-webkit-scrollbar {
   display: none;
 }
 
-/* The intro film (webgl/introFilm.ts): the canvas, and the title over it. */
-.film {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.film__title {
-  --scrim-a: 0;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: grid;
-  justify-items: center;
-  gap: 0.9em;
-  width: max-content;
-  max-width: 94vw;
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--font-display);
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  translate: -50% -50%;
-  pointer-events: none;
-}
-
-/* A pool of lamp light behind the title, so it reads over the drawing. */
-.film__title::before {
-  position: absolute;
-  inset: -90% -28%;
-  z-index: -1;
-  background: radial-gradient(closest-side, var(--scrim), color-mix(in srgb, var(--scrim) 55%, transparent) 55%, transparent);
-  content: "";
-  opacity: var(--scrim-a);
-}
-
-.film__t1 {
-  margin: 0;
-  font-size: clamp(26px, 5vw, 84px);
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.film__t1 span {
-  display: inline-block;
-}
-
-.film__t2 {
-  margin: 0;
-  font-size: clamp(14px, 1.7vw, 28px);
-  letter-spacing: 0.3em;
-  text-indent: 0.3em;
-  text-transform: uppercase;
-}
-
-.film__t2 em {
-  color: var(--rust);
-  font-style: normal;
-}
-
-.film__skip {
-  position: absolute;
-  right: 3vw;
-  bottom: 3.2vh;
-  margin: 0;
-  color: rgba(255, 240, 215, 0.7);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-@media (max-aspect-ratio: 1 / 1) {
-  .film__title {
-    letter-spacing: 0.08em;
-    text-indent: 0.08em;
-  }
-
-  .film__t1 {
-    font-size: clamp(20px, 6.4vw, 40px);
-  }
-
-  .film__t2 {
-    font-size: 11px;
-  }
-
-  .film__skip {
-    right: 50%;
-    translate: 50% 0;
-  }
-}
-
-.intro {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  cursor: default;
-}
-
-.intro__defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-/* Behind the sheet: the full name and logo, on the dark of the curtain. */
-.intro__stage {
+.lintro {
+  --lr: 0px;
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-}
-
-.intro__glow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(120vmin, 1100px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 122, 30, 0.3), rgba(255, 90, 10, 0.09) 46%, transparent 72%);
-  translate: -50% -50%;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.intro__lockup {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: clamp(10px, 1.1vw, 20px);
-}
-
-.intro__logo {
-  width: clamp(44px, 7.4vw, 120px);
-  height: auto;
-  flex: none;
-  aspect-ratio: 1000 / 968;
-}
-
-.intro__name {
-  display: flex;
-  margin: 0;
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: clamp(27px, 5.6vw, 92px);
-  line-height: 1;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.intro__name > span {
-  display: flex;
-}
-
-.intro__name span span {
-  display: inline-block;
   overflow: hidden;
-  padding: 0.08em 0;
+  cursor: default;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--lr) - 18px), #000 var(--lr));
+  mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--lr) - 18px), #000 var(--lr));
 }
 
-.intro__name i {
-  display: inline-block;
-  font-style: normal;
+.lintro video {
+  width: min(100vw, 100vh);
+  height: min(100vw, 100vh);
+  object-fit: contain;
 }
 
-/* "Vue AI" is what the tear shows first; it powers on with a soft glow. */
-.intro__vue {
-  filter: drop-shadow(0 0 12px rgba(255, 150, 60, 0.26));
-}
-
-/* The two halves of the sheet. Each piece carries its own shadow and edge. */
-.intro__piece,
-.intro__half {
-  position: absolute;
-  inset: 0;
-}
-
-.intro__piece {
-  will-change: transform;
-}
-
-.intro__piece--a {
-  filter: drop-shadow(14px 6px 16px rgba(0, 0, 0, 0.6));
-}
-
-.intro__piece--b {
-  filter: drop-shadow(-14px 6px 16px rgba(0, 0, 0, 0.6));
-}
-
-.intro__edge {
-  position: absolute;
-  left: 0;
-  top: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.intro__edge path {
-  fill: none;
-  stroke-linejoin: round;
-  filter: url(#intro-fray);
-}
-
-/* The white core of the paper where it tore, frayed by the filter. */
-.intro__edge-fibre {
-  stroke: var(--fibre);
-  stroke-width: 7;
-}
-
-/* The torn edge lifts a little, so it shades the paper just inside it
-   (offset toward its own half in intro.ts). */
-.intro__edge-shade {
-  stroke: var(--fibre-shade);
-  stroke-width: 12;
-}
-
-/* The sheet, full screen. */
-.intro__paper {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: var(--desk);
-}
-
-.intro__sheet {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* A soft falloff at the edges, like a sheet under a lamp. */
-.intro__paper::after {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 95% at 50% 48%, transparent 58%, rgba(20, 10, 2, 0.42) 100%);
-  content: "";
-  pointer-events: none;
-}
-
-/* The caption, set in a title block like the ones on the drawing. */
-.intro__caption {
-  position: absolute;
-  bottom: 19vh;
-  left: 5.5vw;
-  z-index: 1;
-  max-width: 44vw;
-  padding: 1.4em 1.7em 1.3em;
-  border: 1px solid var(--ink-soft);
-  outline: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
-  outline-offset: 5px;
-  background: var(--plate);
-  box-shadow: 0 10px 30px rgba(40, 22, 6, 0.25);
-  color: var(--ink);
-}
-
-.intro__quote {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(26px, 3.3vw, 56px);
-  line-height: 1.12;
-}
-
-.intro__line {
-  display: block;
-  white-space: nowrap;
-}
-
-.intro__line + .intro__line {
-  font-size: 0.62em;
-  margin-top: 0.35em;
-  letter-spacing: 0.04em;
-}
-
-.intro__word {
-  display: inline-block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
-  vertical-align: top;
-}
-
-.intro__word i {
-  display: inline-block;
-  font-style: normal;
-}
-
-.intro__ai {
-  color: var(--rust);
-}
-
-.intro__skip {
+.lintro__skip {
   position: absolute;
   right: 3vw;
   bottom: 3.2vh;
-  z-index: 1;
-  margin: 0;
-  padding: 6px 10px;
-  background: var(--plate);
-  color: var(--ink-soft);
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 240, 215, 0.3);
+  border-radius: 999px;
+  color: rgba(255, 240, 215, 0.8);
+  background: transparent;
   font-family: var(--font-display);
   font-size: 10px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
 }
 
-/* Portrait screens: the sheet as supplied, the caption across the foot. */
+.lintro__skip:hover,
+.lintro__skip:focus-visible {
+  border-color: rgba(255, 180, 106, 0.9);
+  color: #fff;
+}
+
+.lintro__skip[hidden] {
+  display: none;
+}
+
 @media (max-aspect-ratio: 1 / 1) {
-  .intro__caption {
-    right: 6vw;
-    bottom: calc(8vh + 24px);
-    left: 6vw;
-    max-width: none;
-    padding: 18px 18px 16px;
-  }
-
-  .intro__quote {
-    font-size: clamp(24px, 8.2vw, 40px);
-  }
-
-  .intro__skip {
+  .lintro__skip {
     right: 50%;
-    bottom: 3.4vh;
     translate: 50% 0;
+    bottom: max(3.2vh, env(safe-area-inset-bottom));
   }
 }
 

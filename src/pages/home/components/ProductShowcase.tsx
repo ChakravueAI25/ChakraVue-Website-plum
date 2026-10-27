@@ -303,7 +303,7 @@ export function ProductShowcase() {
                   <p className="slit__tagline">{product.tagline}</p>
                   <p className="slit__desc">{product.description}</p>
                   <Link href={`/product-suite#${product.id}`} className="slit__cta">
-                    Explore the {product.title}
+                    Explore {product.title}
                     <span aria-hidden="true">→</span>
                   </Link>
                 </div>

@@ -14,7 +14,7 @@ export function TeamTeaser() {
               Our Team
             </h2>
             <h3 id="hteam-title" className="hsec-title" data-split>
-              The people building trust for the next era of AI.
+              The team behind the work.
             </h3>
           </div>
           <Link href="/about-us" className="hsec-link" data-reveal>

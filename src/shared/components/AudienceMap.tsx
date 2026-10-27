@@ -18,7 +18,7 @@ export function AudienceMap() {
             Who we serve
           </p>
           <h2 id="aud-title-overview" className="aud__title" data-split>
-            Technology Built for Every Role in Surgery
+            Technology Built for Every Role in Surgery.
           </h2>
           <p className="aud__lead" data-split="fade" data-delay="0.1">
             <BrandText text="From surgical intelligence and immersive training to clinical workflows and medical device integration, ChakraVue AI connects the people and technology shaping the future of surgery." />

@@ -1,8 +1,8 @@
 import { reduceMotion } from "./env";
 import { fontsReady } from "./fonts";
 import { reveal } from "./gate";
-import { playPaper } from "./introPaper";
-import { mountIris, openIris } from "./iris";
+import { playLogoIntro } from "./introLogo";
+import { mountIris, openIris, releaseIris } from "./iris";
 import { lockScroll } from "./lenis";
 
 const SEEN_KEY = "cv-intro-seen";
@@ -23,12 +23,10 @@ function seenThisSession() {
 }
 
 /**
- * First visit: the intro film (webgl/introFilm.ts), a live-rendered shot from
- * an 1887 engineering sheet, torn open onto "VUE AI", to the ChakraVue AI
- * mark. Without WebGL (or if it can't load in time) the same story plays
- * with DOM layers (introPaper.ts). Either way the page then opens through
- * the iris. Later visits in the same session skip straight to a short iris
- * open.
+ * First visit: the logo intro (introLogo.ts). The ChakraVue AI mark gathers
+ * out of a particle burst, then the page opens through its ring. If the film
+ * can't load in time, the iris simply opens. Later visits in the same
+ * session skip straight to a short iris open.
  */
 export async function runIntro() {
   if (reduceMotion) return;
@@ -47,28 +45,25 @@ export async function runIntro() {
   document.documentElement.classList.add("is-intro");
   const root = mountIris();
   const ready = Promise.all([fontsReady, Promise.race([windowLoaded(), wait(4500)])]);
+  const open = () => {
+    document.documentElement.classList.remove("is-intro");
+    lockScroll(false);
+    reveal();
+    try {
+      sessionStorage.setItem(SEEN_KEY, "1");
+    } catch {
+      /* private mode: the intro just plays again next time */
+    }
+  };
 
-  let finish: (opening: Promise<void>) => void;
   try {
-    const slow = wait(3500).then(() => Promise.reject(new Error("intro film took too long to load")));
-    slow.catch(() => undefined);
-    const { playFilm } = await Promise.race([import("./webgl/introFilm"), slow]);
-    finish = await playFilm(root, ready);
+    await playLogoIntro(root, ready, open);
+    releaseIris();
   } catch (error) {
-    if (import.meta.env.DEV) console.warn("[intro] falling back to the paper intro:", error);
-    root.querySelectorAll(".film, .film__title, .film__skip").forEach((el) => el.remove());
-    finish = await playPaper(root, ready);
+    if (import.meta.env.DEV) console.warn("[intro] opening without the logo film:", error);
+    await Promise.race([ready, wait(1500)]);
+    const opening = openIris(1.25);
+    open();
+    await opening;
   }
-
-  document.documentElement.classList.remove("is-intro");
-  const opening = openIris(1.25);
-  finish(opening);
-  lockScroll(false);
-  reveal();
-  try {
-    sessionStorage.setItem(SEEN_KEY, "1");
-  } catch {
-    /* private mode: the full intro just plays again next time */
-  }
-  await opening;
 }

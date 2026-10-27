@@ -5,7 +5,7 @@ import { InsightStatement } from "../../../shared/components/InsightStatement";
  * what it is for: the closing line under it.
  */
 const lines: Array<Array<string | [string]>> = [
-  ["Built From ", ["Experience"], "."],
+  ["Built from ", ["Experience"], "."],
   ["Guided by ", ["Science"], "."],
   ["Elevated by ", ["Intelligence"], "."],
 ];

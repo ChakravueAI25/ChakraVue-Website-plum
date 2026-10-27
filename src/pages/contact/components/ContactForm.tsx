@@ -19,7 +19,7 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
   const interest = data.get("interest");
 
   const subject = `Website enquiry from ${name}`;
-  const body = [`Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Who are you: ${role}`, `What excited you about us: ${interest}`].join(
+  const body = [`Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Who are you: ${role}`, `Interested in: ${interest}`].join(
     "\n",
   );
 
@@ -61,20 +61,20 @@ export function ContactForm() {
       </label>
 
       <label className="contact-form__field">
-        <span>Phone Number*</span>
+        <span>Phone number*</span>
         <input type="tel" name="phone" placeholder="Enter your phone number" required />
       </label>
 
       <label className="contact-form__field">
         <span>Email*</span>
-        <input type="email" name="email" placeholder="Enter email id" required />
+        <input type="email" name="email" placeholder="Enter your email address" required />
       </label>
 
       <label className="contact-form__field">
         <span>Who are you?*</span>
         <select name="role" defaultValue="" required>
           <option value="" disabled>
-            Choose from the below options
+            Choose an option
           </option>
           {whoAreYouOptions.map((option) => (
             <option key={option} value={option}>
@@ -85,7 +85,7 @@ export function ContactForm() {
       </label>
 
       <label className="contact-form__field">
-        <span>What Excited You About Us?*</span>
+        <span>What interests you?*</span>
         <select name="interest" defaultValue={interestFromLink()} required>
           <option value="" disabled>
             Choose one
