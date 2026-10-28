@@ -1,0 +1,339 @@
+/* ==========================================================================
+   The products as a slideshow (ProductSlides.tsx): a light studio panel,
+   the name large on the left, the product in 3D on a plate on the right
+   with its number, squares at the side to pick a slide. Colours come from
+   the page tokens in product-suite.css.
+   ========================================================================== */
+
+.slides {
+  padding: 0 clamp(12px, 1.6vw, 24px) clamp(56px, 7vw, 110px);
+  scroll-margin-top: 24px;
+}
+
+.slides__panel {
+  padding: clamp(28px, 3.4vw, 56px);
+}
+
+.slides__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px 40px;
+  padding-bottom: clamp(20px, 2.4vw, 32px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.slides__title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.5vw, 38px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.slides__line {
+  display: block;
+}
+
+.slides__title em {
+  color: var(--accent-deep);
+  font-style: normal;
+}
+
+.slides__controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slides__counter {
+  margin: 0 12px 0 0;
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+.slides__counter b {
+  color: var(--ink);
+  font-weight: 400;
+}
+
+.slides__arrow {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(29, 26, 23, 0.28);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.slides__arrow:hover,
+.slides__arrow:focus-visible {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #f3ede4;
+}
+
+.slides__body {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 72px);
+  margin-top: clamp(28px, 3.2vw, 52px);
+}
+
+/* Every slide's copy sits in the same cell; only the current one shows. */
+.slides__copies {
+  display: grid;
+}
+
+.slides__copy {
+  grid-area: 1 / 1;
+  scroll-margin-top: 140px;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 18px;
+  transition:
+    opacity 0.5s ease,
+    translate 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 0.5s;
+}
+
+.slides__copy.is-on {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition-delay: 0.15s, 0.15s, 0s;
+}
+
+.slides__name {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4.4vw, 70px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.slides__tagline {
+  margin: 16px 0 30px;
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The upright rule beside the text, as in the reference sheet. */
+.slides__text {
+  padding-left: 22px;
+  border-left: 2px solid var(--ink);
+}
+
+.slides__text p {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.slides__text .slides__for {
+  margin-top: 18px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.slides__for span {
+  margin-right: 8px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.slides__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 34px;
+}
+
+.slides__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(14px, 1.6vw, 24px);
+  align-items: start;
+}
+
+/* The plate: the 3D view paints this same colour behind the product. */
+.slides__view {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 22px;
+  background: var(--plate);
+  overflow: hidden;
+  isolation: isolate;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.slides__view:active {
+  cursor: grabbing;
+}
+
+.slides__canvas,
+.slides__still {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.slides__still {
+  padding: 8%;
+  object-fit: contain;
+  animation: slides-in 0.7s ease both;
+}
+
+.slides__number {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  z-index: 1;
+  color: rgba(29, 26, 23, 0.1);
+  font-family: var(--font-display);
+  font-size: clamp(80px, 11vw, 190px);
+  line-height: 0.8;
+  pointer-events: none;
+  animation: slides-in 0.8s ease both;
+}
+
+@keyframes slides-in {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+.slides__hint {
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  z-index: 1;
+  margin: 0;
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.slides__view.is-open .slides__hint {
+  opacity: 0;
+}
+
+/* The squares at the side pick a slide. */
+.slides__dots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slides__dot {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--rule);
+  cursor: pointer;
+  transition: background-color 0.3s ease, scale 0.3s ease;
+}
+
+.slides__dot:hover,
+.slides__dot:focus-visible {
+  background: var(--ink-muted);
+}
+
+.slides__dot.is-on {
+  background: var(--ink);
+}
+
+.slides__progress {
+  position: relative;
+  display: block;
+  height: 2px;
+  margin-top: clamp(26px, 3vw, 44px);
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.slides__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent-deep);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+}
+
+/* Tablets and phones: the product first, then its copy; squares in a row. */
+@media (max-width: 900px) {
+  .slides__body {
+    grid-template-columns: 1fr;
+  }
+
+  .slides__stage {
+    order: -1;
+    grid-template-columns: 1fr;
+  }
+
+  .slides__dots {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .slides {
+    padding-inline: 10px;
+  }
+
+  .slides__panel {
+    padding: 22px 18px 26px;
+  }
+
+  .slides__view {
+    aspect-ratio: 1 / 1;
+  }
+
+  .slides__arrow {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slides__copy,
+  .slides__copy.is-on {
+    transition: none;
+  }
+
+  .slides__number,
+  .slides__still {
+    animation: none;
+  }
+}
