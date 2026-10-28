@@ -79,7 +79,7 @@ export const posts: Post[] = [
     date: "Jun 2026",
     tag: "Hardware",
     title: "Engineering Hardware for the Sterile Field",
-    excerpt: "Designing devices that hold up to sterilization, repeated use and the realities of a working operating room.",
+    excerpt: "Designing devices that hold up to sterilisation, repeated use and the realities of a working operating room.",
     author: "Hrushikesh Patki",
     role: "Mechanical Engineer",
     initials: "HP",
@@ -98,7 +98,7 @@ export const mediaAppearance = {
   dates: "16–21 February 2026",
   title: "ChakraVue AI Showcases the Future of Real-Time Surgical Intelligence",
   summary:
-    "At the AI Impact Summit 2026 in New Delhi, ChakraVue AI presented its Real-Time Surgical Assistant for Ophthalmology to innovators, clinicians, investors and technology leaders, with live demonstrations at its stall over the five-day summit.",
+    "At the AI Impact Summit 2026 in New Delhi, ChakraVue AI presented its Real-Time Surgical Assistant for Ophthalmology to innovators, clinicians, investors and technology leaders, with live demonstrations at its stall throughout the summit.",
   shown: [
     "Real-time surgical step recognition",
     "AI visual overlays during procedures",

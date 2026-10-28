@@ -70,12 +70,28 @@ new photo at full size, screens especially, before it goes in.
 
 ## The hero film
 
-The hero plays the film's first 5.5 s (the boy walks, kneels and strikes the
-match) and holds on that frame; the burn is the discovery further down.
+The hero loops the whole film (the boy walks, strikes the match, and the
+blueprint burns open onto the circuit). The cut drops the first 0.8 s and
+dissolves its last 0.8 s into them, so the loop has no seam:
 
 ```
-ffmpeg -i analogue-to-ai.mp4 -t 5.5 -an -c:v copy -movflags +faststart analogue-to-ai-dream.mp4
-ffmpeg -i analogue-to-ai.mp4 -t 5.5 -an -vf "scale=1280:-2:flags=lanczos" -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -profile:v high -movflags +faststart analogue-to-ai-dream-sm.mp4
+ffmpeg -i analogue-to-ai.mp4 -filter_complex "[0:v]split[x][y];[x]trim=0.8:11.6,setpts=PTS-STARTPTS,fps=30[a];[y]trim=0:0.8,setpts=PTS-STARTPTS,fps=30[b];[a][b]xfade=transition=fade:duration=0.8:offset=10.0,format=yuv420p" -an -c:v libx264 -preset slow -crf 26 -profile:v high -movflags +faststart analogue-to-ai-loop.mp4
 ```
 
-The second is the phone version (`Hero.tsx` picks it below 760 px).
+The phone version (`Hero.tsx` picks it below 760 px) is the same with
+`,scale=1280:-2:flags=lanczos` appended to the filter and `-crf 29`, saved
+as `analogue-to-ai-loop-sm.mp4`.
+
+## The intro logo
+
+`public/images/intro/intro-logo.mp4` is the owner's particle-burst clip
+(5 s, 1080×1080, silent). Its background was a bluish near-black
+(6, 5, 10); the levels are pulled down so it is the page's pure black:
+
+```
+ffmpeg -i logo.mp4 -an -vf "format=rgb24,lutrgb=r='clip((val-6)*255/249,0,255)':g='clip((val-5)*255/250,0,255)':b='clip((val-10)*255/245,0,255)',format=yuv420p" -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 -c:v libx264 -preset slow -crf 24 -profile:v high -movflags +faststart intro-logo.mp4
+```
+
+`introLogo.ts` assumes its background is black (`#000`, as `body`) and that
+the ring's clear centre is about 15% of its width; check both if the clip
+changes.

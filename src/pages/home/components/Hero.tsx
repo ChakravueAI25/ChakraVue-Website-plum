@@ -6,12 +6,13 @@ import { useMotion } from "../../../motion/useMotion";
 import { Link } from "../../../shared/components/Link";
 import { products } from "../../product-suite/data";
 
-// The film's first five and a half seconds: the boy walks the blueprint and
-// strikes the match. The burn itself is saved for the discovery further down.
-// Phones get a lighter encode of the same cut.
+// The whole film, looping (owner's request, 2026-10-27): the boy walks the
+// blueprint, strikes the match, and it burns open onto the circuit. The cut
+// dissolves from its last moment back into its first, so the loop has no
+// seam. Phones get a lighter encode of the same cut.
 const FILM = window.matchMedia("(max-width: 760px)").matches
-  ? "/images/campaign/analogue-to-ai-dream-sm.mp4"
-  : "/images/campaign/analogue-to-ai-dream.mp4";
+  ? "/images/campaign/analogue-to-ai-loop-sm.mp4"
+  : "/images/campaign/analogue-to-ai-loop.mp4";
 const POSTER = "/images/campaign/analogue-to-ai-poster.jpg";
 
 type HeroProps = {
@@ -21,9 +22,8 @@ type HeroProps = {
 
 /**
  * The homepage hero, and the dream: the boy, who wants to be a doctor, walks
- * across an old engineering blueprint and strikes a match. The film plays
- * once and holds on the lit match; what it sets alight is the discovery,
- * further down the page. Over it: the story line, the headline, one line on
+ * across an old engineering blueprint and strikes a match, and the
+ * blueprint burns open onto a circuit. The film loops. Over it: the story line, the headline, one line on
  * what ChakraVue does, the two next steps, and a way into each product. The
  * film starts once the curtain opens (never under the intro), pauses when
  * the hero is off screen, and waits on its poster under reduced motion until
@@ -35,7 +35,6 @@ export function Hero({ onIntroDone }: HeroProps) {
   const introDone = useRef(onIntroDone);
   introDone.current = onIntroDone;
   const [playing, setPlaying] = useState(false);
-  const [ended, setEnded] = useState(false);
   // Someone pressed pause: scrolling back up doesn't override them.
   const held = useRef(reduceMotion);
 
@@ -46,7 +45,7 @@ export function Hero({ onIntroDone }: HeroProps) {
     const off = whenRevealed(() => {
       observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting && !held.current && !video.ended) video.play().catch(() => {});
+          if (entry.isIntersecting && !held.current) video.play().catch(() => {});
           else if (!entry.isIntersecting) video.pause();
         },
         { threshold: 0.2 },
@@ -64,7 +63,6 @@ export function Hero({ onIntroDone }: HeroProps) {
     if (!video) return;
     if (video.paused) {
       held.current = false;
-      if (video.ended) video.currentTime = 0;
       video.play().catch(() => {});
     } else {
       held.current = true;
@@ -120,18 +118,15 @@ export function Hero({ onIntroDone }: HeroProps) {
         src={FILM}
         poster={POSTER}
         muted
+        loop
         playsInline
         preload="metadata"
         aria-describedby="hero-film-desc"
-        onPlay={() => {
-          setPlaying(true);
-          setEnded(false);
-        }}
+        onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        onEnded={() => setEnded(true)}
       />
       <p id="hero-film-desc" className="sr-only">
-        A short film without sound: a boy walks across an old engineering blueprint, kneels, and strikes a match.
+        A short looping film without sound: a boy walks across an old engineering blueprint, kneels and strikes a match, and the blueprint burns open onto a glowing circuit.
       </p>
       <div className="hero__shade" aria-hidden="true" />
 
@@ -139,7 +134,7 @@ export function Hero({ onIntroDone }: HeroProps) {
         <div className="hero__copy">
           <p className="hero__eyebrow">Every doctor started small</p>
           <h1 id="hero-title">
-            Add <em>Intelligence</em> To Your Practice
+            Add <em>Intelligence</em> to Your Practice
           </h1>
           <p className="hero__lead">
             ChakraVue AI develops intelligent software, device integrations and clinical systems for ophthalmic healthcare.
@@ -156,12 +151,12 @@ export function Hero({ onIntroDone }: HeroProps) {
         </div>
 
         <div className="hero__chip">
-          <span className="hero__chip-label">{ended ? "Play again" : "The campaign film"}</span>
+          <span className="hero__chip-label">The campaign film</span>
           <button
             type="button"
             className="hero__chip-toggle"
             onClick={toggle}
-            aria-label={playing ? "Pause the film" : ended ? "Play the film again" : "Play the film"}
+            aria-label={playing ? "Pause the film" : "Play the film"}
           >
             {playing ? (
               <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12">

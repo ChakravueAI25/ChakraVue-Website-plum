@@ -10,7 +10,8 @@ import "./footer.css";
 import { Logo } from "../../brand/Logo";
 
 const WORDMARK = "ChakraVue AI";
-const exploreLinks = navItems.map((item) => ({ ...item, label: item.label === "More" ? "Privacy Policy" : item.label }));
+// The Privacy Policy ("More" in the bar) is already in the bottom row, so it isn't repeated here.
+const exploreLinks = navItems.filter((item) => item.href !== "/privacy-policy");
 const reachLinks = contactDetails.filter((detail) => detail.href);
 
 /**

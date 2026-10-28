@@ -18,25 +18,15 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
 - **Iris page transitions.** The screen closes like an eye onto the link you
   clicked, shows the destination's name, then opens onto the new page from the
   centre. Back and forward buttons get the same treatment.
-- **Intro film (first visit per session).** It opens on the bare engineering
-  sheet: the campaign's kid (the superhero toddler from the owner's clip)
-  flies in, lands, waves and says "Hi!", then flies off
-  (`motion/introKid.ts`, the growth rail's sprites; about 5 s, hurried by
-  the intro's skip). Then the film carries on as before. One continuous
-  shot, rendered
-  live in WebGL (`motion/webgl/introFilm.ts`). Lamp light on an 1887
-  engineering sheet (`public/images/intro/`): the camera starts close on the
-  gears and drifts back while "Transformation / from Analog to AI" tracks in,
-  with dust turning in the light. Warm light leaks through a crack that runs
-  down the sheet, throwing off paper fibres. The right side then curls back
-  as real paper (you see its reverse, lit from behind) and is pulled away
-  past the camera. Behind it, in depth, only "Vue AI" is uncovered, and it
-  powers on letter by letter. The rest of the sheet peels away, the full
-  name closes up and centres, the logo lights in a clockwise sweep, and the
-  camera dives into the black of the disc, which is where the page opens
-  from. Bloom, grain, vignette and a touch of lens fringing give the film
-  finish. Click, tap or Esc hurries it. Without WebGL the same story plays
-  with DOM layers (`motion/introPaper.ts`); `motion/intro.ts` picks one.
+- **Intro (first visit per session)** (`motion/introLogo.ts`, 2026-10-27,
+  owner's request). Straight away, on black, the ChakraVue AI mark gathers
+  out of a particle burst (the owner's film, `public/images/intro/intro-logo.mp4`,
+  5 s, silent). Once it settles, the camera flies through the ring: the
+  film scales up while a hole held inside the ring's clear centre opens onto
+  the hero (the iris is lifted with `releaseIris()`). The logo is only
+  scaled, never turned. About 5 s in all; click, tap, Esc or "Skip intro"
+  goes straight to the fly-through. If the film can't load, the iris simply
+  opens. The torn-blueprint film and the kid's hello were removed.
 - **Logo.** `src/brand/` holds the vectorised mark, with each glyph a
   separate path (`Logo.tsx`, `logoData.ts`). It appears in the header, the
   footer (it rises into place and its glyphs light round the ring), page
@@ -59,7 +49,8 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
 - **Footer (new).** The same on every page, kept short: Explore on the left
   (two short columns), Reach us in the middle and Office on the right, over
   the large faint mark centred behind them, then the wordmark, which rises
-  letter by letter.
+  letter by letter. The Privacy Policy is linked once, in the bottom row
+  (Explore leaves it out).
 - **The kid growing up** (`shared/components/GrowRail.tsx`, `growRail.css`).
   A fixed height chart in the right margin. The page's scroll plays the
   superhero toddler from the campaign clip (landing, waving, pointing,
@@ -89,17 +80,17 @@ The transformation, The journey, The aspiration. Each starts at a
 `ChapterMark` placed between sections, so the technical sections carry no
 story code; the growth rail reads the marks. In order:
 - **Hero: the dream** (`Hero.tsx`, `home.css`). The kid, who wants to be a
-  doctor, walks across an old engineering blueprint and strikes a match. The
-  film (`campaign/analogue-to-ai-dream.mp4`, the campaign film's first 5.5 s;
-  `-dream-sm.mp4`, a lighter encode, below 760px) plays once and holds on
-  the lit match; what it sets alight is the discovery further down. It
+  doctor, walks across an old engineering blueprint and strikes a match, and
+  the blueprint burns open onto a circuit. The whole film loops
+  (`campaign/analogue-to-ai-loop.mp4`; `-loop-sm.mp4`, a lighter encode,
+  below 760px; owner's request, 2026-10-27), dissolving from the circuit
+  back into the walk so the loop has no seam. It
   replaced the sunset, the particle landscape and the centred logo
   (2026-10-26, at the owner's request). Framed into the site: the nav's band
   and the copy's corner are shaded, the edges vignetted, the bottom melts
   into the page over a warm hairline. Over it, low on the left: "Every
   doctor started small", the headline, the one-line summary, "Explore
-  products" and "Contact us"; on the right a chip with play/pause ("Play
-  again" once it has played); the four product shortcuts along the bottom.
+  products" and "Contact us"; on the right a chip with play/pause; the four product shortcuts along the bottom.
   The film starts once the curtain opens (never under the intro), pauses
   off screen, and waits on its poster under reduced motion. On phones the
   film fills the top half and fades into the copy, so the boy stays in
@@ -113,7 +104,7 @@ story code; the growth rail reads the marks. In order:
   TV and digital media interviews at the AI Impact Summit 2026, New Delhi.
   Read about it →" links to `/blog#media`. Add a channel there only when the
   coverage is confirmed.
-- **Statement.** "Built From Experience. Guided by Science. Elevated by
+- **Statement.** "Built from Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
   Healthcare Can See, Understand, and Do." under a short rule.
 - **The beginning: problem reels** (`ProblemReels.tsx`, `reels.css`). "Still
@@ -143,7 +134,7 @@ story code; the growth rail reads the marks. In order:
   itself with a progress line until the visitor picks one. Product shots are
   cut from the Product Suite hero render (`public/images/home/products/`).
 - **Who we serve** (`shared/components/AudienceMap.tsx`).
-  "Technology Built for Every Role in Surgery": four equal panels, one per
+  "Technology Built for Every Role in Surgery.": four equal panels, one per
   audience. Each has a picture of its product at work (the product screens
   from the Product Suite hero, the EMR's patient cards in
   `campaign/audience/emr-cover.webp`, and the two photos), its number and
@@ -453,7 +444,7 @@ src/motion/            the motion system
   lenis.ts             smooth scroll
   iris.ts              the iris overlay (transitions + preloader curtain)
   transition.ts        page-transition sequence
-  intro.ts             first-visit intro (introFilm.ts, or introPaper.ts without WebGL)
+  intro.ts             first-visit intro (introLogo.ts: the logo, then through its ring)
   gate.ts              holds entrance animations until the curtain opens
   reveal.ts            declarative entrances (data-split, data-scramble, …)
   useMotion.ts         hooks components use to add choreography
@@ -732,7 +723,7 @@ Campaign copy (from the blueprint redesign, adapted). Please review:
 - Reels: "Still on the old blueprint?", "Every hospital knows these days.",
   each card's hook and punchline, and which product each links to.
 - Discovery: "The spark" / "Not to burn the past." / "To see what was
-  underneath it all along." / "Four new powers, built into the tools doctors
+  underneath it all along." / "Four new powers for the tools doctors
   already use".
 - Real theatres: "Not a render", "In real theatres, with real surgeons." and
   the four captions. Confirm consent for the people shown, and that the

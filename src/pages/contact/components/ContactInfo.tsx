@@ -7,7 +7,7 @@ export function ContactInfo() {
         Get in Touch With Us
       </h2>
       <p className="contact-info__intro" data-split="fade" data-delay="0.2">
-        Have a question, partnership inquiry, or want to learn more about ChakraVue AI? We’re here to help. Reach out
+        Have a question, partnership enquiry, or want to learn more about ChakraVue AI? We’re here to help. Reach out
         to our team, and we’ll get back to you as soon as possible.
       </p>
       <dl className="contact-info__list">

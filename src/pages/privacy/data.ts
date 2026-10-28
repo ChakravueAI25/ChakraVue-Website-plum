@@ -14,14 +14,14 @@ export const sections: PolicySection[] = [
   {
     heading: "1. Information We Collect",
     paragraphs: [
-      `When you interact with our Site, we may collect personal information that you provide directly to us, including your name, email address, phone number, company name, and any messages or inquiries you submit through our contact forms. If you choose to subscribe to our newsletter, we will collect your email address and subscription preferences.`,
+      `When you interact with our Site, we may collect personal information that you provide directly to us, including your name, email address, phone number, company name, and any messages or enquiries you submit through our contact forms. If you choose to subscribe to our newsletter, we will collect your email address and subscription preferences.`,
       `We also automatically collect certain technical information when you visit our Site. This includes your IP address, browser type, device type, the pages you visit, how long you spend on our Site, and where you came from before visiting us. We use cookies and similar tracking technologies to gather this information.`,
     ],
   },
   {
     heading: "2. How We Use Your Information",
     paragraphs: [
-      `We use the information we collect to respond to your inquiries and service requests in a timely manner. This includes sending you project updates, confirmations, and other transactional emails related to our services. We also use your data to improve our website and user experience by analyzing how visitors interact with our Site and identifying areas for optimization.`,
+      `We use the information we collect to respond to your enquiries and service requests in a timely manner. This includes sending you project updates, confirmations, and other transactional emails related to our services. We also use your data to improve our website and user experience by analysing how visitors interact with our Site and identifying areas for optimisation.`,
       `If you have subscribed to receive marketing communications from us, we will send you occasional updates about our services, news, and relevant content. You can unsubscribe from these emails at any time using the link provided in each message.`,
       `We want to be clear: we do not sell or rent your personal information to anyone. Your data is used solely to provide and improve our services to you.`,
     ],
@@ -29,7 +29,7 @@ export const sections: PolicySection[] = [
   {
     heading: "3. Cookies",
     paragraphs: [
-      `Our Site uses cookies to improve functionality and analyze how visitors use our platform. Cookies are small text files stored on your device that help us remember your preferences and understand site traffic patterns. You can disable cookies in your browser settings if you prefer, though please note that some features of our Site may not work properly without them.`,
+      `Our Site uses cookies to improve functionality and analyse how visitors use our platform. Cookies are small text files stored on your device that help us remember your preferences and understand site traffic patterns. You can disable cookies in your browser settings if you prefer, though please note that some features of our Site may not work properly without them.`,
       `We use third-party services like Google Analytics to help us understand how visitors interact with our Site. These services may also use cookies and collect data according to their own privacy policies.`,
     ],
   },
@@ -51,8 +51,8 @@ export const sections: PolicySection[] = [
   {
     heading: "6. Data Retention",
     paragraphs: [
-      `We retain your personal information only as long as necessary to fulfill the purposes described in this policy. For contact inquiries and service requests, we typically keep your information for up to three years after our last interaction. If you subscribe to our marketing communications, we will retain your email address until you unsubscribe or request deletion.`,
-      `Some data may be retained longer if required by law or for legitimate business purposes. When we no longer need your data, we securely delete or anonymize it using industry-standard methods.`,
+      `We retain your personal information only as long as necessary to fulfil the purposes described in this policy. For contact enquiries and service requests, we typically keep your information for up to three years after our last interaction. If you subscribe to our marketing communications, we will retain your email address until you unsubscribe or request deletion.`,
+      `Some data may be retained longer if required by law or for legitimate business purposes. When we no longer need your data, we securely delete or anonymise it using industry-standard methods.`,
     ],
   },
   {
@@ -60,7 +60,7 @@ export const sections: PolicySection[] = [
     paragraphs: [
       `You have several rights regarding your personal data. You can request access to the information we hold about you, ask us to correct any inaccurate information, or request that we delete your data entirely. You can also unsubscribe from our marketing emails at any time by clicking the unsubscribe link in any email we send you.`,
       `If you want to withdraw your consent for us to process your data, you can do so at any time without affecting any processing we've already done based on your previous consent.`,
-      `To exercise any of these rights, please email us at chakravueai@chakravue.ai. We will respond to your request as quickly as possible, typically within a few business days.`,
+      `To exercise any of these rights, please email us at chakravueai@chakravue.ai. We will respond to your request as quickly as possible, typically within five business days.`,
     ],
   },
   {
@@ -90,6 +90,6 @@ export const closing = {
   company: "ChakraVue AI",
   email: "chakravueai@chakravue.ai",
   address:
-    "First Floor Vijetha Sanjeevani Apartments, Opposite Gandhi Hospital, Metro Pillar No 1034, Musheerabad, Secunderabad, Telangana 500003, India",
-  outro: `We typically respond to all privacy-related inquiries within five business days.`,
+    "First Floor, Vijetha Sanjeevani Apartments, Opposite Gandhi Hospital, Metro Pillar No 1034, Musheerabad, Secunderabad, Telangana 500003, India",
+  outro: `We typically respond to all privacy-related enquiries within five business days.`,
 };

@@ -19,7 +19,7 @@ export const address =
 
 export const contactDetails: ContactDetail[] = [
   { label: "Call us", value: "+91 6300147979", href: "tel:+916300147979" },
-  { label: "Email Us", value: EMAIL, href: gmailComposeUrl() },
+  { label: "Email us", value: EMAIL, href: gmailComposeUrl() },
   { label: "LinkedIn", value: "ChakraVue AI", href: "https://www.linkedin.com/company/chakravue-ai-pvt-ltd/" },
   { label: "Address", value: address },
 ];

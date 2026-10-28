@@ -63,24 +63,23 @@ when you change one.
   colours (`#ff8b12`, `#ffb46a`, `#fbd896`, ...) and it comes out Plum.
   Canvases read colours from CSS custom properties, so they're recoloured
   too.
-- **Intro:** a WebGL torn-blueprint film (`motion/webgl/introFilm.ts`), with
-  a DOM fallback (`motion/introPaper.ts`). Both open (2026-10-26, owner's
-  request) with the kid's beat (`motion/introKid.ts`): on the bare sheet,
-  no title yet, the superhero toddler flies in, waves with "Hi!" and flies
-  off; then the title and the tear. The name's glow was deliberately
-  softened (`hot` 1.02, bloom 0.24 once lit). The owner asked twice for
-  less brightness, so don't brighten it.
+- **Intro:** (owner, 2026-10-27) only the logo: the particle-burst film
+  (`motion/introLogo.ts`, `public/images/intro/intro-logo.mp4`) plays on
+  black as the site loads, then the camera flies through the ring and its
+  centre opens onto the hero. No paper/blueprint tear and no kid: both
+  were tried (the torn-blueprint film, the kid's hello, a kid video with
+  sound) and removed at the owner's request, so don't bring them back.
   `sessionStorage.cv-intro-seen = "1"` skips it.
 - **Home**, in order:
   - Hero (`pages/home/components/Hero.tsx`), rebuilt 2026-10-26 at the
-    owner's request: the dream. The campaign film's first 5.5 s (the kid
-    walks a blueprint and strikes a match) plays once and holds on the lit
-    match; the burn is saved for the discovery. Two encodes
-    (`analogue-to-ai-dream.mp4`, `-sm` for phones). It replaced the sunset,
+    owner's request: the dream. The whole campaign film (the kid walks a
+    blueprint, strikes a match, and it burns open onto the circuit) loops
+    (owner, 2026-10-27), dissolving back into the walk. Two encodes
+    (`analogue-to-ai-loop.mp4`, `-sm` for phones). It replaced the sunset,
     the particle landscape (`dataHorizon.ts`, now unused) and the centred
     logo. "Every doctor started small" above the unchanged headline (the
     owner hasn't yet decided whether the story line replaces it), copy low
-    on the left, a play/pause chip ("Play again"), product shortcuts along
+    on the left, a play/pause chip, product shortcuts along
     the bottom. On phones the film fills the top half so the boy stays in
     view. Nothing in the hero moves with scroll.
   - Featured-in (NDTV) marquee: home only.
@@ -94,7 +93,7 @@ when you change one.
     description; never claim the site trains or qualifies doctors. `ChapterMark`s sit between
     sections, so technical sections carry no story code; keep it that way
     (the owner asked for the technical content to stay exactly as it is).
-  - Statement band: "Built From Experience. / Guided by Science. / Elevated
+  - Statement band: "Built from Experience. / Guided by Science. / Elevated
     by Intelligence.", closed by the coda "Shaping What Healthcare Can See,
     Understand, and Do." (the `coda` prop of `InsightStatement`).
   - The beginning: problem reels (`ProblemReels.tsx`), three campaign

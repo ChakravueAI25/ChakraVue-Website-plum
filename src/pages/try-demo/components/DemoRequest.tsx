@@ -227,7 +227,7 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
 
             <label className="demo-req__field" htmlFor="demo-req-email">
               <span>Email*</span>
-              <input type="email" autoComplete="email" inputMode="email" placeholder="Enter email id" required {...fieldProps("email")} />
+              <input type="email" autoComplete="email" inputMode="email" placeholder="Enter your email address" required {...fieldProps("email")} />
               {error("email")}
             </label>
 
@@ -235,7 +235,7 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
               <span>Who are you?*</span>
               <select defaultValue="" required {...fieldProps("role")}>
                 <option value="" disabled>
-                  Choose from the below options
+                  Choose an option
                 </option>
                 {whoAreYouOptions.map((option) => (
                   <option key={option} value={option}>

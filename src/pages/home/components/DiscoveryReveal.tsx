@@ -56,7 +56,7 @@ export function DiscoveryReveal() {
         </h2>
         <p className="discovery__lead">To see what was underneath it all along.</p>
         <p className="discovery__bridge">
-          Four new powers, built into the tools doctors already use
+          Four new powers for the tools doctors already use
           <span aria-hidden="true">↓</span>
         </p>
       </div>

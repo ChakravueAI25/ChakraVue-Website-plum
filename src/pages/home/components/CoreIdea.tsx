@@ -37,7 +37,7 @@ export function CoreIdea() {
           The Core Idea
         </p>
         <h2 data-split>
-          We don&apos;t replace the device
+          We don&apos;t replace the device.
           <br />
           We extend what it can do.
         </h2>
