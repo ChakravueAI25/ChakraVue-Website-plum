@@ -1,0 +1,259 @@
+/* ==========================================================================
+   The products as a spec sheet (ProductTheater.tsx): one product after
+   another, the copy on the left and the product in 3D on the right, opened
+   up by pointing at it. Hairlines, small capitals and a large faint index,
+   in the site's own colours (written in Ember, graded to Plum).
+   ========================================================================== */
+
+.specs {
+  padding: clamp(56px, 6vw, 96px) 0 clamp(72px, 7vw, 110px);
+  background: #040302;
+}
+
+.spec {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: stretch;
+  padding: clamp(40px, 5vw, 72px) 0;
+  border-top: 1px solid rgba(255, 214, 170, 0.16);
+  scroll-margin-top: 80px;
+}
+
+.spec:last-child {
+  border-bottom: 1px solid rgba(255, 214, 170, 0.16);
+}
+
+/* --- The copy --------------------------------------------------------------- */
+
+.spec__info {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
+.spec__count {
+  color: rgba(255, 243, 231, 0.55);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.spec__count b {
+  color: #ffb46a;
+  font-weight: 400;
+}
+
+.spec__title {
+  margin-top: 14px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.4vw, 50px);
+  font-weight: 400;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.spec__tagline {
+  margin-top: 12px;
+  color: #ffb46a;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Labelled cells on hairlines, like a data sheet. */
+.spec__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  margin: 30px 0 0;
+}
+
+.spec__cell {
+  padding: 14px 0 18px;
+  border-top: 1px solid rgba(255, 214, 170, 0.16);
+}
+
+.spec__cell--wide {
+  grid-column: 1 / -1;
+}
+
+.spec__cell dt {
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.spec__cell dd {
+  margin: 8px 0 0;
+  color: rgba(255, 243, 231, 0.7);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.spec__cta {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding-bottom: 6px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  text-transform: uppercase;
+  transition: background-size 0.45s var(--ease-out), color 0.3s ease;
+}
+
+.spec__cta span {
+  color: #ffb46a;
+  transition: translate 0.35s var(--ease-out);
+}
+
+.spec__cta:hover,
+.spec__cta:focus-visible {
+  color: #ffd29a;
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+}
+
+.spec__cta:hover span {
+  translate: 4px 0;
+}
+
+/* --- The product ------------------------------------------------------------ */
+
+.spec__view {
+  position: relative;
+  min-height: clamp(380px, 38vw, 560px);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 22px;
+  /* The 3D view paints this same colour behind the product. */
+  background: #0d0a07;
+  touch-action: pan-y;
+  transition: border-color 0.4s ease;
+}
+
+.spec.is-open .spec__view {
+  border-color: rgba(255, 180, 106, 0.45);
+}
+
+.spec__canvas,
+.spec__photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.spec__photo {
+  object-fit: cover;
+}
+
+/* The large faint index, top right, like the reference sheet. */
+.spec__number {
+  position: absolute;
+  top: 10px;
+  right: 22px;
+  z-index: 1;
+  color: transparent;
+  font-family: var(--font-display);
+  font-size: clamp(64px, 8vw, 120px);
+  line-height: 1;
+  -webkit-text-stroke: 1px rgba(255, 214, 170, 0.22);
+  pointer-events: none;
+}
+
+/* A soft glow where the product stands. */
+.spec__floor {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 12%;
+  z-index: 1;
+  height: 14%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 139, 18, 0.16), transparent);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transition: opacity 0.6s ease;
+}
+
+.spec.is-open .spec__floor {
+  opacity: 0.5;
+}
+
+/* "Look inside": for touch and keyboard; a mouse opens it by pointing. */
+.spec__toggle {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 214, 170, 0.3);
+  border-radius: 999px;
+  background: rgba(10, 5, 2, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 243, 231, 0.85);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.spec__toggle:hover,
+.spec__toggle:focus-visible,
+.spec__toggle[aria-pressed="true"] {
+  border-color: #ffb46a;
+  color: #fbd896;
+}
+
+.spec__toggle:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+}
+
+/* --- Tablets and phones: the product above its copy -------------------------- */
+
+@media (max-width: 900px) {
+  .spec {
+    grid-template-columns: 1fr;
+  }
+
+  .spec__view {
+    order: -1;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 640px) {
+  .spec__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spec__view {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spec__view,
+  .spec__floor,
+  .spec__cta span {
+    transition: none;
+  }
+}

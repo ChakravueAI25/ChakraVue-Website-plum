@@ -7,27 +7,8 @@ const glslInverse = (columns: number[]) => {
   const m = new THREE.Matrix3().fromArray(columns).invert();
   return `mat3(${m.elements.map((n) => n.toFixed(7)).join(", ")})`;
 };
-const ACES_IN = [0.59719, 0.076, 0.0284, 0.35458, 0.90834, 0.13383, 0.04823, 0.01566, 0.83777];
-const ACES_OUT = [1.60475, -0.10208, -0.00327, -0.53108, 1.10813, -0.07276, -0.07367, -0.00605, 1.07602];
-const ACES_IN_INV = glslInverse(ACES_IN);
-const ACES_OUT_INV = glslInverse(ACES_OUT);
-
-/**
- * The linear colour that comes out of the stage's tone curve (ACES filmic,
- * exposure 1) as `shown`, a linear colour 0 to 1: the CPU twin of
- * `interfaceScreen`'s untoneMap, without its 86% cap.
- */
-export function untoneMap(shown: THREE.Vector3) {
-  const y = shown.clone().applyMatrix3(new THREE.Matrix3().fromArray(ACES_OUT).invert()).clampScalar(0, 0.999);
-  const solve = (c: number) => {
-    const a = 0.983729 * c - 1;
-    const b = 0.432951 * c - 0.0245786;
-    const k = 0.238081 * c + 0.000090537;
-    return (-b - Math.sqrt(Math.max(b * b - 4 * a * k, 0))) / (2 * a);
-  };
-  const v = new THREE.Vector3(solve(y.x), solve(y.y), solve(y.z));
-  return v.applyMatrix3(new THREE.Matrix3().fromArray(ACES_IN).invert()).max(new THREE.Vector3()).multiplyScalar(0.6);
-}
+const ACES_IN_INV = glslInverse([0.59719, 0.076, 0.0284, 0.35458, 0.90834, 0.13383, 0.04823, 0.01566, 0.83777]);
+const ACES_OUT_INV = glslInverse([1.60475, -0.10208, -0.00327, -0.53108, 1.10813, -0.07276, -0.07367, -0.00605, 1.07602]);
 
 /**
  * The modelling kit shared by the four product models: one set of

@@ -4,11 +4,10 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { GradeShader, gradeUniform } from "../../../theme/grade";
-import { getGrade } from "../../../theme/theme";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { gsap } from "../../gsap";
-import { applyExplode, Kit, untoneMap, type ProductModel, type Quality, type Readout } from "./kit";
+import { applyExplode, Kit, type ProductModel, type Quality, type Readout } from "./kit";
 import { emrCase, slitLampCase, surgicalBriefcase } from "./models/briefcase";
 import { integrationModule } from "./models/module";
 import { contactShadow } from "./textures";
@@ -26,26 +25,6 @@ import { contactShadow } from "./textures";
  * Products swap by dismantling out and assembling in, drag to turn, hover
  * to peek inside.
  */
-
-/**
- * The clear colour that comes out of the pipeline (tone curve, then the
- * palette grade) as the CSS colour `css`, which the page already shows in
- * the site's palette.
- */
-function backdropClear(css: string) {
-  const shown = new THREE.Color().setStyle(css);
-  const srgb = shown.getRGB({ r: 0, g: 0, b: 0 }, THREE.SRGBColorSpace);
-  let target = new THREE.Vector3(srgb.r, srgb.g, srgb.b);
-  const m = getGrade();
-  if (m) {
-    // The grade is applied to the finished sRGB frame: rgb' = M rgb + offset.
-    const matrix = new THREE.Matrix3().set(m[0], m[1], m[2], m[4], m[5], m[6], m[8], m[9], m[10]).invert();
-    target = target.sub(new THREE.Vector3(m[3], m[7], m[11])).applyMatrix3(matrix).clampScalar(0, 1);
-  }
-  const linear = new THREE.Color().setRGB(target.x, target.y, target.z, THREE.SRGBColorSpace);
-  const untoned = untoneMap(new THREE.Vector3(linear.r, linear.g, linear.b));
-  return new THREE.Color().setRGB(untoned.x, untoned.y, untoned.z, THREE.LinearSRGBColorSpace);
-}
 
 const BUILDERS: Record<string, (kit: Kit) => ProductModel> = {
   "surgical-assistant": surgicalBriefcase,
@@ -71,9 +50,8 @@ export type TheaterOptions = {
    * Inline: paint this colour behind the product instead of leaving the
    * canvas transparent. Pass the CSS colour as the page shows it (already in
    * the site's palette): the frame goes through the palette grade like the
-   * stage's, and the backdrop is cleared so that it comes out of the tone
-   * curve and the grade as given (`backdropClear`), matching the CSS panel
-   * around it exactly, light or dark.
+   * stage's, and the backdrop, cleared with alpha 0, is left as it is (as the
+   * screens are), so it matches the CSS panel around it exactly.
    */
   backdrop?: string;
 };
@@ -331,12 +309,8 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.localClippingEnabled = true;
-  // A backdrop is cleared as the colour that the tone curve and the palette
-  // grade turn back into the colour given, so it matches the panel around
-  // it. (Clearing with alpha 0 instead came out black: three premultiplies
-  // the clear colour by its alpha.)
-  if (options.backdrop) renderer.setClearColor(backdropClear(options.backdrop), 1);
-  else renderer.setClearColor(0x040302, stage ? 1 : 0);
+  // A backdrop clears with alpha 0 so the grade pass leaves it as given.
+  renderer.setClearColor(options.backdrop ?? 0x040302, stage ? 1 : 0);
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);

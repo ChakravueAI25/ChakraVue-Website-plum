@@ -134,29 +134,24 @@ when you change one.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**
-  - Rebuilt 2026-10-28 at the owner's request after their references (grey
-    studio product pages): the hero and the products are light studio
-    panels set into the dark page; everything else on the page stays dark.
-    Write the panels' colours in Ember like the rest (greys stay neutral,
-    `#8a4a10` grades to deep plum). Audiowide still, not the references'
-    fonts.
-  - Hero (`SuiteHero.tsx`): "Product Suite" large, the statement "We Add
-    Intelligence to Your Devices." beside it, and all four products on one
-    stage, one leading and the rest around it, rotating every 4.2 s (the
-    owner asked for a looped hero showing every product at once). The
-    pictures are studio cut-outs rendered from the 3D models
-    (`public/images/product-suite/studio/`); the owner is sending their
-    own images for the hero, so swap them in there under the same names.
-  - Under the hero, a small banner: "Already running successfully at Spark
-    Eye and Dental Care, Musheerabad" (`InUseBanner.tsx`, owner's request).
-  - The products are a slideshow (`ProductSlides.tsx`, owner's request):
-    one product per slide, name and copy on the left, the 3D product on a
-    plate with its number on the right; arrows, squares, keys, autoplay
-    that pauses on interaction. One inline theater swaps between the four.
-    Pointing opens the product, drag turns it, "Look inside" on touch; no
-    part labels (owner). The scroll-driven stage (chapters, labels, focus
-    beat, AI readouts) isn't on the page; the notes below about it describe
-    the engine's stage mode and the models, which the slideshow still uses.
+  - Hero (rebuilt 2026-10-19, `SuiteHero.tsx`): the same structure as the
+    old artwork (ChakraVue at the centre, four products around it, linked
+    in) but built live: "We Add Intelligence to Your Devices." inside the
+    ring, each product card showing its own screen, data travelling along
+    the links. On tablets and phones (≤900px) the diagram stands upright
+    (statement, two products, ring, two products, all linked); the owner
+    asked for the phone hero to be as good as desktop (2026-10-19). Then a compact (unpinned) lead statement "Intelligence,
+    Engineered for the Operating Room.", then the products.
+  - The products (rebuilt 2026-10-26 at the owner's request, after a
+    reference spec sheet): one row per product, stacked, copy on the left
+    and the product in 3D on the right, in the site's own colours. No
+    scrolling drives them: pointing at a row opens the product up, drag
+    turns it, and "Look inside" does it on touch. The owner asked for the
+    parts not to be named, so no labels. Each row is an inline theater
+    (`motion/webgl/theater/`) with a backdrop matched to the panel. The
+    scroll-driven stage (chapters, labels, focus beat, AI readouts) is no
+    longer on the page; the notes below about it describe the engine's
+    stage mode and the models, which the rows still use.
   - Product stills must never show ratings: the Integrated Devices photo
     used to show the battery's rating and was re-rendered from the 3D
     model (2026-10-19).

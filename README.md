@@ -63,7 +63,7 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
   chapter above the chart, paces the growing up by the chapters (he grows
   up as the journey begins), and steps aside when the closing scene takes
   over. Elsewhere it appears once the hero has scrolled away. Below 1360px
-  wide, and always on Product Suite (its panels run nearly edge to edge),
+  wide, and always on Product Suite (the product rows use that margin),
   it's a 46px badge (ring filling with the page, face changing) that shows
   for about three seconds at each new chapter and then fades, so it never
   sits on what's being read. Decorative (`aria-hidden`), on every page. The
@@ -173,12 +173,12 @@ and the outcome, with three photos from the stall
 the team). Only what that post says.
 
 **The audience mapping** (`shared/data/audiences.ts`) is the single source
-for Home's "Who we serve", the Try Demo page and the Product Suite slideshow's "Built for"; change it there only. It is the owner's
+for Home's "Who we serve", the Try Demo page and the Product Suite rows' "Built for"; change it there only. It is the owner's
 mapping (2026-10-26):
 
 | Audience | Products | Link |
 | --- | --- | --- |
-| Doctors & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their slides (`/product-suite#…`) |
+| Doctors & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their product rows (`/product-suite#…`) |
 | PG Students & Surgical Trainees | Gaming | `/contact-us?interest=VR/AR Gaming Environment` |
 | Hospitals & Training Institutions | AI Powered EMR | Its product row |
 | OEMs & Medical Device Manufacturers | Microscope Software Integrations | `/contact-us?interest=Partnership / Collaboration` |
@@ -203,49 +203,39 @@ The campaign art comes from the blueprint redesign (`blueprint-site/` on the
 grade leaves images alone). The campaign scenes appear on Home and About
 only; elsewhere the character is just the small growth rail in the margin.
 
-**Product Suite** (rebuilt 2026-10-28 at the owner's request, after three
-reference images: a grey studio product page, a spec sheet with a large
-index number, and a bracketed robot arm). The hero and the products are
-light studio panels set into the dark page (`.ps-studio`, tokens on
-`.ps-page` in `product-suite.css`); header, banner, platforms and footer
-stay dark. They're written in Ember colours like everything else: the
-greys stay neutral under the Plum grade, `#8a4a10` comes out deep plum and
-`#1d1a17` plum-black.
-- **Hero** (`SuiteHero.tsx`): "Product Suite" large on the left, "We Add
-  Intelligence to Your Devices." with its lede and buttons on the right,
-  and every product on one stage below. One product leads (front, in the
-  corner brackets, its number large on the grey plate, its name in the
-  readout on the left) and the other three stand around it; every 4.2 s
-  the next comes forward and the rest move round, so all four are always
-  on show. The slots are pure CSS (`data-slot` sets `--x/--y/--s/--o`, and
-  `translate`/`scale` transition between them), so the entrance tweens the
-  pictures inside, never the slots. The rail underneath names the products
-  and fills towards the next; picking one brings it forward, picking the
-  leader (or the leader itself) opens it in the slideshow. The loop pauses
-  under the pointer, off screen and in a hidden tab, and doesn't run with
-  reduced motion. The pictures are studio cut-outs rendered from the 3D
-  models (`public/images/product-suite/studio/`, transparent WebP): swap
-  in the owner's images there, same names, when they arrive.
-- **In clinical use** (`InUseBanner.tsx`): a small band under the hero,
-  "Already running successfully at Spark Eye and Dental Care, Musheerabad"
-  (owner, 2026-10-28). Add sites there as they go live.
-- **The products, as a slideshow** (`ProductSlides.tsx`, `slides.css`),
-  `#products`: the heading "Intelligence, Engineered for the Operating
-  Room." (`suiteLines`), then one product per slide: its name large on the
-  left with tagline, an upright rule beside the description, Built for
-  (`shared/data/audiences.ts`) and the call to action; the product in 3D
-  on the right on a grey plate with its large index, and squares at the
-  side to pick a slide (the spec-sheet reference). Arrows, squares, the
-  arrow keys and links (`/product-suite#<product id>`, or the hero) change
-  slides; it also moves on every 8 s, pausing while the pointer or focus
-  is in it, while a product is open, or while it's off screen. One inline
-  theater holds all four products and `swap()`s them, so the leaving
-  product comes apart and the next assembles. Pointing at the plate opens
-  the product (`setPeek(true, 0.9)`), drag turns it, "Look inside" does it
-  on touch; the parts aren't named (`anatomy: []`). The canvas paints the
-  plate's computed colour (`backdrop`, see "3D products"). At 900px and
-  below the plate sits above the copy and the squares run in a row. With
-  reduced motion or no WebGL the studio cut-outs stand in.
+**Product Suite**
+- **Hero** (`SuiteHero.tsx`): ChakraVue AI at the centre, with the page's
+  statement "We Add Intelligence to Your Devices." inside its ring, and the
+  four products at the corners, each showing its own screen
+  (`public/images/product-suite/hero/`: the surgical live view, the slit-lamp
+  eye, the anonymised EMR dashboard, and a render of the module). Links run
+  from every screen into the ring and data travels along them; they are
+  measured off the laid-out cards, so they follow any screen size. The ring
+  opens, the products arrive from their corners and their links draw in.
+  Hovering a product lights its link and quiets the rest; the diagram tilts
+  slightly with the pointer. Below 900px the same diagram stands upright:
+  the statement on top, then two products, the ring (the mark at its
+  centre) and two more, every screen facing the ring and linked into it.
+  The scroll fade is desktop-only, so phones never dim the products.
+- "Intelligence, Engineered for the Operating Room." follows the hero as a
+  compact band that lights as it passes (not pinned).
+- **The products, as a spec sheet** (`ProductTheater.tsx`, `theater.css`;
+  rebuilt 2026-10-26 at the owner's request, after a reference data sheet).
+  The four products follow one another, each a row with the copy on the
+  left (count, name, tagline, then hairline cells: Overview, Built for from
+  `shared/data/audiences.ts`, and a hint) and the product in 3D on the right,
+  on a dark panel with its large outlined index. Nothing is driven by
+  scrolling: pointing at a row opens the product up (the engine's inline
+  mode, `setPeek(true, 0.9)`), leaving closes it, and dragging turns it. The
+  parts are not named (no label layer, `anatomy: []`). Touch screens and the
+  keyboard use the "Look inside" / "Close it up" button, and the hint
+  changes with it. Each row builds its own small theater when it nears the
+  screen, assembling once as it arrives. The canvas clears to the panel's
+  computed colour with alpha 0, so the grade pass leaves it alone and it
+  matches the CSS panel exactly; the scan slice is left out there for the
+  same reason. Rows keep the product ids as anchors (`/product-suite#…`).
+  At 900px and below the product sits above its copy. With reduced motion
+  or no WebGL each row shows the product photograph instead.
 
 **Services (new, replaces "What We Do" in the nav).** `/services`,
 `src/pages/services/`.
@@ -267,19 +257,15 @@ greys stay neutral under the Plum grade, `#8a4a10` comes out deep plum and
 - **Case studies, "Why work with us" and a contact call to action.** The
   diagrams are illustrative, not simulation output.
 
-**Product Suite: software platforms.** A console under the slideshow
+**Product Suite: software platforms.** A console under the product rows
 (`PlatformConsole.tsx`, data in `product-suite/platforms.ts`) with three
 platforms: Dental Implant Planning; the ChakraVue Doctor Patient App, one
 bundle showing the Doctor App and the Patient App side by side; and
 ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
 decoding title and a self-drawing line icon.
 
-**3D products.** The page shows the models in the slideshow above (inline
-mode). An inline view with a `backdrop` clears to the colour that the tone
-curve and the palette grade turn back into that CSS colour
-(`backdropClear` in `engine.ts`, with `untoneMap` in `kit.ts`), so it
-matches its panel light or dark; before 2026-10-28 it cleared with alpha 0,
-which three premultiplies to black, unnoticed on the old near-black panels. The engine's stage mode (fixed stage, chapters, leader labels, the
+**3D products.** The page now shows the models in the inline spec rows
+above. The engine's stage mode (fixed stage, chapters, leader labels, the
 focus beat and readout cards, described below) is kept but no longer used
 on any page. The Surgical Assistant, the Slit Lamp Module and the AI
 Powered EMR are the same rugged field case, standing open
