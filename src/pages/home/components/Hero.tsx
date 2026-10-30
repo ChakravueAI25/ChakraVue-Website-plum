@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { reduceMotion } from "../../../motion/env";
 import { whenRevealed } from "../../../motion/gate";
-import { gsap, SplitText } from "../../../motion/gsap";
+import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
 import { Link } from "../../../shared/components/Link";
 
@@ -58,38 +58,24 @@ export function Hero({ onIntroDone }: HeroProps) {
     const title = root.querySelector<HTMLElement>("h1");
     if (!title) return;
 
-    // Letters flip up out of a blur; then the buttons follow.
-    const split = SplitText.create(title, { type: "words,chars", charsClass: "hero-char" });
-    gsap.set(title, { autoAlpha: 1 });
+    // The film fades up; the headline and buttons take the site's text
+    // entrance (motion/reveal.ts): a short fade and rise.
     gsap
       .timeline({ delay: 0.2 })
       .from(root.querySelector(".hero__film"), { autoAlpha: 0, scale: 1.04, duration: 2.2, ease: "cv.out" }, 0)
-      .from(
-        split.chars,
-        {
-          yPercent: 90,
-          rotationX: -75,
-          autoAlpha: 0,
-          filter: "blur(12px)",
-          transformOrigin: "50% 100%",
-          transformPerspective: 700,
-          duration: 1.5,
-          stagger: 0.032,
-        },
-        0.2,
-      )
-      .add(() => introDone.current?.(), 0.95)
+      .from(title, { autoAlpha: 0, y: 16, duration: 0.55, ease: "power2.out", clearProps: "transform,opacity,visibility" }, 0.2)
+      .add(() => introDone.current?.(), 0.6)
       .from(
         root.querySelectorAll(".hero__actions > *"),
-        { autoAlpha: 0, y: 18, duration: 1, stagger: 0.08, clearProps: "transform,opacity,visibility" },
-        0.9,
+        { autoAlpha: 0, y: 16, duration: 0.55, ease: "power2.out", stagger: 0.07, clearProps: "transform,opacity,visibility" },
+        0.3,
       );
 
     // Nothing in the hero moves with scroll: it simply scrolls away whole.
   });
 
   return (
-    <section ref={ref} className="hero section" aria-labelledby="hero-title">
+    <section ref={ref} className="hero section" aria-labelledby="hero-title" data-motion="own">
       <video
         ref={videoRef}
         className="hero__film"

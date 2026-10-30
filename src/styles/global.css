@@ -467,14 +467,6 @@ button {
   text-align: center;
 }
 
-/* While the statement is pinned and read by scrolling (InsightStatement.tsx),
-   the band becomes the whole screen with the words centred in it. */
-.insight-statement.is-stage {
-  min-height: 100vh;
-  align-content: center;
-  padding-top: 96px;
-}
-
 .insight-statement__beam {
   position: absolute;
   top: 11px;

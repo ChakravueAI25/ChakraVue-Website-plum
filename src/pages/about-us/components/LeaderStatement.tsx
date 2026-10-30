@@ -61,7 +61,7 @@ export function LeaderStatement({
             {title}
           </p>
         </div>
-        <blockquote className="founder__card" data-spotlight>
+        <blockquote className="founder__card" data-spotlight data-motion="own">
           <div className="founder__photo">
             <img
               src={photo}

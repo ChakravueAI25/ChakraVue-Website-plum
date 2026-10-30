@@ -292,7 +292,7 @@ export function ChatVisual() {
 
   return (
     <div ref={ref} className="svis svis--chat">
-      <div className="chat">
+      <div className="chat" data-motion="own">
         <div className="chat__head">
           <span className="chat__avatar" aria-hidden="true" />
           <div>

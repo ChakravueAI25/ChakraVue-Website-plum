@@ -38,7 +38,7 @@ export function JourneyStrip() {
         </Link>
       </div>
 
-      <div className="journey-strip__viewport">
+      <div className="journey-strip__viewport" data-motion="own">
         <ul className="journey-strip__track">
           {loop.map((moment, i) => {
             const copy = i >= moments.length;

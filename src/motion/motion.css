@@ -272,21 +272,6 @@ html.is-intro::-webkit-scrollbar {
 }
 
 /* --------------------------------------------------------------------------
-   Text splitting helpers
-   -------------------------------------------------------------------------- */
-
-/* A little breathing room so the line masks never shave off glyph tops. */
-.st-line-mask {
-  padding-block: 0.08em;
-  margin-block: -0.08em;
-}
-
-/* Once a headline has landed, let its glow spill past the masks again. */
-.is-revealed .st-line-mask {
-  overflow: visible !important;
-}
-
-/* --------------------------------------------------------------------------
    Rolling link text (header)
    -------------------------------------------------------------------------- */
 

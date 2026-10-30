@@ -96,7 +96,7 @@ export function RoleShowcase() {
             Who are you here as?
           </h2>
 
-          <div className="role__who">
+          <div className="role__who" data-motion="own">
             {roles.map((r, i) => (
               <div key={r.id} className={`role__state${i === active ? " is-active" : ""}`} aria-hidden={i !== active} inert={i !== active}>
                 <p className="role__question">{r.question}</p>
@@ -167,7 +167,7 @@ export function RoleShowcase() {
           </Link>
         </div>
 
-        <div className="role__stage" {...hover}>
+        <div className="role__stage" data-motion="own" {...hover}>
           {roles.map((r, i) => (
             <div
               key={r.id}

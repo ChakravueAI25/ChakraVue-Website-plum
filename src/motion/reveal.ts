@@ -1,78 +1,66 @@
-import { gsap, ScrollTrigger, SplitText } from "./gsap";
+import { gsap, ScrollTrigger } from "./gsap";
 
 /**
- * Declarative entrances, so components only carry attributes:
+ * The site's one text entrance (owner, 2026-10-30): as text comes into view
+ * it fades in and rises a few pixels, once. Everything uses it, so
+ * components only carry attributes, or nothing at all:
  *
- *   data-split="lines"   headline lines rise out of a mask (default)
- *   data-split="fade"    paragraph lines drift up and fade in
- *   data-split="chars"   characters rise out of a blur
- *   data-scramble        text decodes from random glyphs ("digits" for numbers)
- *   data-reveal          block fades up ("pop" | "flip" variants), staggered
- *                        with neighbours that enter at the same time
- *   data-speed="0.2"     scroll parallax, as a fraction of the viewport
+ *   data-split, data-scramble, data-reveal   opt an element in (the values
+ *                                            the old variants took, such as
+ *                                            "fade", "chars", "digits" or
+ *                                            "pop", are still accepted and
+ *                                            all mean the same entrance)
+ *   (no attribute)                           headings, labels, paragraphs,
+ *                                            list items, quotes and section
+ *                                            links (.hsec-link) in the
+ *                                            page's sections are picked up
+ *                                            automatically
+ *   data-motion="own"                        on a container that animates its
+ *                                            own text (the hero, slideshows,
+ *                                            state crossfades): left alone
+ *   data-speed="0.2"                         scroll parallax for art, as a
+ *                                            fraction of the viewport
  *
- *   data-delay / data-start tune any of the above.
+ * Elements are hidden from script only, so the text is there if scripts
+ * fail, and the whole thing is skipped under reduced motion (useMotion).
  */
 
-const START = "top 88%";
+/** How far text rises, in px. */
+const RISE = 16;
+/** Each element's entrance, in seconds. */
+const DURATION = 0.55;
+/** Between elements that come into view together. */
+const STAGGER = 0.07;
+/** A batch never takes longer than this to start its last element. */
+const MAX_SPREAD = 0.35;
+/** Starts when the element's top is 10% into the viewport. */
+const START = "top 90%";
+
+const TAGGED = "[data-split], [data-scramble], [data-reveal]";
+const AUTO = "section h1, section h2, section h3, section h4, section p, section li, section blockquote, section figcaption, .section-label, .hsec-link";
+/** Containers whose text has its own motion, or isn't page copy. */
+const SKIP = [
+  '[data-motion="own"]',
+  "[aria-hidden='true']",
+  "[inert]",
+  "[role='dialog']",
+  "form",
+  "nav",
+  "button",
+  "svg",
+].join(", ");
 
 const num = (value: string | undefined, fallback: number) => {
   const n = parseFloat(value ?? "");
   return Number.isFinite(n) ? n : fallback;
 };
 
-export function splitReveal(el: HTMLElement) {
-  const mode = el.dataset.split || "lines";
-  const delay = num(el.dataset.delay, 0);
-  const scrollTrigger = { trigger: el, start: el.dataset.start || START, once: true };
-  const done = () => el.classList.add("is-revealed");
-
-  if (mode === "chars") {
-    const split = SplitText.create(el, { type: "words,chars", charsClass: "st-char" });
-    gsap.set(el, { autoAlpha: 1 });
-    gsap.from(split.chars, {
-      yPercent: 70,
-      autoAlpha: 0,
-      filter: "blur(12px)",
-      duration: 1.3,
-      stagger: 0.026,
-      delay,
-      scrollTrigger,
-      onComplete: done,
-    });
-    return;
-  }
-
-  // Line splits re-run on resize and when fonts land (autoSplit); returning
-  // the tween lets SplitText carry its progress over to the new lines.
-  SplitText.create(el, {
-    type: "lines",
-    mask: mode === "lines" ? "lines" : undefined,
-    linesClass: "st-line",
-    autoSplit: true,
-    onSplit(self) {
-      gsap.set(el, { autoAlpha: 1 });
-      if (mode === "fade") {
-        return gsap.from(self.lines, { y: 22, autoAlpha: 0, duration: 1.1, stagger: 0.08, delay, scrollTrigger, onComplete: done });
-      }
-      return gsap.from(self.lines, { yPercent: 108, duration: 1.25, stagger: 0.1, delay, scrollTrigger, onComplete: done });
-    },
-  });
-}
-
-export function scrambleReveal(el: HTMLElement) {
-  const text = (el.textContent ?? "").trim();
-  if (!text) return;
-  if (!el.hasAttribute("aria-label")) el.setAttribute("aria-label", text);
-  const chars = el.dataset.scramble === "digits" ? "0123456789" : "upperCase";
-
-  gsap
-    .timeline({
-      delay: num(el.dataset.delay, 0),
-      scrollTrigger: { trigger: el, start: el.dataset.start || START, once: true },
-    })
-    .fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25, ease: "none" }, 0)
-    .to(el, { duration: 1.2, ease: "none", scrambleText: { text, chars, revealDelay: 0.35, speed: 0.55 } }, 0);
+/** Visible text that isn't already driven by a stylesheet state (opacity 0). */
+function eligible(el: HTMLElement) {
+  if (el.closest(SKIP)) return false;
+  if (!el.textContent?.trim() && !el.matches(TAGGED)) return false;
+  const style = getComputedStyle(el);
+  return style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
 }
 
 export function parallax(el: HTMLElement) {
@@ -95,48 +83,48 @@ export function parallax(el: HTMLElement) {
   );
 }
 
-const VARIANTS: Record<string, gsap.TweenVars> = {
-  up: { y: 56 },
-  pop: { y: 36, scale: 0.84, filter: "blur(12px)" },
-  flip: { y: 80, rotationX: -28, transformPerspective: 1100, transformOrigin: "50% 0%" },
-};
+/** Fades each element up as it comes into view, staggering those that arrive together. */
+export function riseReveal(elements: HTMLElement[]) {
+  if (!elements.length) return;
+  // CSS hover transitions on transform would smear the tween, so they're
+  // switched off for the entrance and handed back afterwards.
+  gsap.set(elements, { autoAlpha: 0, y: RISE, transition: "none" });
 
-export function batchReveal(elements: Element[]) {
-  const groups = new Map<string, HTMLElement[]>();
-  for (const el of elements) {
-    if (!(el instanceof HTMLElement)) continue;
-    const variant = el.dataset.reveal && VARIANTS[el.dataset.reveal] ? el.dataset.reveal : "up";
-    groups.set(variant, [...(groups.get(variant) ?? []), el]);
-  }
-
-  groups.forEach((list, variant) => {
-    const from = VARIANTS[variant];
-    // CSS hover transitions on transform would smear the tween, so they're
-    // switched off for the entrance and handed back afterwards.
-    gsap.set(list, { autoAlpha: 0, transition: "none", ...from });
-    const to: gsap.TweenVars = { autoAlpha: 1, x: 0, y: 0, scale: 1, rotationX: 0, duration: 1.25, stagger: 0.1, overwrite: true };
-    if (from.filter) to.filter = "blur(0px)";
-
-    ScrollTrigger.batch(list, {
-      start: "top 90%",
-      once: true,
-      interval: 0.08,
-      onEnter: (batch) =>
-        gsap.to(batch, {
-          ...to,
-          onComplete: () =>
-            batch.forEach((el) => {
-              el.classList.add("is-in");
-              gsap.set(el, { clearProps: "transform,opacity,visibility,filter,transition" });
-            }),
-        }),
-    });
+  ScrollTrigger.batch(elements, {
+    start: START,
+    once: true,
+    interval: 0.06,
+    onEnter: (batch) => {
+      const each = Math.min(STAGGER, MAX_SPREAD / Math.max(1, batch.length - 1));
+      gsap.to(batch, {
+        autoAlpha: 1,
+        y: 0,
+        duration: DURATION,
+        ease: "power2.out",
+        stagger: each,
+        overwrite: true,
+        onComplete: () => gsap.set(batch, { clearProps: "transform,opacity,visibility,transition" }),
+      });
+    },
   });
 }
 
 export function initDeclarative(root: ParentNode) {
-  root.querySelectorAll<HTMLElement>("[data-split]").forEach(splitReveal);
-  root.querySelectorAll<HTMLElement>("[data-scramble]").forEach(scrambleReveal);
   root.querySelectorAll<HTMLElement>("[data-speed]").forEach(parallax);
-  batchReveal([...root.querySelectorAll("[data-reveal]")]);
+
+  // Tagged elements first, then the page's other text; anything inside an
+  // element already chosen rises with it rather than on its own.
+  const candidates = [...root.querySelectorAll<HTMLElement>(TAGGED), ...root.querySelectorAll<HTMLElement>(AUTO)];
+  const chosen = new Set<HTMLElement>();
+  for (const el of candidates) {
+    if (chosen.has(el) || !eligible(el)) continue;
+    chosen.add(el);
+  }
+  const list = [...chosen].filter((el) => {
+    for (let p = el.parentElement; p && p !== root; p = p.parentElement) if (chosen.has(p)) return false;
+    return true;
+  });
+  // Document order, so a heading always comes in before its paragraph.
+  list.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+  riseReveal(list);
 }

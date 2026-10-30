@@ -507,7 +507,7 @@ src/motion/            the motion system
   transition.ts        page-transition sequence
   intro.ts             first-visit intro (introLogo.ts: the logo, then through its ring)
   gate.ts              holds entrance animations until the curtain opens
-  reveal.ts            declarative entrances (data-split, data-scramble, â€¦)
+  reveal.ts            the one text entrance (fade and rise), applied site-wide
   useMotion.ts         hooks components use to add choreography
   PointerFX.tsx        cursor tag, magnetic, spotlight
   webgl/dataHorizon.ts particle landscape (the old home hero; no longer used)
@@ -521,19 +521,31 @@ src/pages/home/home.css            homepage additions (hero actions, team, blogâ
 src/shared/components/Footer.tsx   new footer
 ```
 
-Most entrances are attributes in the markup, so adding motion to new content
-is usually just an attribute:
+**Text entrance (owner, 2026-10-30).** The whole site uses one text
+animation, in `motion/reveal.ts`: as text comes into view (its top 10% into
+the viewport) it fades from 0 to 1 and rises 16px, over 0.55s with an
+ease-out, once. Elements that arrive together are batched and staggered
+70ms apart, and a batch never takes more than 0.35s to start its last
+element, so a long list still appears at once. It's triggered by visibility
+(ScrollTrigger.batch), never scrubbed or pinned. Headings, `.section-label`,
+paragraphs, list items, quotes, captions and `.hsec-link` CTAs inside the
+pages' sections are picked up automatically; text inside an element that
+is already rising (a card with `data-reveal`) rises with it. Elements are
+hidden by script only, so the text is there if scripts fail, and nothing is
+hidden under reduced motion. The hero headline and the statement bands
+(`InsightStatement`, word by word) use the same fade and rise in their own
+timelines. The old masked lines, character blur, scramble, pop and flip
+entrances, and the statement band's scroll-scrubbed words, were removed.
 
 | Attribute | Effect |
 | --- | --- |
-| `data-split` | Headline lines rise out of masks. Also `="fade"` (paragraph lines drift in) and `="chars"` (characters from a blur). |
-| `data-scramble` | Text decodes from random glyphs. Use `="digits"` for numbers. |
-| `data-reveal` | Block fades up. Variants: `="pop"`, `="flip"`. |
-| `data-speed="0.2"` | Scroll parallax. |
+| `data-split` / `data-scramble` / `data-reveal` | Opt an element in to the text entrance (for blocks such as cards that the automatic pick-up doesn't cover). Old variant values are accepted and mean the same thing. |
+| `data-motion="own"` | Leave this container's text alone: it animates its own (hero, Product Suite slideshow, Who are you here as? crossfades, marquees, the Services chat, the founder card). |
+| `data-speed="0.2"` | Scroll parallax for art. |
 | `data-magnetic="0.3"` | Element leans toward the pointer. |
 | `data-spotlight` | Card glow follows the pointer. |
 | `data-cursor="View"` | A tag beside the cursor shows that word. |
-| `data-delay` / `data-start` | Tune timing and trigger point for any of the above. |
+| `data-delay` / `data-start` | No longer used by the text entrance (kept in markup, ignored). |
 
 Changes to existing files are limited to motion hooks and attributes, plus CSS
 that moved from `transform` to `translate`/`scale` so it doesn't fight the

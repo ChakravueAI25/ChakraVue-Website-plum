@@ -14,7 +14,6 @@ export function InsightBand() {
   return (
     <InsightStatement
       lines={lines}
-      pin={false}
       coda={
         <>
           Shaping What Healthcare Can <em>See</em>, <em>Understand</em>, and <em>Do</em>.

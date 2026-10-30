@@ -14,7 +14,7 @@ export function ProductSuitePage() {
     <main className="site-shell ps-page">
       <Header />
       <SuiteHero />
-      <InsightStatement lines={suiteLines} className="insight-statement--lead" pin={false} />
+      <InsightStatement lines={suiteLines} className="insight-statement--lead" />
       <ProductTheater />
       <PlatformConsole />
     </main>

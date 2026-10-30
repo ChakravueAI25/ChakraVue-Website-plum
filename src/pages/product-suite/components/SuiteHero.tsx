@@ -169,6 +169,7 @@ export function SuiteHero() {
     <section
       ref={ref}
       className="ps-hero"
+      data-motion="own"
       aria-label="Product Suite"
       onKeyDown={onKeyDown}
     >

@@ -290,6 +290,13 @@ when you change one.
   over `[data-cursor]`, plus magnetic buttons and card spotlights. The owner
   rejected both the circle cursor and a custom arrow.
 
+- **Text motion (owner, 2026-10-30):** one entrance site-wide, fade in and
+  rise 16px over 0.55s, once, as text comes into view, staggered 70ms
+  (`motion/reveal.ts`, which picks up section text automatically). Don't
+  add other text effects (masks, blur, scramble, scrubbed or pinned text);
+  mark a container `data-motion="own"` only if its text has state-driven
+  motion (crossfades, slideshows).
+
 ## Gotchas learned here
 
 - GSAP transforms override the CSS individual `translate` / `scale`
