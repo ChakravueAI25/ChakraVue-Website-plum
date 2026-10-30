@@ -120,8 +120,9 @@ when you change one.
   - The beginning: From analog to intelligent (`AnalogToIntelligent.tsx`,
     owner, 2026-10-29), which replaced the "Still on the old blueprint"
     reels: three stages on one line that fills once as it arrives.
-  - The discovery (`DiscoveryReveal.tsx`): the burnt blueprint opens out
-    onto the boy at the circuit, once, with Replay. Not pinned. Since
+  - The discovery (`DiscoveryReveal.tsx`): "What we do / We connect
+    clinicians, data and devices." over the connected-care photo, with the
+    mascot and Clinicians / Data / Devices cards (2026-10-29/30). Since
     2026-10-29 (owner) it carries the tagline "We connect clinicians, data
     and devices." with three linked cards (Clinicians, Data, Devices).
   - Who are you here as? (`RoleShowcase.tsx`): Clinicians, PGs,

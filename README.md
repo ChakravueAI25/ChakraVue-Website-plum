@@ -137,24 +137,13 @@ works. In order:
   stack with arrows between, and each image carries its stage. Links: the
   ChakraVue System, Know how it works. The other reel images (car, dental
   tower, clerk's "after") stay in `public/images/campaign/reels/`, unused.
-- **The discovery** (`DiscoveryReveal.tsx`, `discovery.css`), from the
-  blueprint redesign's logo reveal. The burnt blueprint (`burn-hole.webp`)
-  hangs over the scene; as the section arrives it opens out past the screen
-  and the boy is there at the glowing circuit (`circuit-reveal.jpg`), then
-  the company's tagline (owner, 2026-10-29; it replaced "The spark / Not to
-  burn the past."): "What we do / We connect clinicians, data and devices."
-  and "From the instrument to the record, in one connected line of sight."
-  Under it the three things connected, as glass cards on one line:
-  Clinicians (guidance in theatre, findings at the slit lamp; links to Who
-  are you here as?), Data (imaging, device output and notes in one
-  timeline; links to the ChakraVue System) and Devices (the equipment you
-  already own, feeding patient records; links to Integrated devices). Each
-  line paraphrases its product's description. Once the words are in, the
-  line fills from the left and each card's dot lights as it reaches it; on
-  phones the cards stack and the line runs down through the dots. The only
-  place the burn is shown (the hero stops at the match). Plays once, with
-  Replay (bottom left, clear of the assistant); open and lit from the start
-  without motion.
+- **The discovery: what we do** (`DiscoveryReveal.tsx`, `discovery.css`).
+  The company's tagline (owner, 2026-10-29; it replaced "The spark / Not to
+  burn the past." and the burnt-blueprint reveal): "What we do / We connect
+  clinicians, data and devices." and "From the instrument to the record, in
+  one connected line of sight.", over the connected-care photo
+  (`campaign/connected-care.webp`), with the mascot and three cards:
+  Clinicians, Data, Devices, each line paraphrasing its product.
 - **Who are you here as?** (`RoleShowcase.tsx`, `roles.css`,
   `#who-are-you-here-as`; replaced the slit-lit product showcase, owner's
   brief 2026-10-29). Left (about 38%): "Built around you / Who are you here
@@ -182,7 +171,9 @@ works. In order:
   photo; Sidekick has no product imagery, so it uses the blueprint
   redesign's research reel (`campaign/reels/research-before.webp`, the
   campaign's "sidekick" scene). Under it, the software platforms as chips,
-  each linking to `/product-suite#platforms`.
+  each linking to `/product-suite#platforms`. Above it all sits the
+  early-bird offer (`EarlyBirdOffer.tsx`, `earlyBird.css`, posting to
+  `/api/early-bird`), which used to open the product showcase.
 - **The core idea** (original): "We don't replace the device. We extend
   what it can do."
 - **Know how it works** (`ValueCards.tsx`, `#how-it-works`). Capture →

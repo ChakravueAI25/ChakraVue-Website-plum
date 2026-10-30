@@ -8,197 +8,323 @@
 }
 
 /* --------------------------------------------------------------------------
-   Hero — ChakraVue AI at the centre, its statement inside the ring, and the
-   four products around it, linked in (SuiteHero.tsx)
+   Hero — the products as an editorial slideshow (SuiteHero.tsx): one
+   product large on the left, the statement and the product's number, name
+   and brief on the right between hairlines, the indicators below.
    -------------------------------------------------------------------------- */
 
 .ps-hero {
-  --gap: clamp(24px, 3vw, 56px);
+  --gutter: max(32px, 4vw);
   position: relative;
-  display: grid;
-  min-height: max(760px, 100svh);
-  padding: 118px max(32px, 4vw) 56px;
+  min-height: max(720px, 100svh);
+  padding: 112px var(--gutter) 28px;
   overflow: hidden;
   isolation: isolate;
   background-color: #030202;
   background-image:
-    radial-gradient(34% 44% at 50% 52%, rgba(255, 110, 24, 0.16), transparent 70%),
-    radial-gradient(60% 46% at 50% 118%, rgba(255, 110, 24, 0.24), transparent 72%);
+    radial-gradient(42% 52% at 30% 56%, rgba(255, 110, 24, 0.1), transparent 72%),
+    radial-gradient(32% 40% at 88% 18%, rgba(255, 139, 18, 0.06), transparent 72%);
 }
 
-/* A faint floor grid running to the horizon under the diagram. */
-.ps-hero__floor {
-  position: absolute;
-  right: -25%;
-  bottom: -6%;
-  left: -25%;
-  z-index: -1;
-  height: 52%;
-  background-image:
-    linear-gradient(rgba(255, 139, 18, 0.16) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 139, 18, 0.16) 1px, transparent 1px);
-  background-position: center bottom;
-  background-size: 64px 64px;
-  transform: perspective(700px) rotateX(64deg);
-  transform-origin: 50% 100%;
-  -webkit-mask-image: radial-gradient(60% 100% at 50% 100%, #000 15%, transparent 78%);
-  mask-image: radial-gradient(60% 100% at 50% 100%, #000 15%, transparent 78%);
-  pointer-events: none;
-}
-
-/* The products sit at the four corners, the ring between them. The links
-   are drawn over the same box, so the field tilts and drifts as one. */
-.ps-hero__field {
-  position: relative;
+.ps-hero__show {
   display: grid;
-  /* The products narrow before the ring does. */
-  grid-template-columns: min(330px, 22vw) minmax(0, 1fr) min(330px, 22vw);
-  grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    "a hub b"
-    "c hub d";
-  gap: 28px var(--gap);
+    "stage side"
+    "nav side";
+  grid-template-columns: minmax(0, 11fr) minmax(0, 8fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  column-gap: clamp(28px, 4vw, 72px);
+  min-height: calc(max(720px, 100svh) - 140px);
 }
 
-.ps-hero__links {
+/* --- The product ---------------------------------------------------------- */
+
+/* The renders are on black and blend onto the glow (lighten), so nothing
+   here may start a stacking context of its own (no transform, opacity or
+   z-index): the shots must blend with the glow, not with an empty layer. */
+.ps-hero__stage {
+  position: relative;
+  grid-area: stage;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, calc((100svh - 210px) * 5 / 4));
+  aspect-ratio: 5 / 4;
+  touch-action: pan-y;
+}
+
+.ps-hero__glow {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  background:
+    radial-gradient(46% 40% at 50% 54%, rgba(255, 110, 24, 0.18), transparent 72%),
+    radial-gradient(40% 8% at 50% 91%, rgba(255, 139, 18, 0.34), transparent 72%);
   pointer-events: none;
 }
 
-.ps-hero__nodes {
-  display: contents;
-}
-
-/* --- The ring -------------------------------------------------------------- */
-
-.ps-hub {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-area: hub;
-  place-self: center;
-  place-items: center;
-  width: min(100%, 580px, calc(100svh - 200px));
-  min-width: 380px;
-  aspect-ratio: 1;
-}
-
-/* Dark inside the ring, so the statement reads over the floor and links. */
-.ps-hub::before {
+/* A thin ring on the floor the product stands on. */
+.ps-hero__glow::after {
   position: absolute;
-  inset: 3%;
+  right: 15%;
+  bottom: 3%;
+  left: 15%;
+  height: 10%;
+  border: 1px solid rgba(255, 180, 106, 0.26);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(4, 3, 3, 0.94) 0%, rgba(4, 3, 3, 0.9) 62%, rgba(255, 110, 24, 0.07) 100%);
+  box-shadow: 0 0 40px rgba(255, 110, 24, 0.12);
   content: "";
 }
 
-.ps-hub__rings {
+.ps-slide__shot {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
+  object-fit: contain;
+  mix-blend-mode: lighten;
+  opacity: 0;
+  visibility: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.ps-hub__ring {
-  fill: none;
-  /* A centred viewBox turns about its own centre with origin 0 0. */
-  transform-box: view-box;
-  transform-origin: 0 0;
+.ps-slide__shot.is-active {
+  opacity: 1;
+  visibility: visible;
 }
 
-.ps-hub__ring--glow {
-  stroke: #ffb46a;
-  stroke-width: 0.7;
-  filter: drop-shadow(0 0 2px rgba(255, 139, 18, 0.9)) drop-shadow(0 0 9px rgba(255, 110, 20, 0.55));
+/* --- The copy --------------------------------------------------------------- */
+
+.ps-hero__side {
+  display: flex;
+  grid-area: side;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding-bottom: 28px;
 }
 
-.ps-hub__ring--ticks {
-  stroke: rgba(255, 180, 106, 0.32);
-  stroke-dasharray: 0.35 2.2;
-  stroke-width: 2.4;
-  animation: psSpin 140s linear infinite;
-}
-
-.ps-hub__ring--orbit {
-  stroke: rgba(255, 180, 106, 0.38);
-  stroke-dasharray: 1 6;
-  stroke-width: 0.5;
-  animation: psSpin 90s linear infinite reverse;
-}
-
-@keyframes psSpin {
-  to {
-    rotate: 360deg;
-  }
-}
-
-/* The statement shares the ring's grid cell and sits inside it: 76% of the
-   ring's width (the ring is min(100%, 580px, 100svh - 200px), at least 380px). */
-.ps-hub__copy {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-area: hub;
-  place-self: center;
-  justify-items: center;
-  width: max(289px, min(76%, 441px, calc(76svh - 152px)));
-  text-align: center;
-}
-
-/* The mark at the centre of the ring is for phones (below). */
-.ps-hub__core {
-  display: none;
-}
-
-/* The mark as supplied, never turned: it only fades and scales in. */
-.ps-hub__logo {
-  width: clamp(44px, 4.2vw, 60px);
-  height: auto;
-  aspect-ratio: 1000 / 968;
-  margin-bottom: 14px;
-}
-
-.ps-hub__eyebrow {
+/* Doubled up to outrank the shared .section-label size in global.css. */
+.ps-hero .ps-hero__eyebrow {
   margin: 0;
+  color: rgba(255, 242, 232, 0.55);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.18em;
 }
 
-.ps-hub__title {
-  margin: 14px 0 0;
+.ps-hero__eyebrow > span[aria-hidden] {
+  margin: 0 6px;
+  color: #ffb46a;
+}
+
+.ps-hero__title {
+  margin: 12px 0 0;
   color: #fff;
   font-family: var(--font-display);
-  font-size: clamp(26px, 2.8vw, 42px);
+  font-size: clamp(24px, 2.3vw, 36px);
   font-weight: 400;
-  line-height: 1.14;
+  line-height: 1.16;
   text-wrap: balance;
 }
 
-.ps-hub__title em {
+.ps-hero__title em {
   color: #fbd896;
   font-style: normal;
-  text-shadow: 0 0 26px rgba(251, 216, 150, 0.4);
+  text-shadow: 0 0 26px rgba(251, 216, 150, 0.32);
 }
 
-.ps-hub__lede {
-  max-width: 32ch;
-  margin: 14px 0 0;
-  color: rgba(255, 236, 225, 0.68);
+/* The four slides' copy share one cell; only the active one shows. */
+.ps-hero__copy {
+  display: grid;
+}
+
+.ps-slide__copy {
+  grid-area: 1 / 1;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ps-slide__copy.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ps-slide__number {
+  margin: 0;
+  background: linear-gradient(180deg, #fbd896 0%, #ff8b12 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-display);
+  font-size: clamp(60px, 6.6vw, 104px);
+  line-height: 0.92;
+}
+
+.ps-slide__number small {
+  margin-left: 12px;
+  color: rgba(255, 243, 231, 0.4);
+  -webkit-text-fill-color: rgba(255, 243, 231, 0.4);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  vertical-align: top;
+}
+
+.ps-slide__title {
+  margin: 16px 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.ps-slide__tagline {
+  margin: 10px 0 0;
+  color: #ffb46a;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* The hairlines run on to the edge of the screen, as in a spec sheet. */
+.ps-slide__facts {
+  margin: 22px calc(-1 * var(--gutter)) 0 0;
+  border-top: 1px solid rgba(255, 214, 170, 0.18);
+}
+
+.ps-slide__facts > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px var(--gutter) 14px 0;
+  border-bottom: 1px solid rgba(255, 214, 170, 0.1);
+}
+
+.ps-slide__facts dt {
+  padding-top: 3px;
+  color: rgba(255, 243, 231, 0.45);
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ps-slide__facts dd {
+  max-width: 44ch;
+  margin: 0;
+  color: rgba(255, 236, 225, 0.72);
   font-family: var(--font-body);
-  font-size: clamp(12.5px, 0.95vw, 14.5px);
-  line-height: 1.6;
-  text-wrap: balance;
+  font-size: 13px;
+  line-height: 1.65;
 }
 
-.ps-hub__actions {
+.ps-slide__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-top: 24px;
+}
+
+/* --- The indicators ----------------------------------------------------------- */
+
+.ps-hero__nav {
+  display: flex;
+  grid-area: nav;
+  align-items: center;
   justify-content: center;
-  margin-top: 22px;
+  gap: clamp(14px, 2vw, 28px);
+  padding-top: 14px;
+}
+
+.ps-dots {
+  display: flex;
+  gap: clamp(14px, 2vw, 30px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ps-dots button {
+  display: grid;
+  min-width: 56px;
+  gap: 10px;
+  padding: 10px 0 8px;
+  border: 0;
+  background: none;
+  color: rgba(255, 243, 231, 0.42);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-align: left;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+/* Numbers only, as in a spec sheet; the name is for screen readers. */
+.ps-dots__name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.ps-dots button:hover,
+.ps-dots button:focus-visible,
+.ps-dots__item.is-active button {
+  color: #fff;
+}
+
+.ps-dots__item.is-active .ps-dots__index {
+  color: #ffb46a;
+}
+
+.ps-dots__line {
+  grid-column: 1 / -1;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255, 214, 170, 0.18);
+}
+
+.ps-dots__fill {
+  display: block;
+  height: 100%;
+  background: #ffb46a;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.ps-dots__item.is-active .ps-dots__fill {
+  transform: scaleX(1);
+}
+
+.ps-arrow {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 236, 220, 0.28);
+  border-radius: 50%;
+  background: rgba(10, 5, 2, 0.3);
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.ps-arrow:hover,
+.ps-arrow:focus-visible {
+  border-color: #ffb46a;
+  background: rgba(255, 139, 18, 0.12);
 }
 
 .ps-btn {
@@ -253,314 +379,6 @@
   border-color: #fff;
 }
 
-/* --- The products ------------------------------------------------------------ */
-
-.ps-node {
-  position: relative;
-  z-index: 1;
-  list-style: none;
-  transition:
-    opacity 0.45s ease,
-    filter 0.45s ease;
-}
-
-.ps-node--01 {
-  grid-area: a;
-  align-self: start;
-}
-
-.ps-node--02 {
-  grid-area: b;
-  align-self: start;
-}
-
-.ps-node--03 {
-  grid-area: c;
-  align-self: end;
-}
-
-.ps-node--04 {
-  grid-area: d;
-  align-self: end;
-}
-
-.ps-node__link {
-  display: grid;
-  gap: 16px;
-  transition: translate 0.5s var(--ease-out);
-}
-
-/* Each product's own screen, framed like a monitor with viewfinder corners. */
-.ps-node__screen {
-  position: relative;
-  display: block;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border: 1px solid rgba(255, 180, 106, 0.28);
-  border-radius: 14px;
-  background: #0b0908;
-  box-shadow:
-    0 0 0 6px rgba(255, 139, 18, 0.04),
-    0 28px 60px rgba(0, 0, 0, 0.55);
-  transition:
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
-}
-
-.ps-node__screen img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: scale 0.9s var(--ease-out);
-}
-
-.ps-node__screen::before {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.55));
-  content: "";
-  pointer-events: none;
-}
-
-.ps-node__screen::after {
-  position: absolute;
-  inset: 9px;
-  z-index: 1;
-  background:
-    linear-gradient(#ffb46a, #ffb46a) left top / 14px 1px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) left top / 1px 14px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) right top / 14px 1px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) right top / 1px 14px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) left bottom / 14px 1px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) left bottom / 1px 14px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) right bottom / 14px 1px no-repeat,
-    linear-gradient(#ffb46a, #ffb46a) right bottom / 1px 14px no-repeat;
-  content: "";
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* A scan line passes down each screen in turn once the hero is live. */
-.ps-node__scan {
-  position: absolute;
-  top: -30%;
-  right: 0;
-  left: 0;
-  z-index: 1;
-  height: 30%;
-  background: linear-gradient(180deg, transparent, rgba(255, 180, 106, 0.14) 80%, rgba(255, 214, 160, 0.6) 100%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.ps-hero.is-live:not(.is-still) .ps-node__scan {
-  opacity: 1;
-  animation: psScan 6s cubic-bezier(0.55, 0, 0.45, 1) var(--scan-delay, 0s) infinite;
-}
-
-.ps-node--02 {
-  --scan-delay: 1.5s;
-}
-
-.ps-node--03 {
-  --scan-delay: 3s;
-}
-
-.ps-node--04 {
-  --scan-delay: 4.5s;
-}
-
-@keyframes psScan {
-  0% {
-    translate: 0 0;
-  }
-  45%,
-  100% {
-    translate: 0 440%;
-  }
-}
-
-.ps-node__status {
-  position: absolute;
-  bottom: 14px;
-  left: 16px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 9px;
-  border-radius: 999px;
-  background: rgba(10, 6, 4, 0.62);
-  color: #fff;
-  font-family: var(--font-ui);
-  font-size: 9.5px;
-  letter-spacing: 0.16em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.ps-node__status::before {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ffb46a;
-  box-shadow: 0 0 8px rgba(255, 139, 18, 0.9);
-  content: "";
-  animation: psBlink 2.4s ease-in-out infinite;
-}
-
-@keyframes psBlink {
-  50% {
-    opacity: 0.25;
-  }
-}
-
-.ps-node__meta {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 5px 14px;
-  align-items: baseline;
-}
-
-.ps-node__meta b {
-  grid-row: span 2;
-  color: #ff8b12;
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-}
-
-.ps-node__meta strong {
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: clamp(13px, 1.05vw, 16px);
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
-  text-transform: uppercase;
-}
-
-.ps-node__meta small {
-  color: rgba(255, 236, 225, 0.6);
-  font-family: var(--font-ui);
-  font-size: 11.5px;
-  letter-spacing: 0.02em;
-}
-
-/* The right-hand products mirror the left: number on the outside edge. */
-.ps-node--02 .ps-node__meta,
-.ps-node--04 .ps-node__meta {
-  grid-template-columns: minmax(0, 1fr) auto;
-  text-align: right;
-}
-
-.ps-node--02 .ps-node__meta b,
-.ps-node--04 .ps-node__meta b {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-}
-
-/* Hovering or focusing a product: it lifts and lights, the rest go quiet. */
-.ps-node.is-hot .ps-node__link {
-  translate: 0 -4px;
-}
-
-.ps-node.is-hot .ps-node__screen {
-  border-color: #ffb46a;
-  box-shadow:
-    0 0 0 6px rgba(255, 139, 18, 0.1),
-    0 0 44px rgba(255, 110, 20, 0.3),
-    0 28px 60px rgba(0, 0, 0, 0.55);
-}
-
-.ps-node.is-hot .ps-node__screen img {
-  scale: 1.04;
-}
-
-.ps-hero.has-focus .ps-node:not(.is-hot) {
-  opacity: 0.42;
-  filter: saturate(0.4);
-}
-
-.ps-node__link:focus-visible {
-  outline: none;
-}
-
-.ps-node__link:focus-visible .ps-node__screen {
-  outline: 1px dashed rgba(255, 180, 106, 0.8);
-  outline-offset: 5px;
-}
-
-/* --- The links: data travelling from each product into the ring ----------- */
-
-.ps-link {
-  transition: opacity 0.45s ease;
-}
-
-.ps-link__base {
-  fill: none;
-  stroke: rgba(255, 170, 100, 0.34);
-  stroke-width: 1.2;
-  transition:
-    stroke 0.4s ease,
-    stroke-width 0.4s ease;
-}
-
-.ps-link__flow {
-  fill: none;
-  stroke: #ffe0b8;
-  stroke-dasharray: 28px calc(var(--len, 400) * 1px);
-  stroke-linecap: round;
-  stroke-width: 2;
-  filter: drop-shadow(0 0 4px rgba(255, 139, 18, 0.95)) drop-shadow(0 0 10px rgba(255, 110, 20, 0.6));
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-.ps-hero.is-live .ps-link__flow {
-  opacity: 1;
-  animation: psFlow 2.8s linear infinite;
-}
-
-@keyframes psFlow {
-  from {
-    stroke-dashoffset: 28px;
-  }
-  to {
-    stroke-dashoffset: calc(var(--len, 400) * -1px);
-  }
-}
-
-.ps-link__port {
-  fill: #ffcf96;
-  filter: drop-shadow(0 0 5px rgba(255, 139, 18, 0.9));
-}
-
-.ps-link__dock {
-  fill: #ffb46a;
-  opacity: 0.85;
-}
-
-.ps-hero.has-focus .ps-link:not(.is-hot) {
-  opacity: 0.25;
-}
-
-.ps-link.is-hot .ps-link__base {
-  stroke: rgba(255, 196, 130, 0.85);
-  stroke-width: 1.6;
-}
-
-.ps-hero.is-live .ps-link.is-hot .ps-link__flow {
-  animation-duration: 1.3s;
-}
-
-.ps-hero.is-still .ps-link__flow {
-  display: none;
-}
-
 /* The statement band rises out of the hero's black above it instead of
    starting on a hard edge. Scoped to .ps-page so it outranks the shared
    rule in global.css, which loads later. */
@@ -583,183 +401,94 @@
   padding: clamp(44px, 5vw, 72px) 24px;
 }
 
+
 /* --------------------------------------------------------------------------
    Responsive
    -------------------------------------------------------------------------- */
 
-/* Small laptops and landscape tablets: a little tighter inside the ring. */
+/* Small laptops and tablets: smaller buttons, and the copy lifted clear of
+   the assistant's badge in the bottom-right corner. */
 @media (max-width: 1200px) {
-  .ps-hub__copy {
-    width: max(312px, min(82%, 476px, calc(82svh - 164px)));
-  }
-
   .ps-btn {
     padding: 12px 18px;
     font-size: 11px;
   }
 
-  .ps-node__status {
-    bottom: 10px;
-    left: 12px;
+  .ps-hero__side {
+    padding-bottom: 100px;
   }
 }
 
-/* Tablets and phones: the same diagram, stood upright. The statement comes
-   first; then two products, the ring with the mark at its centre, and two
-   more, every screen facing the ring and linked into it. */
-@media (max-width: 900px) {
+/* Tablets in portrait and phones: one column, the statement first, then
+   the product with its indicators, then its copy. */
+@media (max-width: 860px) {
   .ps-hero {
     min-height: 0;
-    padding: 112px 28px 56px;
+    padding: 104px var(--gutter) 36px;
   }
 
-  .ps-hero__field {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto;
+  .ps-hero__show {
     grid-template-areas:
-      "copy copy"
-      "a b"
-      "hub hub"
-      "c d";
-    gap: 0 22px;
-  }
-
-  .ps-hub__copy {
-    grid-area: copy;
-    width: 100%;
-    max-width: 560px;
-    margin-bottom: 52px;
-  }
-
-  .ps-hub__logo {
-    display: none;
-  }
-
-  .ps-hub__title {
-    font-size: clamp(28px, 6vw, 44px);
-  }
-
-  .ps-hub__lede {
-    max-width: 38ch;
-    font-size: clamp(13px, 2vw, 15px);
-  }
-
-  .ps-hub {
-    width: clamp(124px, 26vw, 200px);
-    min-width: 0;
-    margin: 30px 0;
-  }
-
-  .ps-hub__core {
-    position: relative;
-    display: block;
-    width: 46%;
-    height: auto;
-    aspect-ratio: 1000 / 968;
-  }
-
-  /* The top pair sit on the ring, labels above their screens; the bottom
-     pair hang from it, labels below. Left cards read from the left edge,
-     right cards from the right, mirroring each other as on desktop. */
-  .ps-node--01,
-  .ps-node--02 {
-    align-self: end;
-  }
-
-  .ps-node--03,
-  .ps-node--04 {
-    align-self: start;
-  }
-
-  .ps-node--01 .ps-node__meta,
-  .ps-node--02 .ps-node__meta {
-    order: -1;
-  }
-
-  .ps-node__meta,
-  .ps-node--02 .ps-node__meta,
-  .ps-node--04 .ps-node__meta {
+      "stage"
+      "nav"
+      "copy";
     grid-template-columns: minmax(0, 1fr);
-    gap: 5px;
+    grid-template-rows: auto;
+    min-height: 0;
   }
 
-  .ps-node__meta b,
-  .ps-node--02 .ps-node__meta b,
-  .ps-node--04 .ps-node__meta b {
-    grid-row: auto;
-    grid-column: auto;
+  .ps-hero__side {
+    display: contents;
+  }
+
+  .ps-hero__stage {
+    width: min(100%, 600px);
+    margin-top: 12px;
+  }
+
+  .ps-hero__nav {
+    padding-top: 4px;
+  }
+
+  .ps-hero__copy {
+    grid-area: copy;
+    margin-top: 28px;
+  }
+
+  .ps-slide__facts {
+    margin-right: 0;
+  }
+
+  .ps-slide__facts > div {
+    padding-right: 0;
   }
 }
 
-/* Phones: everything a size smaller, and nothing wider than the screen. */
-@media (max-width: 760px) {
+@media (max-width: 560px) {
   .ps-hero {
-    padding: 100px 18px 44px;
+    --gutter: 16px;
+    padding-top: 92px;
   }
 
-  .ps-hero__field {
-    column-gap: 14px;
+  .ps-hero__title {
+    font-size: 23px;
   }
 
-  .ps-hero__floor {
-    opacity: 0.55;
+  .ps-slide__number {
+    font-size: 54px;
   }
 
-  .ps-hub__copy {
-    margin-bottom: 40px;
+  .ps-slide__title {
+    font-size: 20px;
   }
 
-  .ps-hub__title {
-    font-size: clamp(27px, 7.8vw, 34px);
+  .ps-slide__facts > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
   }
 
-  .ps-hub__lede {
-    max-width: 30ch;
-  }
-
-  .ps-hub {
-    margin: 24px 0;
-  }
-
-  .ps-node__link {
+  .ps-hero__nav,
+  .ps-dots {
     gap: 10px;
-  }
-
-  .ps-node__screen {
-    border-radius: 10px;
-  }
-
-  .ps-node__screen::after {
-    inset: 6px;
-    background-size: 9px 1px, 1px 9px, 9px 1px, 1px 9px, 9px 1px, 1px 9px, 9px 1px, 1px 9px;
-    opacity: 0.5;
-  }
-
-  .ps-node__status {
-    bottom: 7px;
-    left: 8px;
-    gap: 5px;
-    padding: 4px 7px;
-    font-size: 7.5px;
-    letter-spacing: 0.12em;
-  }
-
-  .ps-node__status::before {
-    width: 5px;
-    height: 5px;
-  }
-
-  .ps-node__meta b {
-    font-size: 11px;
-  }
-
-  .ps-node__meta strong {
-    font-size: 12px;
-    line-height: 1.35;
-  }
-
-  .ps-node__meta small {
-    font-size: 10.5px;
-    line-height: 1.4;
   }
 }

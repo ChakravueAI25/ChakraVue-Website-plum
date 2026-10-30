@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { handleAdminPage, handleDocument } from "./assistant/admin.ts";
 import { handleChat } from "./assistant/chatHandler.ts";
+import { handleEarlyBird } from "./earlyBird.ts";
 
 /**
  * The Product Assistant's routes, shared by the production server
@@ -10,6 +11,7 @@ import { handleChat } from "./assistant/chatHandler.ts";
 export async function handleAssistantRoute(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
   const { pathname } = new URL(req.url ?? "/", "http://localhost");
   if (pathname === "/api/chat") await handleChat(req, res);
+  else if (pathname === "/api/early-bird") await handleEarlyBird(req, res);
   else if (pathname === "/api/admin/document") await handleDocument(req, res);
   else if (pathname === "/admin" || pathname === "/admin/") await handleAdminPage(req, res);
   else return false;

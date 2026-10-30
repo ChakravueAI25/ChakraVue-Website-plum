@@ -1,319 +1,266 @@
-import { useLayoutEffect, useRef, type MouseEvent } from "react";
-import { Logo } from "../../../brand/Logo";
-import { BrandText } from "../../../shared/components/BrandText";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
 import { Link } from "../../../shared/components/Link";
-import { finePointer, reduceMotion } from "../../../motion/env";
+import { audiences } from "../../../shared/data/audiences";
+import { reduceMotion } from "../../../motion/env";
 import { gsap } from "../../../motion/gsap";
 import { scrollToY } from "../../../motion/lenis";
 import { useMotion } from "../../../motion/useMotion";
 import { products } from "../data";
 
-/** What each product's screen shows in the hero, and the status on it. */
-const SCREENS: Record<string, { image: string; status: string; alt: string }> = {
-  "surgical-assistant": { image: "surgical-assistant", status: "Live view", alt: "The Surgical Assistant's live view of an eye during surgery" },
-  "slit-lamp-module": { image: "slit-lamp-module", status: "Analysis", alt: "The Slit Lamp Module's view of an eye under examination" },
-  "ai-powered-emr": { image: "ai-powered-emr", status: "Records", alt: "The ChakraVue System's patient dashboard, with test patients" },
-  "integrated-devices": { image: "integrated-devices", status: "Linked", alt: "The Integrated Devices connectivity module" },
+/** How long each product stays up while the slideshow plays (seconds). */
+const HOLD = 4.5;
+const total = String(products.length).padStart(2, "0");
+
+/**
+ * Each product in a sentence, paraphrasing its own description (data.ts),
+ * and the render on its slide (rendered on black from the 3D models, so it
+ * shows the site's palette and screens; see README "Product Suite").
+ */
+const SLIDES: Record<string, { brief: string; alt: string }> = {
+  "surgical-assistant": {
+    brief: "Real-time overlays and guidance in the surgeon’s field of view, with structured data captured for surgical analysis.",
+    alt: "The Digital Surgical Assistant: an open field case with the surgical interface on its display",
+  },
+  "slit-lamp-module": {
+    brief: "Captures every slit lamp examination, highlights relevant findings in real time and files them to the patient history.",
+    alt: "The Slit Lamp Module: an open field case with the slit lamp analytics on its display",
+  },
+  "ai-powered-emr": {
+    brief: "A clinical records system built around ophthalmic workflows: imaging, device output and clinical notes in one timeline.",
+    alt: "The ChakraVue System: an open field case with the patient dashboard, showing test patients, on its display",
+  },
+  "integrated-devices": {
+    brief: "Connects the equipment you already own and routes its data into your patient records in real time.",
+    alt: "The Integrated Devices connectivity module in its clear enclosure",
+  },
 };
 
-/** Land on a product's chapter in the theater just after it has built up. */
-function openChapter(event: MouseEvent<HTMLAnchorElement>, id: string) {
-  const chapter = document.getElementById(id);
-  if (!chapter) return;
+/** Who each product is for, from the audience mapping (shared/data/audiences.ts). */
+const builtFor = (id: string) => audiences.filter((a) => a.items.some((item) => item.key === id)).map((a) => a.label);
+
+/** Land on a product's row further down the page. */
+function openProduct(event: MouseEvent<HTMLAnchorElement>, id: string) {
+  const row = document.getElementById(id);
+  if (!row) return;
   event.preventDefault();
-  scrollToY(chapter.getBoundingClientRect().top + window.scrollY + chapter.offsetHeight * 0.06);
+  scrollToY(row.getBoundingClientRect().top + window.scrollY - 40);
 }
 
 /**
- * The Product Suite hero: ChakraVue AI at the centre, the page's statement
- * inside its ring, and the four products around it, each showing its own
- * screen. Links run from every product into the ring, and data travels
- * along them. Hovering a product lights its link and quiets the others.
- *
- * The links are measured off the laid-out cards (drawLinks below), so the
- * same drawing serves the wide layout (products at the four corners, the
- * statement inside the ring) and the phone one (the statement on top, then
- * two products, the ring and two more, each screen facing the ring).
+ * The Product Suite hero: an editorial slideshow of the four products. One
+ * product at a time, large on the left (a render from its 3D model), and on
+ * the right the product's number, name, tagline, brief and Built for between
+ * hairlines. Arrows, the numbered indicators, the arrow keys and a swipe
+ * change slides; it plays continuously in a loop, pausing only when off-screen
+ * or when the tab is hidden.
  */
 export function SuiteHero() {
   const ref = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
+  const previous = useRef(0);
+  const direction = useRef(1);
+  const timer = useRef<gsap.core.Tween | null>(null);
+  const hold = useRef({ hidden: false });
+  const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
 
-  // The links are drawn with or without motion (they simply don't travel
-  // when motion is reduced). A layout effect, so they exist before the
-  // entrance below animates them.
+  const go = useCallback((to: number, dir?: number) => {
+    setActive((from) => {
+      const next = (to + products.length) % products.length;
+      if (next === from) return from;
+      direction.current = dir ?? (next > from ? 1 : -1);
+      previous.current = from;
+      return next;
+    });
+  }, []);
+  const step = useCallback((dir: number) => setActive((from) => {
+    const next = (from + dir + products.length) % products.length;
+    direction.current = dir;
+    previous.current = from;
+    return next;
+  }), []);
+
+  // The change of slide: the outgoing product slides away and the new one
+  // comes in from the side it was asked for; the copy steps up. Before
+  // paint, so the class change and the tweens land in the same frame.
   useLayoutEffect(() => {
     const root = ref.current;
-    if (!root) return;
-    return drawLinks(root);
+    const from = previous.current;
+    if (!root || from === active || reduceMotion) return;
+    const shots = root.querySelectorAll<HTMLElement>(".ps-slide__shot");
+    const copies = root.querySelectorAll<HTMLElement>(".ps-slide__copy");
+    const dir = direction.current;
+    gsap.killTweensOf([...shots, ...copies, ...root.querySelectorAll(".ps-slide__copy > *")]);
+    gsap.set([...shots, ...copies], { clearProps: "all" });
+
+    gsap.fromTo(shots[from], { autoAlpha: 1 }, { autoAlpha: 0, xPercent: -10 * dir, scale: 0.94, duration: 0.55, ease: "power2.in", clearProps: "all" });
+    gsap.from(shots[active], { autoAlpha: 0, xPercent: 12 * dir, scale: 1.04, duration: 1.1, delay: 0.4, ease: "cv.out", clearProps: "all" });
+    gsap.fromTo(copies[from], { autoAlpha: 1 }, { autoAlpha: 0, y: -14, duration: 0.35, ease: "power2.in", clearProps: "all" });
+    gsap.from(copies[active].children, { autoAlpha: 0, y: 22, duration: 0.8, stagger: 0.06, delay: 0.3, ease: "cv.out", clearProps: "all" });
+  }, [active]);
+
+  // Autoplay, shown as the active indicator's line filling up. It restarts
+  // on every change and loops continuously.
+  const syncTimer = useCallback(() => {
+    const paused = hold.current.hidden || document.hidden;
+    if (paused) timer.current?.pause();
+    else timer.current?.resume();
   }, []);
 
-  useMotion(ref, (root) => {
-    const field = root.querySelector<HTMLElement>(".ps-hero__field");
-    const nodes = gsap.utils.toArray<HTMLElement>(".ps-node", root);
-    if (!field) return;
-
-    // The ring opens first, then the products arrive from their corners and
-    // their links draw into the ring; then data starts to flow.
-    gsap
-      .timeline()
-      .from(root.querySelectorAll(".ps-hub__ring"), { scale: 0.9, autoAlpha: 0, duration: 0.9, stagger: 0.06, ease: "cv.out" })
-      .from(root.querySelectorAll(".ps-hub__logo, .ps-hub__core"), { scale: 0.8, autoAlpha: 0, duration: 0.7, ease: "cv.out" }, 0.1)
-      .from(root.querySelector(".ps-hub__actions"), { y: 12, autoAlpha: 0, duration: 0.6, ease: "cv.out" }, 0.4)
-      .from(
-        nodes,
-        {
-          x: (i) => (i % 2 ? 40 : -40),
-          y: (i) => (i < 2 ? -20 : 20),
-          autoAlpha: 0,
-          duration: 0.8,
-          stagger: 0.06,
-          ease: "cv.out",
-          clearProps: "transform,opacity,visibility",
-        },
-        0.15,
-      )
-      .from(root.querySelectorAll(".ps-link__base"), { strokeDashoffset: (_, el: SVGPathElement) => el.getTotalLength(), duration: 0.6, stagger: 0.06, ease: "power2.inOut" }, 0.45)
-      .from(root.querySelectorAll(".ps-link__port"), { scale: 0, autoAlpha: 0, transformOrigin: "50% 50%", duration: 0.4, stagger: 0.06, ease: "back.out(2.4)" }, 0.6)
-      .add(() => root.classList.add("is-live"), 0.9);
-
-    // Scrolling on, the whole diagram settles back and fades. Wide screens
-    // only: on phones the products are read while scrolling, so they stay lit.
-    gsap.matchMedia().add("(min-width: 901px)", () => {
-      gsap.to(field, {
-        yPercent: 8,
-        autoAlpha: 0.3,
-        ease: "none",
-        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
-      });
-    });
-
-    if (!finePointer) return;
-
-    // The diagram tilts a little toward the pointer, in one piece, so the
-    // links stay attached to the cards.
-    const rx = gsap.quickTo(field, "rotationX", { duration: 1.2, ease: "power3" });
-    const ry = gsap.quickTo(field, "rotationY", { duration: 1.2, ease: "power3" });
-    gsap.set(field, { transformPerspective: 2200 });
-    const onMove = (event: PointerEvent) => {
-      const box = root.getBoundingClientRect();
-      ry(((event.clientX - box.left) / box.width - 0.5) * 4);
-      rx(-((event.clientY - box.top) / box.height - 0.5) * 3);
-    };
-    const onLeave = () => {
-      rx(0);
-      ry(0);
-    };
-    root.addEventListener("pointermove", onMove);
-    root.addEventListener("pointerleave", onLeave);
+  useEffect(() => {
+    const root = ref.current;
+    const bar = root?.querySelector<HTMLElement>(`.ps-dots__item:nth-child(${active + 1}) .ps-dots__fill`);
+    if (reduceMotion || !bar) return;
+    timer.current = gsap.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: HOLD, ease: "none", onComplete: () => step(1) });
+    syncTimer();
     return () => {
-      root.removeEventListener("pointermove", onMove);
-      root.removeEventListener("pointerleave", onLeave);
+      timer.current?.kill();
+      timer.current = null;
+      gsap.set(bar, { clearProps: "transform" });
     };
+  }, [active, step, syncTimer]);
+
+  // Off screen (or in a background tab) it holds.
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const seen = new IntersectionObserver(([entry]) => {
+      hold.current.hidden = !entry.isIntersecting;
+      syncTimer();
+    });
+    seen.observe(root);
+    document.addEventListener("visibilitychange", syncTimer);
+    return () => {
+      seen.disconnect();
+      document.removeEventListener("visibilitychange", syncTimer);
+    };
+  }, [syncTimer]);
+
+  // The opening: the first product rises in, then its copy.
+  useMotion(ref, (root) => {
+    gsap
+      .timeline({ delay: 0.15 })
+      .from(root.querySelector(".ps-slide__shot.is-active"), { autoAlpha: 0, y: 40, scale: 0.96, duration: 1.2, ease: "cv.out", clearProps: "all" })
+      .from(root.querySelector(".ps-hero__glow"), { autoAlpha: 0, scale: 0.8, duration: 1.4, ease: "cv.out", clearProps: "all" }, 0)
+      .from(root.querySelectorAll(".ps-slide__copy.is-active > *"), { autoAlpha: 0, y: 24, duration: 0.9, stagger: 0.07, ease: "cv.out", clearProps: "all" }, 0.35)
+      .from(root.querySelectorAll(".ps-hero__nav > *"), { autoAlpha: 0, y: 12, duration: 0.7, stagger: 0.05, ease: "cv.out", clearProps: "all" }, 0.6);
   });
 
-  return (
-    <section ref={ref} className="ps-hero" aria-labelledby="ps-hero-title">
-      <div className="ps-hero__floor" aria-hidden="true" />
-      <div className="ps-hero__field">
-        <svg className="ps-hero__links" aria-hidden="true" />
+  const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "ArrowRight") step(1);
+    else if (event.key === "ArrowLeft") step(-1);
+    else return;
+    event.preventDefault();
+  };
 
-        <div className="ps-hub">
-          <svg className="ps-hub__rings" viewBox="-100 -100 200 200" aria-hidden="true">
-            <circle className="ps-hub__ring ps-hub__ring--glow" r="96" />
-            <circle className="ps-hub__ring ps-hub__ring--ticks" r="91" />
-            <circle className="ps-hub__ring ps-hub__ring--orbit" r="99" />
-          </svg>
-          {/* Phones: the mark sits at the centre of the ring, the statement above. */}
-          <Logo className="ps-hub__core" />
+  // A horizontal swipe on the product changes slide.
+  const onSwipeStart = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse") return;
+    swipe.current = { x: event.clientX, y: event.clientY, id: event.pointerId };
+  };
+  const onSwipeEnd = (event: PointerEvent<HTMLDivElement>) => {
+    const start = swipe.current;
+    swipe.current = null;
+    if (!start || start.id !== event.pointerId) return;
+    const dx = event.clientX - start.x;
+    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(event.clientY - start.y)) step(dx < 0 ? 1 : -1);
+  };
+
+  return (
+    <section
+      ref={ref}
+      className="ps-hero"
+      aria-label="Product Suite"
+      onKeyDown={onKeyDown}
+    >
+      <div className="ps-hero__show" role="region" aria-roledescription="carousel" aria-label="Products">
+        {/* The renders are on black and blend onto the glow (lighten), so the
+            stage and the shots must stay in one stacking context: no
+            transform, opacity or z-index on .ps-hero__stage. */}
+        <div className="ps-hero__stage" onPointerDown={onSwipeStart} onPointerUp={onSwipeEnd} onPointerCancel={() => (swipe.current = null)}>
+          <span className="ps-hero__glow" aria-hidden="true" />
+          {products.map((product, i) => (
+            <img
+              key={product.id}
+              className={`ps-slide__shot ps-slide__shot--${product.id}${i === active ? " is-active" : ""}`}
+              src={`/images/product-suite/slides/${product.id}.webp`}
+              alt={SLIDES[product.id].alt}
+              width="1500"
+              height="1200"
+              decoding="async"
+              fetchPriority={i === 0 ? "high" : "low"}
+              aria-hidden={i !== active}
+            />
+          ))}
         </div>
 
-        <div className="ps-hub__copy">
-          <Logo className="ps-hub__logo" />
-          <p className="section-label ps-hub__eyebrow" data-scramble>
-            Product Suite
-          </p>
-          <h1 id="ps-hero-title" className="ps-hub__title" data-split>
-            We Add <em>Intelligence</em> to Your Devices.
-          </h1>
-          <p className="ps-hub__lede" data-split="fade" data-delay="0.15">
-            Four clinical systems, one <BrandText text="ChakraVue AI" /> intelligence connecting them.
-          </p>
-          <div className="ps-hub__actions">
-            <a className="ps-btn ps-btn--primary" href="#surgical-assistant" onClick={(event) => openChapter(event, "surgical-assistant")} data-magnetic="0.2">
-              Explore the suite <span aria-hidden="true">↓</span>
-            </a>
-            <Link className="ps-btn ps-btn--ghost" href="/contact-us">
-              Talk to us
-            </Link>
+        <div className="ps-hero__side">
+          <div className="ps-hero__copy" aria-live={reduceMotion ? "polite" : "off"}>
+            {products.map((product, i) => {
+              const roles = builtFor(product.id);
+              return (
+                <article
+                  key={product.id}
+                  className={`ps-slide__copy${i === active ? " is-active" : ""}`}
+                  aria-roledescription="slide"
+                  aria-label={`${i + 1} of ${products.length}: ${product.label}`}
+                  aria-hidden={i !== active}
+                  inert={i !== active}
+                >
+                  <p className="ps-slide__number">
+                    <span className="sr-only">Product </span>
+                    {product.index}
+                    <small>/ {total}</small>
+                  </p>
+                  <h1 className="ps-slide__title">{product.label}</h1>
+                  <p className="ps-slide__tagline">{product.tagline}</p>
+                  <dl className="ps-slide__facts">
+                    <div>
+                      <dt>Brief</dt>
+                      <dd>{SLIDES[product.id].brief}</dd>
+                    </div>
+                    {roles.length > 0 && (
+                      <div>
+                        <dt>Built for</dt>
+                        <dd>{roles.join(" · ")}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  <div className="ps-slide__actions">
+                    <a className="ps-btn ps-btn--primary" href={`#${product.id}`} onClick={(event) => openProduct(event, product.id)} data-magnetic="0.2">
+                      View product <span aria-hidden="true">↓</span>
+                    </a>
+                    <Link className="ps-btn ps-btn--ghost" href={product.cta.href}>
+                      {product.cta.label}
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
 
-        <ul className="ps-hero__nodes" role="list">
-          {products.map((product) => {
-            const screen = SCREENS[product.id];
-            return (
-              <li key={product.id} className={`ps-node ps-node--${product.index}`}>
-                <a className="ps-node__link" href={`#${product.id}`} data-product={product.id} data-cursor="View" onClick={(event) => openChapter(event, product.id)}>
-                  <span className="ps-node__screen">
-                    <img src={`/images/product-suite/hero/${screen.image}.webp`} alt={screen.alt} width="720" height="450" fetchPriority="high" />
-                    <span className="ps-node__scan" aria-hidden="true" />
-                    <span className="ps-node__status" aria-hidden="true">
-                      {screen.status}
-                    </span>
+        <nav className="ps-hero__nav" aria-label="Choose a product">
+          <button type="button" className="ps-arrow" onClick={() => step(-1)} aria-label="Previous product">
+            <span aria-hidden="true">←</span>
+          </button>
+          <ol className="ps-dots">
+            {products.map((product, i) => (
+              <li key={product.id} className={`ps-dots__item${i === active ? " is-active" : ""}`}>
+                <button type="button" onClick={() => go(i)} aria-current={i === active ? "true" : undefined}>
+                  <span className="ps-dots__index">{product.index}</span>
+                  <span className="ps-dots__name">{product.label}</span>
+                  <span className="ps-dots__line" aria-hidden="true">
+                    <span className="ps-dots__fill" />
                   </span>
-                  <span className="ps-node__meta">
-                    <b>{product.index}</b>
-                    <strong>{product.label}</strong>
-                    <small>{product.tagline}</small>
-                  </span>
-                </a>
+                </button>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ol>
+          <button type="button" className="ps-arrow" onClick={() => step(1)} aria-label="Next product">
+            <span aria-hidden="true">→</span>
+          </button>
+        </nav>
       </div>
     </section>
   );
-}
-
-const SVG = "http://www.w3.org/2000/svg";
-
-/**
- * Draws a link from each product's screen into the ring: it leaves the
- * screen's edge facing the ring and arrives on the ring travelling inward.
- * Positions come from layout offsets (not screen boxes), so the pointer
- * tilt and scroll drift never pull them out of register. Redrawn on resize.
- */
-function drawLinks(root: HTMLElement) {
-  const svg = root.querySelector<SVGSVGElement>(".ps-hero__links");
-  const field = root.querySelector<HTMLElement>(".ps-hero__field");
-  const hub = root.querySelector<HTMLElement>(".ps-hub");
-  const links = [...root.querySelectorAll<HTMLAnchorElement>(".ps-node__link")];
-  if (!svg || !field || !hub) return () => undefined;
-
-  /** Offset of an element within the field, walking up its offset parents. */
-  const within = (el: HTMLElement) => {
-    let x = 0;
-    let y = 0;
-    let node: HTMLElement | null = el;
-    while (node && node !== field) {
-      x += node.offsetLeft;
-      y += node.offsetTop;
-      node = node.offsetParent as HTMLElement | null;
-    }
-    return { x, y };
-  };
-
-  const groups = links.map((link) => {
-    const g = document.createElementNS(SVG, "g");
-    g.setAttribute("class", "ps-link");
-    g.dataset.product = link.dataset.product;
-    const base = document.createElementNS(SVG, "path");
-    base.setAttribute("class", "ps-link__base");
-    const flow = document.createElementNS(SVG, "path");
-    flow.setAttribute("class", "ps-link__flow");
-    const port = document.createElementNS(SVG, "circle");
-    port.setAttribute("class", "ps-link__port");
-    port.setAttribute("r", "3.5");
-    const dock = document.createElementNS(SVG, "circle");
-    dock.setAttribute("class", "ps-link__dock");
-    dock.setAttribute("r", "3");
-    g.append(base, flow, port, dock);
-    svg.append(g);
-    return { link, g, base, flow, port, dock };
-  });
-
-  const draw = () => {
-    const w = field.offsetWidth;
-    const h = field.offsetHeight;
-    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-    // The rings fill the hub (SVG has no layout offsets of its own).
-    const hubAt = within(hub);
-    const r = (hub.offsetWidth / 2) * 0.96;
-    const cx = hubAt.x + hub.offsetWidth / 2;
-    const cy = hubAt.y + hub.offsetHeight / 2;
-
-    groups.forEach(({ link, base, flow, port, dock }, i) => {
-      const screen = link.querySelector<HTMLElement>(".ps-node__screen");
-      if (!screen) return;
-      const at = within(screen);
-      const sw = screen.offsetWidth;
-      const sh = screen.offsetHeight;
-      // Leave from the side of the screen that faces the ring: its inner
-      // edge when the screen is beside the ring (wide screens), its bottom
-      // or top edge when it sits above or below it (phones).
-      const beside = at.x + sw < cx - r || at.x > cx + r;
-      let ax: number;
-      let ay: number;
-      let ox: number;
-      let oy: number;
-      if (!beside) {
-        const above = at.y + sh / 2 < cy;
-        ax = at.x + sw / 2;
-        ay = above ? at.y + sh : at.y;
-        ox = 0;
-        oy = above ? 1 : -1;
-      } else {
-        const left = at.x + sw / 2 < cx;
-        ax = left ? at.x + sw : at.x;
-        ay = at.y + sh * 0.5;
-        ox = left ? 1 : -1;
-        oy = 0;
-      }
-      const dx = ax - cx;
-      const dy = ay - cy;
-      const d = Math.hypot(dx, dy) || 1;
-      const ex = cx + (dx / d) * r;
-      const ey = cy + (dy / d) * r;
-      const reach = Math.max(40, Math.hypot(ex - ax, ey - ay) * 0.45);
-      const path = `M ${ax.toFixed(1)} ${ay.toFixed(1)} C ${(ax + ox * reach).toFixed(1)} ${(ay + oy * reach).toFixed(1)} ${(ex + (dx / d) * reach * 0.7).toFixed(1)} ${(ey + (dy / d) * reach * 0.7).toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`;
-      base.setAttribute("d", path);
-      flow.setAttribute("d", path);
-      const length = base.getTotalLength();
-      base.style.strokeDasharray = `${length}`;
-      flow.style.setProperty("--len", `${length}`);
-      flow.style.animationDelay = `${-i * 0.7}s`;
-      port.setAttribute("cx", ax.toFixed(1));
-      port.setAttribute("cy", ay.toFixed(1));
-      dock.setAttribute("cx", ex.toFixed(1));
-      dock.setAttribute("cy", ey.toFixed(1));
-    });
-  };
-
-  // Hovering (or focusing) a product lights its own link.
-  const light = (id: string | null) => {
-    root.classList.toggle("has-focus", !!id);
-    groups.forEach(({ link, g }) => {
-      const on = link.dataset.product === id;
-      g.classList.toggle("is-hot", on);
-      link.parentElement?.classList.toggle("is-hot", on);
-    });
-  };
-  const handlers = groups.map(({ link }) => {
-    const on = () => light(link.dataset.product ?? null);
-    const off = () => light(null);
-    link.addEventListener("pointerenter", on);
-    link.addEventListener("pointerleave", off);
-    link.addEventListener("focus", on);
-    link.addEventListener("blur", off);
-    return { link, on, off };
-  });
-
-  draw();
-  const resizer = new ResizeObserver(draw);
-  resizer.observe(field);
-  // Images and the web font change the cards' size once they load.
-  document.fonts?.ready.then(draw).catch(() => undefined);
-  if (reduceMotion) root.classList.add("is-live", "is-still");
-
-  return () => {
-    resizer.disconnect();
-    handlers.forEach(({ link, on, off }) => {
-      link.removeEventListener("pointerenter", on);
-      link.removeEventListener("pointerleave", off);
-      link.removeEventListener("focus", on);
-      link.removeEventListener("blur", off);
-    });
-    groups.forEach(({ g }) => g.remove());
-  };
 }

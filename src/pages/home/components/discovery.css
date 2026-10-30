@@ -1,42 +1,23 @@
-/* The discovery (DiscoveryReveal.tsx): the burnt blueprint opening out onto
-   what was underneath. The open state is the default, so the scene shows
-   without motion; useMotion arms it (is-armed) until it scrolls in. The
-   art keeps its own colours. */
-
 .discovery {
   position: relative;
   display: grid;
-  height: min(860px, 96vh);
-  min-height: 640px;
+  min-height: 700px;
+  min-height: clamp(620px, 74vw, 800px);
   overflow: hidden;
   isolation: isolate;
-  align-items: end;
-  background: #05030a;
-}
-
-.discovery__scene,
-.discovery__sheet {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  align-items: center;
+  padding: 72px 0 56px;
+  background: #050813;
 }
 
 .discovery__scene {
+  position: absolute;
+  inset: 0;
   z-index: -3;
-  object-position: 50% 45%;
-  transition: scale 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s;
-}
-
-/* The sheet's burnt hole is at its centre: it opens out from there. */
-.discovery__sheet {
-  z-index: -2;
-  opacity: 0;
-  scale: 7.5;
-  transform-origin: 50% 50%;
-  transition: scale 2.4s cubic-bezier(0.65, 0, 0.25, 1), opacity 1s ease 1.5s;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% 50%;
 }
 
 .discovery__shade {
@@ -44,295 +25,108 @@
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(180deg, #030102 0%, transparent 14%),
-    linear-gradient(0deg, #030102 0%, rgba(3, 1, 2, 0.85) 28%, transparent 60%);
+    linear-gradient(180deg, #03040a 0%, rgba(3,4,10,.35) 16%, transparent 40%, rgba(3,4,10,.52) 72%, #03040a 100%),
+    linear-gradient(90deg, rgba(3,4,10,.84) 0%, rgba(3,4,10,.53) 37%, rgba(3,4,10,.18) 78%, rgba(3,4,10,.38) 100%);
   pointer-events: none;
 }
 
 .discovery__copy {
+  position: relative;
   display: grid;
   justify-items: center;
-  padding-bottom: clamp(64px, 8vh, 96px);
+  padding-top: 24px;
   text-align: center;
 }
 
 .discovery__title {
-  margin-top: 18px;
+  max-width: 25ch;
+  margin-top: 16px;
   color: #fff;
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.2vw, 46px);
+  font-size: clamp(26px, 3.25vw, 46px);
   font-weight: 400;
-  line-height: 1.2;
-  text-shadow: 0 2px 18px rgba(10, 4, 0, 0.6);
+  line-height: 1.22;
+  text-shadow: 0 2px 20px rgba(0,0,0,.72);
 }
 
 .discovery__lead {
-  max-width: 640px;
-  margin-top: 16px;
-  text-wrap: balance;
-  color: #ffb46a;
-  font-size: clamp(15px, 1.3vw, 18px);
+  max-width: 620px;
+  margin-top: 12px;
+  color: #e3a7d8;
+  font-size: clamp(14px, 1.25vw, 17px);
   line-height: 1.6;
+  text-shadow: 0 2px 16px rgba(0,0,0,.8);
 }
 
-.discovery__copy > * {
-  transition: opacity 1s ease, translate 1s var(--ease-out);
-}
-
-.discovery__copy > :nth-child(2) {
-  transition-delay: 1.7s;
-}
-
-.discovery__copy > :nth-child(3) {
-  transition-delay: 2s;
-}
-
-.discovery__copy > :nth-child(1) {
-  transition-delay: 1.5s;
-}
-
-.discovery__copy > :nth-child(4) {
-  transition-delay: 2.4s;
-}
-
-/* The three things connected: one line runs through their dots and fills
-   from the left once the words are in, each node lighting as it reaches it. */
-.discovery__links {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(14px, 2vw, 28px);
-  width: min(920px, 100%);
-  margin-top: clamp(28px, 4vh, 40px);
-  padding: 0;
-  list-style: none;
-  text-align: left;
-}
-
-.discovery__links::before,
-.discovery__links::after {
-  content: "";
+.discovery__mascot {
   position: absolute;
-  top: 25px;
-  left: 6%;
-  right: 6%;
-  z-index: 1;
-  height: 1px;
+  z-index: 0;
+  left: 0;
+  bottom: 0;
+  width: clamp(125px, 16vw, 205px);
+  max-height: 250px;
+  object-fit: contain;
+  object-position: bottom left;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.5));
   pointer-events: none;
 }
 
-.discovery__links::before {
-  background: rgba(255, 214, 170, 0.18);
-}
-
-.discovery__links::after {
-  background: linear-gradient(90deg, #ff8b12, #ffd29a 50%, #ff8b12);
-  box-shadow: 0 0 10px rgba(255, 139, 18, 0.6);
-  transform-origin: 0 50%;
-  transition: scale 1.4s cubic-bezier(0.65, 0, 0.25, 1) 2.6s;
-}
-
-.discovery__node {
-  position: relative;
+.discovery__cards {
   display: grid;
-  align-content: start;
-  gap: 8px;
-  height: 100%;
-  padding: 18px 20px 20px;
-  border: 1px solid rgba(255, 214, 170, 0.16);
-  border-radius: 14px;
-  background: rgba(10, 5, 2, 0.58);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 0.35s ease, background-color 0.35s ease;
-}
-
-.discovery__node:hover,
-.discovery__node:focus-visible {
-  border-color: rgba(255, 180, 106, 0.6);
-  background-color: rgba(24, 11, 4, 0.72);
-}
-
-.discovery__node:focus-visible {
-  outline: 2px solid #ffb46a;
-  outline-offset: 3px;
-}
-
-.discovery__dot {
+  width: min(880px, calc(100% - 220px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: clamp(48px, 8vw, 88px);
+  margin-left: auto;
+  text-align: left;
   position: relative;
-  z-index: 2;
-  width: 12px;
-  height: 12px;
-  border: 1px solid rgba(255, 214, 170, 0.5);
-  border-radius: 50%;
-  background: #05030a;
-  transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
-  transition-delay: calc(2.7s + var(--i) * 0.55s);
+  z-index: 1;
 }
 
-.discovery__name {
-  color: #fff;
+.discovery__cards article {
+  min-width: 0;
+  padding: 18px 18px 20px;
+  border: 1px solid rgba(171,204,235,.23);
+  border-radius: 15px;
+  background: rgba(5,11,23,.7);
+  box-shadow: 0 14px 36px rgba(0,0,0,.2);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+
+.discovery__cards h3 {
+  margin: 0;
+  color: #e3a7d8;
   font-family: var(--font-display);
-  font-size: clamp(17px, 1.5vw, 21px);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .12em;
 }
 
-.discovery__line {
-  color: rgba(255, 243, 231, 0.74);
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-/* Lit: the default, so the joined state shows without motion. */
-.discovery__dot {
-  border-color: #ffd29a;
-  background: #ff8b12;
-  box-shadow: 0 0 0 4px rgba(255, 139, 18, 0.18), 0 0 14px rgba(255, 139, 18, 0.8);
-}
-
-.discovery__title em {
-  font-style: normal;
-  color: #fbd896;
-}
-
-/* At the content column's left edge, clear of the growth rail and the
-   assistant's button on the right. */
-.discovery__replay {
-  position: absolute;
-  left: max(20px, (100% - 1180px) / 2);
-  bottom: 24px;
-  min-height: 40px;
-  padding: 0 16px;
-  border: 1px solid rgba(255, 214, 170, 0.3);
-  border-radius: 999px;
-  background: rgba(10, 5, 2, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: rgba(255, 243, 231, 0.85);
-  font-family: var(--font-ui);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: border-color 0.35s ease;
-}
-
-.discovery__replay:hover,
-.discovery__replay:focus-visible {
-  border-color: #ffb46a;
-}
-
-.discovery__replay:focus-visible {
-  outline: 2px solid #ffb46a;
-  outline-offset: 3px;
-}
-
-/* Armed: the whole sheet over the scene, the words waiting. */
-.discovery.is-armed .discovery__sheet {
-  opacity: 1;
-  scale: 1;
-}
-
-.discovery.is-armed .discovery__scene {
-  scale: 1.08;
-}
-
-.discovery.is-armed .discovery__copy > * {
-  opacity: 0;
-  translate: 0 14px;
-}
-
-.discovery.is-armed .discovery__links::after {
-  scale: 0 1;
-}
-
-.discovery.is-armed .discovery__dot {
-  border-color: rgba(255, 214, 170, 0.5);
-  background: #05030a;
-  box-shadow: none;
-}
-
-/* Replay: snap the sheet shut without animating. */
-.discovery.is-resetting *,
-.discovery.is-armed .discovery__copy > * {
-  transition-duration: 0s;
-  transition-delay: 0s;
+.discovery__cards p {
+  margin: 10px 0 0;
+  color: rgba(255,243,231,.76);
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 @media (max-width: 760px) {
-  /* The scene on top, the words and the stacked nodes below it. */
-  .discovery {
-    height: auto;
-    min-height: 0;
-    padding-top: min(78vw, 360px);
-  }
-
-  .discovery__scene,
-  .discovery__sheet {
-    height: min(100vw, 460px);
-  }
-
+  .discovery { min-height: 700px; padding: 84px 0 32px; align-items: start; }
+  .discovery__scene { object-position: 68% 50%; }
   .discovery__shade {
     background:
-      linear-gradient(180deg, #030102 0%, transparent 14%),
-      linear-gradient(0deg, #05030a 0%, #05030a calc(100% - min(100vw, 460px)), rgba(5, 3, 10, 0.2) calc(100% - min(100vw, 460px) * 0.45), transparent calc(100% - min(100vw, 460px) * 0.2));
+      linear-gradient(180deg, rgba(3,4,10,.48) 0%, rgba(3,4,10,.32) 32%, rgba(3,4,10,.82) 58%, #03040a 100%),
+      linear-gradient(90deg, rgba(3,4,10,.58), rgba(3,4,10,.12));
   }
-
-  .discovery__links {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  /* The line runs down through the dots instead. */
-  .discovery__links::before,
-  .discovery__links::after {
-    top: 28px;
-    bottom: 28px;
-    left: 23px;
-    right: auto;
-    width: 1px;
-    height: auto;
-  }
-
-  .discovery__links::after {
-    background: linear-gradient(180deg, #ff8b12, #ffd29a 50%, #ff8b12);
-    transform-origin: 50% 0;
-  }
-
-  .discovery.is-armed .discovery__links::after {
-    scale: 1 0;
-  }
-
-  .discovery__node {
-    grid-template-columns: 12px 1fr;
-    column-gap: 14px;
-    row-gap: 4px;
-    padding: 14px 16px;
-  }
-
-  .discovery__dot {
-    grid-row: span 2;
-    margin-top: 5px;
-  }
-
-  /* The boy and the chip, not the whole burn. */
-  .discovery__scene {
-    object-position: 22% 45%;
-  }
-
-  .discovery__replay {
-    top: 16px;
-    bottom: auto;
-    left: auto;
-    right: 14px;
-  }
+  .discovery__copy { padding-top: 14px; }
+  .discovery__cards { width: 100%; grid-template-columns: 1fr; gap: 9px; margin: 30px 0 0; }
+  .discovery__cards article { padding: 13px 15px; }
+  .discovery__cards p { margin-top: 5px; }
+  .discovery__mascot { left: 10px; bottom: 0; width: 110px; max-height: 150px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .discovery__replay {
-    display: none;
-  }
+@media (max-width: 420px) {
+  .discovery { min-height: 720px; }
+  .discovery__title { font-size: 25px; }
+  .discovery__mascot { width: 90px; max-height: 126px; }
 }
