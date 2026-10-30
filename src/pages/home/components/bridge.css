@@ -1,0 +1,174 @@
+/* The banner and early-bird offer under the statement band (IntroBridge.tsx).
+   Authored in the Ember colours like the rest of the site; theme.ts grades
+   them to Plum, so the light comes out purple-pink. */
+
+.bridge {
+  padding: 0 0 clamp(16px, 2vw, 28px);
+  background: #030102;
+}
+
+.glow-banner {
+  --r: 64px;
+  --lap: 7s;
+  position: relative;
+  display: grid;
+  min-height: 128px;
+  place-items: center;
+  margin: 0 auto clamp(28px, 3vw, 40px);
+  padding: 28px clamp(28px, 5vw, 72px);
+  border: 1px solid rgba(255, 180, 106, 0.3);
+  border-radius: var(--r);
+  background:
+    radial-gradient(60% 120% at 50% 50%, rgba(255, 139, 18, 0.06), transparent 70%),
+    #050304;
+  /* The ambient glow: there all the time, so the banner reads between passes. */
+  box-shadow:
+    0 0 14px rgba(255, 139, 18, 0.22),
+    0 0 48px rgba(255, 139, 18, 0.1),
+    inset 0 0 22px rgba(255, 139, 18, 0.1);
+}
+
+/* The light sits exactly on the border; overflow stays visible for the haze. */
+.glow-banner__light {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* A rect inset half a pixel so a 1px stroke lands on the border line. */
+.glow-banner__comet {
+  --len: 10;
+  x: 0.5px;
+  y: 0.5px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  rx: var(--r);
+  ry: var(--r);
+  fill: none;
+  stroke-linecap: round;
+  /* In px: a unitless calc() isn't a valid dash length. With pathLength 100,
+     1px here is 1% of the perimeter. */
+  stroke-dasharray: calc(var(--len) * 1px) calc(100px - var(--len) * 1px);
+  animation: glowLap var(--lap) linear infinite;
+}
+
+/* The comet, from its long faint tail to its point. Each layer is shorter
+   and brighter than the last and their heads meet, so the tail fades into
+   the head; the blurred ones soften the steps between them. */
+.glow-banner__comet--haze {
+  --len: 6;
+  stroke: rgba(255, 139, 18, 0.9);
+  stroke-width: 10;
+}
+
+.glow-banner__comet--tail {
+  --len: 26;
+  stroke: rgba(255, 180, 106, 0.16);
+  stroke-width: 1.4;
+}
+
+.glow-banner__comet--trail {
+  --len: 14;
+  stroke: rgba(255, 180, 106, 0.4);
+  stroke-width: 2.6;
+}
+
+.glow-banner__comet--streak {
+  --len: 6;
+  stroke: #ffb46a;
+  stroke-width: 1.8;
+}
+
+/* The concentrated point at the front, the brightest part. */
+.glow-banner__comet--head {
+  --len: 1.2;
+  stroke: #fff4e4;
+  stroke-width: 2.4;
+}
+
+/* Each dash starts with its head at 0 and ends a full lap on: no seam. */
+@keyframes glowLap {
+  from {
+    stroke-dashoffset: calc(var(--len) * 1px);
+  }
+  to {
+    stroke-dashoffset: calc(var(--len) * 1px - 100px);
+  }
+}
+
+.glow-banner__line {
+  position: relative;
+  display: flex;
+  width: min(100%, 760px);
+  align-items: center;
+  gap: clamp(14px, 2.4vw, 32px);
+  margin: 0;
+  color: rgba(255, 243, 231, 0.9);
+  font-family: var(--font-display);
+  font-size: clamp(13px, 1.25vw, 17px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.glow-banner__line span {
+  flex: none;
+}
+
+/* The links between the three: a fine line with a point of light at its middle. */
+.glow-banner__line i {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 180, 106, 0.55), transparent);
+}
+
+.glow-banner__line i::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: #fbd896;
+  box-shadow: 0 0 10px rgba(255, 139, 18, 0.9);
+}
+
+/* The offer follows the banner directly; the section gives the space below. */
+.bridge .early-bird {
+  margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .glow-banner {
+    --r: 44px;
+    --lap: 6s;
+    min-height: 88px;
+    padding: 20px 26px;
+  }
+
+  .glow-banner__line {
+    gap: 10px;
+    letter-spacing: 0.14em;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 380px) {
+  .glow-banner__line {
+    letter-spacing: 0.08em;
+    font-size: 10px;
+  }
+}
+
+/* No travelling light under reduced motion: the ambient glow stays. */
+@media (prefers-reduced-motion: reduce) {
+  .glow-banner__light {
+    display: none;
+  }
+}

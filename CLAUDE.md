@@ -89,17 +89,19 @@ when you change one.
     the particle landscape (`dataHorizon.ts`, now unused) and the centred
     logo. Copy low on the left. On phones the film fills the top half so the boy stays in
     view. Nothing in the hero moves with scroll.
-  - Order (owner's homepage brief, 2026-10-29): hero, Featured-in
-    marquee, Our journey (looping strip of real summit and theatre photos,
-    `JourneyStrip.tsx`), statement band, Who are you here as? (`RoleShowcase`:
-    three roles and their products, plays by itself, plus the software
-    platform chips; replaced the product showcase), the beginning (From analog to intelligent: Analog →
-    Digital → Intelligent),
-    the discovery, the core idea, Know how it works, Integrated devices,
-    the ChakraVue System, the journey: Surgical tools (ID / Platform / Research), real
-    theatres, Why ChakraVue AI (six differentiators), Team, Latest posts,
-    then the aspiration with Book a demo / Collaborate.
-  - Why ChakraVue AI, Integrated devices and Surgical tools make no
+  - Order (2026-10-30, a storytelling flow: introduction, who we are,
+    what we do, products, in practice, people, action): hero,
+    Featured-in marquee, statement band, the glowing banner and early-bird
+    offer (`IntroBridge.tsx`: a light travels round the banner's outline,
+    CSS-only SVG dash), Who we are (`WhoWeAre.tsx`, was Why ChakraVue AI:
+    lead plus six principles), the beginning (From analog to intelligent),
+    the discovery, the core idea, Know how it works, Who are you here as?
+    (`RoleShowcase`: three roles and their products, plays by itself, plus
+    the software platform chips), Integrated devices, the ChakraVue System,
+    the journey: Surgical tools (ID / Platform / Research), real theatres,
+    Our journey (`JourneyStrip.tsx`, real summit and theatre photos), Team,
+    Latest posts, then the aspiration with Book a demo / Collaborate.
+  - Who we are, Integrated devices and Surgical tools make no
     security, storage, compatibility or validation claims beyond the
     product descriptions; the owner's notes say to add specifics only once
     verified. Keep it that way until the product team confirms them.

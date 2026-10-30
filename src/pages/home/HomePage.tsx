@@ -10,6 +10,7 @@ import { DiscoveryReveal } from "./components/DiscoveryReveal";
 import { EmrConnect } from "./components/EmrConnect";
 import { Hero } from "./components/Hero";
 import { InsightBand } from "./components/InsightBand";
+import { IntroBridge } from "./components/IntroBridge";
 import { JourneyStrip } from "./components/JourneyStrip";
 import { IntegratedDevices } from "./components/IntegratedDevices";
 import { LatestPosts } from "./components/LatestPosts";
@@ -19,17 +20,19 @@ import { RealTheatres } from "./components/RealTheatres";
 import { SurgicalTools } from "./components/SurgicalTools";
 import { TeamTeaser } from "./components/TeamTeaser";
 import { ValueCards } from "./components/ValueCards";
-import { WhyChakraVue } from "./components/WhyChakraVue";
+import { WhoWeAre } from "./components/WhoWeAre";
 import "./home.css";
 
 /**
- * The homepage, structured as a company site: what we do (the hero, over
- * the "Analogue to AI" campaign film), who has featured us, what we
- * believe, who you are here as (and the products for you), analog to
- * intelligent, how it works, the
- * integrated devices, the ChakraVue System at the centre, the surgical
- * tools, why ChakraVue AI, the team, the latest writing, and the campaign's
- * closing frame with a demo or a collaboration, then the contact footer.
+ * The homepage, structured as a company site and read top to bottom as one
+ * story: who we are (the hero over the "Analogue to AI" campaign film, who
+ * has featured us, what we believe, the glowing banner and early-bird
+ * offer, then who we are and the principles we work by), what we do (how
+ * practice is changing, what we connect, the core idea, how it works), the
+ * products (by role, the integrated devices, the ChakraVue System, the
+ * surgical tools), the proof (real theatres, our journey), the people (the
+ * team, the latest writing), and the campaign's closing frame with a demo
+ * or a collaboration, then the contact footer.
  */
 export function HomePage() {
   // As before, the nav only appears once the headline has landed.
@@ -46,16 +49,19 @@ export function HomePage() {
   return (
     <main className="site-shell home">
       <Header visible={navIn} />
-      {/* The owner's homepage flow (README "Home"): what we offer, how it
-          works, who it serves, why us, then a demo or a collaboration. The
-          kid's story runs alongside in six chapters (story.ts); its markers
-          sit between sections, so the sections carry no story code. */}
+      {/* The homepage flow (README "Home", 2026-10-30): introduction, who
+          we are, what we do, the products, in practice, the team, then a
+          demo or a collaboration. The kid's story runs alongside in six
+          chapters (story.ts); its markers sit between sections, so the
+          sections carry no story code. */}
+      {/* Introduction */}
       <ChapterMark id="dream" />
       <Hero onIntroDone={() => setNavIn(true)} />
       <BrandStrip />
-      <JourneyStrip />
       <InsightBand />
-      <RoleShowcase />
+      <IntroBridge />
+      <WhoWeAre />
+      {/* What we do: the capabilities, before any single product */}
       <ChapterMark id="beginning" />
       <AnalogToIntelligent />
       <ChapterMark id="discovery" />
@@ -63,14 +69,18 @@ export function HomePage() {
       <ChapterMark id="transformation" />
       <CoreIdea />
       <ValueCards />
+      {/* The products: by role, then each family */}
+      <RoleShowcase />
       <IntegratedDevices />
       <EmrConnect />
       <ChapterMark id="journey" />
       <SurgicalTools />
+      {/* In practice, and the people behind it */}
       <RealTheatres />
-      <WhyChakraVue />
+      <JourneyStrip />
       <TeamTeaser />
       <LatestPosts />
+      {/* Action */}
       <ChapterMark id="aspiration" />
       <CampaignClose />
     </main>

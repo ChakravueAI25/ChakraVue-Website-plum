@@ -4,7 +4,6 @@ import { BrandText } from "../../../shared/components/BrandText";
 import { Link } from "../../../shared/components/Link";
 import { roles } from "../../../shared/data/audiences";
 import { platforms } from "../../product-suite/platforms";
-import { EarlyBirdOffer } from "./EarlyBirdOffer";
 import "./roles.css";
 
 /**
@@ -81,11 +80,6 @@ export function RoleShowcase() {
     >
       {/* A soft plum light that swells as each role comes in. */}
       <span key={`glow-${active}-${run}`} className="role__glow" aria-hidden="true" />
-
-      {/* The early-bird offer, which sat at the top of the product showcase this replaced. */}
-      <div className="section__inner">
-        <EarlyBirdOffer />
-      </div>
 
       <div className="section__inner role__inner">
         <div className="role__side">

@@ -78,12 +78,15 @@ sections animate in as they arrive. It tells the kid's story in six
 chapters (`shared/data/story.ts`): The dream, The beginning, The discovery,
 The transformation, The journey, The aspiration. Each starts at a
 `ChapterMark` placed between sections, so the technical sections carry no
-story code; the growth rail reads the marks. The order follows the owner's
-homepage brief (2026-10-29): hero, who are you here as (the products), how it works,
-integrated devices, the ChakraVue System, surgical tools, why
-ChakraVue AI, then book a demo / collaborate. The story's beginning (from
-analog to intelligent) and discovery sit between the products and how it
-works. In order:
+story code; the growth rail reads the marks. The order (2026-10-30) reads
+as one story, introduction to action: hero, Featured in, the statement band,
+the glowing banner and early-bird offer, Who we are; then what we do (from
+analog to intelligent, the discovery, the core idea, Know how it works);
+then the products (Who are you here as?, Integrated devices, the ChakraVue
+System, Surgical tools); then in practice (real theatres, Our journey);
+then the people (Team, Latest posts); and the aspiration with Book a demo /
+Collaborate. The bullets below describe each section; `HomePage.tsx` is the
+source of truth for the order. The sections:
 - **Hero: the dream** (`Hero.tsx`, `home.css`). The kid walks across an old engineering blueprint and strikes a match, and
   the blueprint burns open onto a circuit. The whole film loops
   (`campaign/analogue-to-ai-loop.mp4`; `-loop-sm.mp4`, a lighter encode,
@@ -171,9 +174,20 @@ works. In order:
   photo; Sidekick has no product imagery, so it uses the blueprint
   redesign's research reel (`campaign/reels/research-before.webp`, the
   campaign's "sidekick" scene). Under it, the software platforms as chips,
-  each linking to `/product-suite#platforms`. Above it all sits the
-  early-bird offer (`EarlyBirdOffer.tsx`, `earlyBird.css`, posting to
-  `/api/early-bird`), which used to open the product showcase.
+  each linking to `/product-suite#platforms`. The early-bird offer that
+  used to sit above it moved under the glowing banner (2026-10-30).
+- **Glowing banner and early-bird offer** (`IntroBridge.tsx`,
+  `bridge.css`), right under the statement band. A wide pill-shaped banner,
+  near-black inside with a thin plum outline and a soft ambient glow, reads
+  "Clinicians · Data · Devices" (the company's line from What we do). A
+  light travels round its outline clockwise, about 7s a lap: an SVG stroke
+  dash on a rounded rect with `pathLength=100`, in five layers (blurred
+  bloom, faint tail, trail, streak, bright head) whose heads meet, animated
+  by CSS `stroke-dashoffset` only, so no JavaScript runs and the loop has no
+  seam. Dash lengths are in px because a unitless `calc()` isn't a valid
+  dash length. Under reduced motion the light is hidden and the ambient
+  glow stays. Under it, the early-bird offer (`EarlyBirdOffer.tsx`,
+  `earlyBird.css`, posting to `/api/early-bird`).
 - **The core idea** (original): "We don't replace the device. We extend
   what it can do."
 - **Know how it works** (`ValueCards.tsx`, `#how-it-works`). Capture →
@@ -206,8 +220,13 @@ works. In order:
   microscope, the Slit Lamp Module, the AI Impact Summit, a hands-on
   session. The microscope maker's marks, its REF/SN plate and an on-screen
   FPS readout are painted out or cropped.
-- **Why ChakraVue AI** (`WhyChakraVue.tsx`, `why.css`, `#why`). "Practical
-  to adopt. Built on research.": the owner's six differentiators (data
+- **Who we are** (`WhoWeAre.tsx`, `why.css`, `#who-we-are`; "Why
+  ChakraVue AI" and `#why` until 2026-10-30), right after the early-bird
+  offer. "Practical to adopt. Built on research.", a lead that introduces
+  the company (a medical technology and engineering company developing
+  hardware, software and AI together around real clinical environments;
+  restated from the cards and About, no new claims), "Meet the team behind
+  it" (`/about-us`), then the owner's six differentiators as principles (data
   security, ease of integration, easy onboarding, no new medical hardware,
   local data management, research & development) as cards. Deliberately
   general: no security mechanisms, certifications or storage details until
@@ -855,7 +874,7 @@ before launch:
 - Surgical tools: "Ophthalmic surgeons and their teams, at the operating
   microscope", "It runs from a portable case beside the microscope", and
   the Research line. Add validation or studies only when they can be cited.
-- Why ChakraVue AI: every card, above all Data security, Easy onboarding
+- Who we are (was Why ChakraVue AI): the new lead paragraph, and every card, above all Data security, Easy onboarding
   and Local data management. The notes ask for specific security and
   storage claims only where verified, so these stay general until the
   product team confirms what each product stores locally and how.

@@ -4,7 +4,7 @@ import { Link } from "../../../shared/components/Link";
 import "./why.css";
 
 /**
- * The six differentiators from the owner's notes. Kept general on purpose:
+ * The six principles (the owner's differentiators, 2026-10-29). Kept general on purpose:
  * no security mechanisms, certifications or storage details are claimed
  * until the product team confirms them (README "Copy to confirm").
  */
@@ -41,20 +41,29 @@ const reasons: Array<{ title: string; body: string; icon: ReactNode }> = [
   },
 ];
 
-/** Why ChakraVue AI (Home): the six differentiators as a grid of cards. */
-export function WhyChakraVue() {
+/**
+ * Who we are (Home, right after the early-bird offer; formerly "Why
+ * ChakraVue AI"): the company introduced by how it works, then the six
+ * principles behind that as a grid of cards. The lead only restates what
+ * the cards and the About page already say.
+ */
+export function WhoWeAre() {
   return (
-    <section id="why" className="why section" aria-labelledby="why-title">
+    <section id="who-we-are" className="why section" aria-labelledby="why-title">
       <div className="section__inner">
-        <header className="hsec-head">
+        <header className="hsec-head why__head">
           <div>
-            {/* No data-scramble: decoding would set the name in capitals. */}
             <p className="section-label" data-reveal>
-              Why <BrandText text="ChakraVue AI" />
+              Who we are
             </p>
             <h2 id="why-title" className="hsec-title" data-split>
               Practical to adopt. Built on research.
             </h2>
+            <p className="why__lead" data-reveal>
+              <BrandText text="ChakraVue AI" /> is a medical technology and engineering company. We develop
+              hardware, software and AI together, around real clinical environments: made to fit the workflows and
+              equipment teams already have, and refined with clinicians in real theatres.
+            </p>
           </div>
           <Link href="/about-us" className="hsec-link" data-reveal>
             Meet the team behind it <span aria-hidden="true">→</span>

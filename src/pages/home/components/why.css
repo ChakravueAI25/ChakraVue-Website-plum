@@ -1,8 +1,21 @@
-/* Why ChakraVue AI (WhyChakraVue.tsx): six differentiators, 3 × 2. */
+/* Who we are (WhoWeAre.tsx): the company's lead, then six principles, 3 × 2. */
 
 .why {
   padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
   background: #030102;
+}
+
+.why__lead {
+  max-width: 62ch;
+  margin-top: 20px;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* The link sits on the lead's last line, level with the text it follows. */
+.why__head .hsec-link {
+  margin-bottom: 4px;
 }
 
 .why__grid {
@@ -80,6 +93,10 @@
 }
 
 @media (max-width: 600px) {
+  .why__lead {
+    font-size: 15px;
+  }
+
   .why__grid {
     grid-template-columns: 1fr;
   }
