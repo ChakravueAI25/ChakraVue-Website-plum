@@ -79,9 +79,11 @@ export function SuiteHero() {
     return next;
   }), []);
 
-  // The change of slide: the outgoing product slides away and the new one
-  // comes in from the side it was asked for; the copy steps up. Before
-  // paint, so the class change and the tweens land in the same frame.
+  // The change of slide, short and in step: the outgoing product and copy
+  // fade a few pixels away, then the new ones come in from the side asked
+  // for, the copy a beat behind its product. Before paint, so the class
+  // change and the tweens land in the same frame. A new choice mid-change
+  // kills the running tweens and starts from where things are.
   useLayoutEffect(() => {
     const root = ref.current;
     const from = previous.current;
@@ -92,10 +94,10 @@ export function SuiteHero() {
     gsap.killTweensOf([...shots, ...copies, ...root.querySelectorAll(".ps-slide__copy > *")]);
     gsap.set([...shots, ...copies], { clearProps: "all" });
 
-    gsap.fromTo(shots[from], { autoAlpha: 1 }, { autoAlpha: 0, xPercent: -10 * dir, scale: 0.94, duration: 0.55, ease: "power2.in", clearProps: "all" });
-    gsap.from(shots[active], { autoAlpha: 0, xPercent: 12 * dir, scale: 1.04, duration: 1.1, delay: 0.4, ease: "cv.out", clearProps: "all" });
-    gsap.fromTo(copies[from], { autoAlpha: 1 }, { autoAlpha: 0, y: -14, duration: 0.35, ease: "power2.in", clearProps: "all" });
-    gsap.from(copies[active].children, { autoAlpha: 0, y: 22, duration: 0.8, stagger: 0.06, delay: 0.3, ease: "cv.out", clearProps: "all" });
+    gsap.fromTo(shots[from], { autoAlpha: 1 }, { autoAlpha: 0, x: -24 * dir, duration: 0.28, ease: "power2.in", clearProps: "all" });
+    gsap.from(shots[active], { autoAlpha: 0, x: 32 * dir, duration: 0.45, delay: 0.14, ease: "power3.out", clearProps: "all" });
+    gsap.fromTo(copies[from], { autoAlpha: 1 }, { autoAlpha: 0, y: -8, duration: 0.2, ease: "power2.in", clearProps: "all" });
+    gsap.from(copies[active].children, { autoAlpha: 0, y: 10, duration: 0.4, stagger: 0.03, delay: 0.18, ease: "power3.out", clearProps: "all" });
   }, [active]);
 
   // Autoplay, shown as the active indicator's line filling up. It restarts
@@ -141,6 +143,8 @@ export function SuiteHero() {
       .timeline({ delay: 0.15 })
       .from(root.querySelector(".ps-slide__shot.is-active"), { autoAlpha: 0, y: 40, scale: 0.96, duration: 1.2, ease: "cv.out", clearProps: "all" })
       .from(root.querySelector(".ps-hero__glow"), { autoAlpha: 0, scale: 0.8, duration: 1.4, ease: "cv.out", clearProps: "all" }, 0)
+      // Opacity only: the platform is centred with CSS translate.
+      .from(root.querySelector(".ps-hero__base"), { autoAlpha: 0, duration: 1.2, ease: "power2.out", clearProps: "opacity,visibility" }, 0.15)
       .from(root.querySelectorAll(".ps-slide__copy.is-active > *"), { autoAlpha: 0, y: 24, duration: 0.9, stagger: 0.07, ease: "cv.out", clearProps: "all" }, 0.35)
       .from(root.querySelectorAll(".ps-hero__nav > *"), { autoAlpha: 0, y: 12, duration: 0.7, stagger: 0.05, ease: "cv.out", clearProps: "all" }, 0.6);
   });
@@ -174,24 +178,36 @@ export function SuiteHero() {
       onKeyDown={onKeyDown}
     >
       <div className="ps-hero__show" role="region" aria-roledescription="carousel" aria-label="Products">
-        {/* The renders are on black and blend onto the glow (lighten), so the
-            stage and the shots must stay in one stacking context: no
-            transform, opacity or z-index on .ps-hero__stage. */}
-        <div className="ps-hero__stage" onPointerDown={onSwipeStart} onPointerUp={onSwipeEnd} onPointerCancel={() => (swipe.current = null)}>
+        {/* The renders are on black and blend onto the glow and the platform
+            (lighten, on .ps-hero__float), so the stage must not start a
+            stacking context of its own: no transform, opacity or z-index on
+            .ps-hero__stage. */}
+        <div
+          className="ps-hero__stage"
+          data-shape={products[active].id === "integrated-devices" ? "module" : "case"}
+          onPointerDown={onSwipeStart}
+          onPointerUp={onSwipeEnd}
+          onPointerCancel={() => (swipe.current = null)}
+        >
           <span className="ps-hero__glow" aria-hidden="true" />
-          {products.map((product, i) => (
-            <img
-              key={product.id}
-              className={`ps-slide__shot ps-slide__shot--${product.id}${i === active ? " is-active" : ""}`}
-              src={`/images/product-suite/slides/${product.id}.webp`}
-              alt={SLIDES[product.id].alt}
-              width="1500"
-              height="1200"
-              decoding="async"
-              fetchPriority={i === 0 ? "high" : "low"}
-              aria-hidden={i !== active}
-            />
-          ))}
+          {/* The platform each product stands on, fitted to its footprint. */}
+          <span className="ps-hero__base" aria-hidden="true" />
+          {/* The products hover together, a few pixels, over the platform. */}
+          <div className="ps-hero__float">
+            {products.map((product, i) => (
+              <img
+                key={product.id}
+                className={`ps-slide__shot ps-slide__shot--${product.id}${i === active ? " is-active" : ""}`}
+                src={`/images/product-suite/slides/${product.id}.webp`}
+                alt={SLIDES[product.id].alt}
+                width="1500"
+                height="1200"
+                decoding="async"
+                fetchPriority={i === 0 ? "high" : "low"}
+                aria-hidden={i !== active}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="ps-hero__side">

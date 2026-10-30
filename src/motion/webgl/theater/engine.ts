@@ -64,6 +64,8 @@ export type Theater = {
   /** Inline mode: open the product to show what's inside (`amount`, 0 to 1; part-way by default). */
   setPeek(on: boolean, amount?: number): void;
   start(): void;
+  /** Settles once the shaders are compiled and a first frame has been drawn (the costly part of setting up). */
+  ready: Promise<void>;
   destroy(): void;
   /** Current (smoothed) state, for tests and debugging. */
   state(): { active: number; build: number; explode: number; labels: number; focus: number };
@@ -74,6 +76,10 @@ export type Theater = {
 type Framing = { center: THREE.Vector3; explodedCenter: THREE.Vector3; base: number; top: number; radius: number; explodedRadius: number };
 
 const smooth = (a: number, b: number, x: number) => THREE.MathUtils.smoothstep(x, a, b);
+
+/** When the page last scrolled (ms), for the inline theaters' frame rate. */
+let lastScroll = 0;
+if (typeof window !== "undefined") window.addEventListener("scroll", () => (lastScroll = performance.now()), { passive: true });
 const COLOR_OUT = /* glsl */ `
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -303,6 +309,9 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !opaque, powerPreference: "high-performance" });
   renderer.setPixelRatio(dpr);
+  // Reading each shader's error log on first use stalls until the driver
+  // has finished with it (about 30 ms a program here). Development only.
+  renderer.debug.checkShaderErrors = import.meta.env.DEV;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -404,6 +413,11 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   let peek = false;
   let visible = true;
   let started = false;
+  /** Whether the shaders are compiled. Until then nothing is drawn, so no frame blocks on a compile. */
+  let ready = false;
+  /** start() was called before the shaders were ready; it runs once they are. */
+  let startWhenReady = false;
+  let destroyed = false;
   /** Whether the stage is taller than wide (products with a portrait arrangement use it). */
   let tall = false;
   let lastReported = -1;
@@ -629,7 +643,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   };
 
   const frame = (time: number, deltaMs: number) => {
-    if (active < 0 || width < 2 || height < 2) return;
+    if (!ready || active < 0 || width < 2 || height < 2) return;
     for (const key of ["build", "explode", "labels", "yaw", "focus", "readouts"] as const) {
       if (!Number.isFinite(now[key]) || !Number.isFinite(goal[key])) now[key] = goal[key] = key === "build" ? 1 : 0;
     }
@@ -718,8 +732,24 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     else renderer.render(scene, camera);
   };
 
+  // Inline theaters draw every other frame while the page scrolls or the
+  // product is at rest (only the screen's effects move then): drawing every
+  // frame kept the GPU too busy for the page to scroll at full rate. Opening
+  // up and assembling still get every frame.
+  let owed = 0;
+  let skip = false;
   const tick = (time: number, deltaMs: number) => {
-    if (visible) frame(time, Math.min(deltaMs, 50));
+    if (!visible) return;
+    owed += deltaMs;
+    if (!stage) {
+      const settling =
+        Math.abs(goal.build - now.build) > 0.002 || Math.abs(goal.explode - now.explode) > 0.002 || Math.abs(goal.labels - now.labels) > 0.002;
+      const scrolling = performance.now() - lastScroll < 200;
+      skip = (scrolling || !settling) && !skip;
+      if (skip) return;
+    }
+    frame(time, Math.min(owed, 50));
+    owed = 0;
   };
 
   const resize = () => {
@@ -756,6 +786,48 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
 
   show(0);
   resize();
+
+  // Compile every material's shaders up front, in parallel and off the
+  // main thread where the browser allows it (KHR_parallel_shader_compile).
+  // Drawing the first frame without this compiles them synchronously, which
+  // froze the Product Suite page for seconds while it scrolled.
+  const begin = () => {
+    if (options.reduced) {
+      Object.assign(now, { build: 1, explode: 0, labels: 0 });
+      Object.assign(goal, now);
+      frame(0, 16);
+      return;
+    }
+    if (!stage) {
+      // Assembles in on arrival: parts gather while the scan builds it up.
+      Object.assign(now, { build: 0, explode: 0.7 });
+      Object.assign(goal, { build: 0, explode: 0.7 });
+      gsap.to(goal, { build: 1, duration: 0.9, ease: "power2.out" });
+      gsap.to(goal, { explode: 0, duration: 1.1, delay: 0.3, ease: "cv.out" });
+    }
+    gsap.ticker.add(tick);
+  };
+  // The interface captures first: each one changes its material's shader.
+  // With a composer the scene is drawn into its buffer, not the canvas, and
+  // that takes different shader variants: compile for the buffer.
+  const whenReady = kit
+    .loaded()
+    .then(() => {
+      if (destroyed) return;
+      if (composer) renderer.setRenderTarget(composer.readBuffer);
+      const compiling = renderer.compileAsync(scene, camera);
+      renderer.setRenderTarget(null);
+      return compiling;
+    })
+    .catch(() => {})
+    .then(() => {
+      if (destroyed) return;
+      ready = true;
+      // One frame straight away, on or off screen: a program's first use
+      // still costs something, and it's better paid now than mid-scroll.
+      frame(0, 16);
+      if (startWhenReady) begin();
+    });
 
   return {
     setChapter(index, progress, last = false) {
@@ -809,23 +881,13 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
       gsap.to(goal, { explode: on ? amount : 0, labels: on ? 1 : 0, duration: 0.9, ease: "cv.out", overwrite: "auto" });
     },
 
+    ready: whenReady,
+
     start() {
       if (started) return;
       started = true;
-      if (options.reduced) {
-        Object.assign(now, { build: 1, explode: 0, labels: 0 });
-        Object.assign(goal, now);
-        frame(0, 16);
-        return;
-      }
-      if (!stage) {
-        // Assembles in on arrival: parts gather while the scan builds it up.
-        Object.assign(now, { build: 0, explode: 0.7 });
-        Object.assign(goal, { build: 0, explode: 0.7 });
-        gsap.to(goal, { build: 1, duration: 1.3, ease: "power2.out" });
-        gsap.to(goal, { explode: 0, duration: 1.6, delay: 0.5, ease: "cv.out" });
-      }
-      gsap.ticker.add(tick);
+      if (ready) begin();
+      else startWhenReady = true;
     },
 
     settle() {
@@ -838,6 +900,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     },
 
     destroy() {
+      destroyed = true;
       gsap.ticker.remove(tick);
       gsap.killTweensOf(goal);
       resizeObserver.disconnect();

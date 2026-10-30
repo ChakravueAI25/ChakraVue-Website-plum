@@ -104,6 +104,7 @@ export function GrowRail() {
     let flown = false;
     let trigger: ScrollTrigger | undefined;
 
+    let lastRailMorph = "";
     const apply = (p: number) => {
       const { kidEnd, morphEnd, growEnd } = pace;
       const kid = clamp01(p / kidEnd);
@@ -117,7 +118,12 @@ export function GrowRail() {
       if (!waving) root.style.setProperty("--frame", String(frame));
       root.style.setProperty("--p", p.toFixed(4));
       root.style.setProperty("--morph", morph.toFixed(4));
-      document.documentElement.style.setProperty("--rail-morph", morph.toFixed(3));
+      // On <html> every write restyles the whole page, so only when it changes.
+      const railMorph = morph.toFixed(2);
+      if (railMorph !== lastRailMorph) {
+        lastRailMorph = railMorph;
+        document.documentElement.style.setProperty("--rail-morph", railMorph);
+      }
       root.style.setProperty("--burst", (1 - Math.abs(2 * morph - 1)).toFixed(4));
       root.style.setProperty("--kid-h", `${kidPx.toFixed(1)}px`);
       root.style.setProperty("--doc-h", `${docPx.toFixed(1)}px`);
@@ -162,9 +168,10 @@ export function GrowRail() {
     // homepage with chapters, the story ruler chart appears alongside him.
     const show = () => {
       const isHome = path === "/" || window.location.pathname === "/" || document.documentElement.dataset.page === "home";
-      const story = isHome && marks.length > 0 && !!chart && getComputedStyle(chart).display !== "none";
+      const chartDisplayed = !!chart && getComputedStyle(chart).display !== "none";
+      const story = isHome && marks.length > 0 && chartDisplayed;
       const on = true;
-      const chartShows = story && !root.classList.contains("is-handoff") && !!chart && getComputedStyle(chart).display !== "none";
+      const chartShows = story && !root.classList.contains("is-handoff");
       document.documentElement.classList.toggle("has-rail-chart", chartShows);
       if (on && !root.classList.contains("is-on")) cue();
       root.classList.toggle("is-on", on);
@@ -181,9 +188,11 @@ export function GrowRail() {
         trigger: document.documentElement,
         start: 0,
         end: "max",
+        // Read (show measures the footer) before writing (apply sets
+        // styles), so a scroll frame never forces a layout in between.
         onUpdate: (self) => {
-          apply(self.progress);
           show();
+          apply(self.progress);
         },
         onRefresh: (self) => {
           measure();

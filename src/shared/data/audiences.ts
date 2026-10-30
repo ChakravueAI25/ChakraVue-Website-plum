@@ -147,8 +147,7 @@ export type Role = {
   id: string;
   /** The audience's name on its tab. */
   label: string;
-  /** The question the section asks this visitor. */
-  question: string;
+  /** What the role gets from ChakraVue AI, in a line (its card, or under the cards on phones). */
   line: string;
   products: RoleProduct[];
 };
@@ -170,7 +169,6 @@ export const roles: Role[] = [
   {
     id: "clinicians",
     label: "Clinicians",
-    question: "Are you a clinician?",
     line: "Bring clinical precision and real-time intelligence into your ophthalmic practice.",
     products: [
       {
@@ -186,7 +184,6 @@ export const roles: Role[] = [
   {
     id: "pgs",
     label: "PGs",
-    question: "Are you a PG?",
     line: "Explore a smarter way to learn, understand, and work with ophthalmic clinical information.",
     products: [
       {
@@ -206,7 +203,6 @@ export const roles: Role[] = [
   {
     id: "researchers",
     label: "Researchers",
-    question: "Are you a researcher?",
     line: "Explore new possibilities in ophthalmic intelligence, clinical data, and AI-assisted research.",
     products: [
       {

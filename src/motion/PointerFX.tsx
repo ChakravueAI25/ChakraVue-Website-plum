@@ -97,11 +97,16 @@ export function PointerFX() {
       moveY(lastY);
       if (event.target instanceof Element) track(event.target, lastX, lastY);
     };
-    // Scrolling moves content under a still pointer; re-read what's there.
+    // Scrolling moves content under a still pointer; re-read what's there,
+    // at most every 100ms (each read forces a layout mid-scroll).
+    let scrollTimer = 0;
     const onScroll = () => {
-      if (lastX < 0) return;
-      const target = document.elementFromPoint(lastX, lastY);
-      if (target) track(target, lastX, lastY);
+      if (lastX < 0 || scrollTimer) return;
+      scrollTimer = window.setTimeout(() => {
+        scrollTimer = 0;
+        const target = document.elementFromPoint(lastX, lastY);
+        if (target) track(target, lastX, lastY);
+      }, 100);
     };
     const onLeave = () => {
       show(false);
@@ -115,6 +120,7 @@ export function PointerFX() {
     return () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(scrollTimer);
       html.removeEventListener("mouseleave", onLeave);
       releaseMagnet();
     };

@@ -55,23 +55,97 @@
 .ps-hero__glow {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(46% 40% at 50% 54%, rgba(255, 110, 24, 0.18), transparent 72%),
-    radial-gradient(40% 8% at 50% 91%, rgba(255, 139, 18, 0.34), transparent 72%);
+  background: radial-gradient(46% 40% at 50% 54%, rgba(255, 110, 24, 0.16), transparent 72%);
   pointer-events: none;
 }
 
-/* A thin ring on the floor the product stands on. */
-.ps-hero__glow::after {
+/* The platform: an ellipse fitted to the product's footprint in its render
+   (measured from the slides), so the product's lowest point meets its
+   front rim. Cases and the connectivity module have their own fit; it
+   eases from one to the other as the slides change. Only the front of the
+   rim is lit: the renders blend with "lighten", so a back rim would show
+   through the dark case. */
+.ps-hero__stage {
+  --float: 6s;
+  --base-y: 86%;
+  --base-w: 70%;
+  --base-h: 19%;
+}
+
+.ps-hero__stage[data-shape="module"] {
+  --base-y: 87.5%;
+  --base-w: 92%;
+  --base-h: 17%;
+}
+
+.ps-hero__base {
   position: absolute;
-  right: 15%;
-  bottom: 3%;
-  left: 15%;
-  height: 10%;
-  border: 1px solid rgba(255, 180, 106, 0.26);
+  top: var(--base-y);
+  left: 50%;
+  width: var(--base-w);
+  height: var(--base-h);
   border-radius: 50%;
-  box-shadow: 0 0 40px rgba(255, 110, 24, 0.12);
+  pointer-events: none;
+  translate: -50% -50%;
+  transition:
+    top 0.45s var(--ease-out),
+    width 0.45s var(--ease-out),
+    height 0.45s var(--ease-out);
+}
+
+/* The rim: a fine line, brightest at the front, gone at the back. */
+.ps-hero__base::before {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 180, 106, 0.55);
+  border-radius: 50%;
+  box-shadow:
+    0 0 14px rgba(255, 139, 18, 0.22),
+    inset 0 -6px 18px rgba(255, 139, 18, 0.12);
   content: "";
+  -webkit-mask-image: linear-gradient(180deg, transparent 22%, #000 72%);
+  mask-image: linear-gradient(180deg, transparent 22%, #000 72%);
+}
+
+/* The light pooled on the platform under the product. It breathes with the
+   float: a touch dimmer and tighter as the product rises off it. */
+.ps-hero__base::after {
+  position: absolute;
+  inset: 6% 4%;
+  border-radius: 50%;
+  background:
+    radial-gradient(50% 50% at 50% 55%, rgba(255, 139, 18, 0.26), rgba(255, 110, 24, 0.08) 55%, transparent 72%);
+  content: "";
+  animation: psPool var(--float) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+/* The products hover together, a few pixels, in step with the light above.
+   This layer does the blending (lighten) onto the glow and the platform. */
+.ps-hero__float {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: lighten;
+  animation: psFloat var(--float) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+@keyframes psFloat {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -1.1%;
+  }
+}
+
+@keyframes psPool {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0.72;
+    scale: 0.94;
+  }
 }
 
 .ps-slide__shot {
@@ -461,6 +535,17 @@
 
   .ps-slide__facts > div {
     padding-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-hero__float,
+  .ps-hero__base::after {
+    animation: none;
+  }
+
+  .ps-hero__base {
+    transition: none;
   }
 }
 

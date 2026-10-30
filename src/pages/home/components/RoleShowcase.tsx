@@ -6,21 +6,25 @@ import { roles } from "../../../shared/data/audiences";
 import { platforms } from "../../product-suite/platforms";
 import "./roles.css";
 
+/** Phones stack the products and change role only when asked (a changing height would move the page). */
+const compact = typeof window !== "undefined" && window.matchMedia("(max-width: 700px)").matches;
+
 /**
- * "Who are you here as?" (Home, where the product showcase was; owner's
- * brief, 2026-10-29): the visitor's role on the left, the products made for
- * it on the right. Every role is rendered in the same grid cell, so changing
- * role never moves the page; CSS dissolves the old one out (fade, a little
- * blur and drift) and the new one in, its products staggered.
+ * "Who are you here as?" (Home; redesigned 2026-10-30 as a product
+ * discovery block): a compact introduction, the three roles as selectable
+ * cards in one row, then the products for the chosen role in an even grid
+ * that fits however many there are (one, two or three), then the software
+ * platforms and the link to the whole suite.
  *
- * It plays by itself: the active tab's bar fills, and when its animation
- * ends the next role comes in, so the bar is the only timer. Picking a role
- * restarts the bar. Pointing at the products or the controls (not the whole
- * section, which fills the screen), keyboard focus inside it, the
- * pause button, the
- * section being off screen or the tab being hidden all pause the bar.
- * Under reduced motion the bar doesn't run, so nothing changes by itself,
- * and the roles swap without the dissolve.
+ * The roles and their products are `roles` in shared/data/audiences.ts.
+ * Every role's products share one grid cell, so on wider screens changing
+ * role never moves the page; the old set fades out and the new one rises a
+ * few pixels in. The roles play by themselves there: the active card's bar
+ * fills, and when it ends the next role comes in, so the bar is the only
+ * timer. Picking a role restarts it. Pointing at the cards or the products,
+ * keyboard focus inside, the pause button, the section being off screen or
+ * the tab being hidden all pause it. On phones and under reduced motion
+ * nothing changes by itself.
  */
 export function RoleShowcase() {
   const ref = useRef<HTMLElement>(null);
@@ -33,6 +37,7 @@ export function RoleShowcase() {
   const [inView, setInView] = useState(false);
   const [hidden, setHidden] = useState(document.hidden);
   const count = roles.length;
+  const autoplay = !reduceMotion && !compact;
 
   useEffect(() => {
     const section = ref.current;
@@ -48,7 +53,7 @@ export function RoleShowcase() {
   }, []);
 
   const hover = finePointer ? { onPointerEnter: () => setHovered(true), onPointerLeave: () => setHovered(false) } : {};
-  const playing = !reduceMotion && !held && !hovered && !focused && inView && !hidden;
+  const playing = autoplay && !held && !hovered && !focused && inView && !hidden;
 
   const choose = (index: number) => {
     setActive(index);
@@ -71,7 +76,7 @@ export function RoleShowcase() {
       className="role section"
       aria-labelledby="role-title"
       onFocus={(event) => {
-        // Keyboard focus only: a tap on a tab shouldn't stop the roles playing.
+        // Keyboard focus only: a tap on a role shouldn't stop the roles playing.
         if ((event.target as HTMLElement).matches(":focus-visible")) setFocused(true);
       }}
       onBlur={(event) => {
@@ -81,61 +86,21 @@ export function RoleShowcase() {
       {/* A soft plum light that swells as each role comes in. */}
       <span key={`glow-${active}-${run}`} className="role__glow" aria-hidden="true" />
 
-      <div className="section__inner role__inner">
-        <div className="role__side">
-          <p className="role__eyebrow" data-reveal>
-            Built around you
-          </p>
-          <h2 id="role-title" className="role__title" data-split>
-            Who are you here as?
-          </h2>
-
-          <div className="role__who" data-motion="own">
-            {roles.map((r, i) => (
-              <div key={r.id} className={`role__state${i === active ? " is-active" : ""}`} aria-hidden={i !== active} inert={i !== active}>
-                <p className="role__question">{r.question}</p>
-                <p className="role__line">{r.line}</p>
-              </div>
-            ))}
+      <div className="section__inner">
+        <header className="role__head">
+          <div>
+            <p className="role__eyebrow" data-reveal>
+              Built around you
+            </p>
+            <h2 id="role-title" className="hsec-title role__title" data-split>
+              Who are you here as?
+            </h2>
           </div>
-
-          <p className="role__count" aria-hidden="true">
-            <span>{String(active + 1).padStart(2, "0")}</span> / {String(count).padStart(2, "0")}
-          </p>
-
-          <div className="role__controls" {...hover}>
-            <div className="role__tabs" role="tablist" aria-label="Who are you?" onKeyDown={onKeyDown}>
-              {roles.map((r, i) => {
-                const on = i === active;
-                return (
-                  <button
-                    key={r.id}
-                    id={`role-tab-${r.id}`}
-                    type="button"
-                    role="tab"
-                    className={`role__tab${on ? " is-active" : ""}`}
-                    aria-selected={on}
-                    aria-controls={`role-panel-${r.id}`}
-                    tabIndex={on ? 0 : -1}
-                    onClick={() => choose(i)}
-                  >
-                    <span className="role__tab-index">{String(i + 1).padStart(2, "0")}</span>
-                    {r.label}
-                    <span className="role__bar" aria-hidden="true">
-                      {on && (
-                        <span
-                          key={run}
-                          className="role__fill"
-                          style={{ animationPlayState: playing ? "running" : "paused" }}
-                          onAnimationEnd={() => setActive((active + 1) % count)}
-                        />
-                      )}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            {!reduceMotion && (
+          <div className="role__aside">
+            <p className="role__intro" data-reveal>
+              Discover the intelligence, tools and technology designed around your role in advancing healthcare.
+            </p>
+            {autoplay && (
               <button
                 type="button"
                 className="role__pause"
@@ -152,58 +117,130 @@ export function RoleShowcase() {
                     <rect x="14" y="5" width="4" height="14" />
                   </svg>
                 )}
+                <span aria-hidden="true">{held ? "Play" : "Pause"}</span>
               </button>
             )}
           </div>
+        </header>
 
+        <div className="role__explore" {...hover}>
+          <div className="role__control">
+            <div className="role__tabs" role="tablist" aria-label="Who are you?" onKeyDown={onKeyDown}>
+              {roles.map((r, i) => {
+                const on = i === active;
+                return (
+                  <button
+                    key={r.id}
+                    id={`role-tab-${r.id}`}
+                    type="button"
+                    role="tab"
+                    className={`role__tab${on ? " is-active" : ""}`}
+                    aria-selected={on}
+                    aria-controls={`role-panel-${r.id}`}
+                    tabIndex={on ? 0 : -1}
+                    onClick={() => choose(i)}
+                  >
+                    <span className="role__tab-top">
+                      <span className="role__tab-index">{String(i + 1).padStart(2, "0")}</span>
+                      {/* Hollow when idle, filled when chosen: the state reads without colour. */}
+                      <span className="role__mark" aria-hidden="true" />
+                    </span>
+                    <span className="role__tab-label">{r.label}</span>
+                    <span className="role__tab-line">{r.line}</span>
+                    <span className="role__tab-meta">
+                      {r.products.length} {r.products.length === 1 ? "product" : "products"}
+                    </span>
+                    <span className="role__bar" aria-hidden="true">
+                      {on && (
+                        <span
+                          key={run}
+                          className={`role__fill${autoplay ? "" : " is-still"}`}
+                          style={autoplay ? { animationPlayState: playing ? "running" : "paused" } : undefined}
+                          onAnimationEnd={autoplay ? () => setActive((active + 1) % count) : undefined}
+                        />
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Phones show the chosen role's line here instead of inside the cards. */}
+            <div className="role__lead" data-motion="own">
+              {roles.map((r, i) => (
+                <p key={r.id} className={`role__lead-line${i === active ? " is-active" : ""}`} aria-hidden="true">
+                  {r.line}
+                </p>
+              ))}
+            </div>
+
+          </div>
+
+          <div className="role__stage" data-motion="own">
+            {roles.map((r, i) => (
+              <div
+                key={r.id}
+                id={`role-panel-${r.id}`}
+                role="tabpanel"
+                aria-labelledby={`role-tab-${r.id}`}
+                className={`role__products${i === active ? " is-active" : ""}`}
+                data-count={Math.min(r.products.length, 3)}
+                aria-hidden={i !== active}
+                inert={i !== active}
+              >
+                {r.products.length === 0 ? (
+                  <div className="role__empty">
+                    <p>Products for {r.label.toLowerCase()} are on their way.</p>
+                    <Link href="/contact-us" className="hsec-link">
+                      Tell us what you need <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                ) : (
+                  r.products.map((p) => (
+                    <Link key={p.key} href={p.href} className="role__product" data-spotlight>
+                      <span className="role__media">
+                        <img
+                          src={p.image}
+                          alt={p.imageAlt}
+                          loading="lazy"
+                          decoding="async"
+                          style={{ objectPosition: p.coverPosition } as CSSProperties}
+                        />
+                      </span>
+                      <span className="role__product-body">
+                        <span className="role__product-tag">{p.tagline}</span>
+                        <span className="role__product-name">
+                          <BrandText text={p.name} />
+                          {p.status && <span className="role__status">{p.status}</span>}
+                        </span>
+                        <span className="role__product-line">{p.summary}</span>
+                        <span className="role__product-cta">
+                          {p.href.startsWith("/product-suite") ? "Explore product" : p.action}
+                          <span aria-hidden="true">→</span>
+                        </span>
+                      </span>
+                    </Link>
+                  ))
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* The other product category, then the whole suite. */}
+        <div className="role__foot">
+          <p className="role__more" data-reveal>
+            <span className="role__more-label">Software platforms</span>
+            {platforms.map((platform) => (
+              <Link key={platform.id} href="/product-suite#platforms" className="role__chip">
+                <BrandText text={platform.title} />
+              </Link>
+            ))}
+          </p>
           <Link href="/product-suite" className="hsec-link role__all">
             View all products <span aria-hidden="true">→</span>
           </Link>
         </div>
-
-        <div className="role__stage" data-motion="own" {...hover}>
-          {roles.map((r, i) => (
-            <div
-              key={r.id}
-              id={`role-panel-${r.id}`}
-              role="tabpanel"
-              aria-labelledby={`role-tab-${r.id}`}
-              className={`role__state role__products${i === active ? " is-active" : ""}`}
-              data-count={r.products.length}
-              aria-hidden={i !== active}
-              inert={i !== active}
-            >
-              {r.products.map((p, j) => (
-                <Link key={p.key} href={p.href} className="role__product" style={{ "--i": j } as CSSProperties} data-spotlight>
-                  <img src={p.image} alt={p.imageAlt} loading="lazy" decoding="async" style={{ objectPosition: p.coverPosition }} />
-                  <span className="role__product-body">
-                    <span className="role__product-name">
-                      <BrandText text={p.name} />
-                      {p.status && <span className="role__status">{p.status}</span>}
-                    </span>
-                    <span className="role__product-line">{p.summary}</span>
-                    <span className="role__product-cta">
-                      {p.href.startsWith("/product-suite") ? `Explore ${p.name}` : p.action}
-                      <span aria-hidden="true">→</span>
-                    </span>
-                  </span>
-                </Link>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* The other product category: the software platforms, each on the Product Suite page. */}
-      <div className="section__inner">
-        <p className="role__more" data-reveal>
-          <span className="role__more-label">Software platforms</span>
-          {platforms.map((platform) => (
-            <Link key={platform.id} href="/product-suite#platforms" className="role__chip">
-              <BrandText text={platform.title} />
-            </Link>
-          ))}
-        </p>
       </div>
     </section>
   );

@@ -134,6 +134,9 @@ when you change one.
     Researchers; the roles and their products are `roles` in
     `shared/data/audiences.ts`. Sidekick is the blueprint redesign's pilot
     research assistant until the owner supplies its real copy and art.
+    Redesigned 2026-10-30: a compact intro, the roles as selectable cards
+    in one row, then an even product grid sized to the count (1, 2 or 3).
+    Phones don't autoplay (their stacked products change the page height).
   - The older "Who are you?" section (`AudienceMap`) was removed from Home
     and deleted (owner, 2026-10-29): "Who are you here as?" replaces it.
     Don't bring both back.
@@ -167,14 +170,17 @@ when you change one.
   - The orbit "Products engineered for clinical systems" section and the
     old vision/lens panel were removed on request.
 - **Product Suite:**
-  - Hero (rebuilt 2026-10-19, `SuiteHero.tsx`): the same structure as the
-    old artwork (ChakraVue at the centre, four products around it, linked
-    in) but built live: "We Add Intelligence to Your Devices." inside the
-    ring, each product card showing its own screen, data travelling along
-    the links. On tablets and phones (≤900px) the diagram stands upright
-    (statement, two products, ring, two products, all linked); the owner
-    asked for the phone hero to be as good as desktop (2026-10-19). Then a compact (unpinned) lead statement "Intelligence,
-    Engineered for the Operating Room.", then the products.
+  - Hero (`SuiteHero.tsx`): a slideshow of the four product renders with
+    their copy, arrows and numbered indicators. Each product stands on a
+    platform ellipse fitted to its footprint in the render and hovers a
+    few pixels over it in step with the platform's light (2026-10-30);
+    slide changes take about half a second. Then a compact (unpinned) lead
+    statement "Intelligence, Engineered for the Operating Room.", then the
+    products.
+  - The product rows' theaters are built one at a time in idle time and
+    compile their shaders asynchronously before drawing (README "Product
+    Suite"); building them on scroll froze the page. Keep new theater work
+    off the scroll path.
   - The products (rebuilt 2026-10-26 at the owner's request, after a
     reference spec sheet): one row per product, stacked, copy on the left
     and the product in 3D on the right, in the site's own colours. No

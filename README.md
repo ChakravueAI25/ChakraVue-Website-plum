@@ -154,26 +154,34 @@ source of truth for the order. The sections:
   Clinicians, Data, Devices, each line paraphrasing its product.
 - **Who are you here as?** (`RoleShowcase.tsx`, `roles.css`,
   `#who-are-you-here-as`; replaced the slit-lit product showcase, owner's
-  brief 2026-10-29). Left (about 38%): "Built around you / Who are you here
-  as?", then the role's question ("Are you a clinician?", "… a PG?", "… a
-  researcher?") and its line, "01 / 03", three tabs and a pause button,
-  "View all products". Right: that role's products as large image panels
-  (name, a line paraphrasing the product's own description, Explore / Ask
-  link). The roles and their products are `roles` in
-  `shared/data/audiences.ts`: Clinicians → Surgical Assistant, Slit Lamp
-  Module; PGs → Gaming, Slit Lamp Module, ChakraVue System; Researchers →
-  Sidekick (pilot, Contact with "Sidekick (research)" chosen). Every role is
-  rendered in the same grid cell, so changing role never moves the page:
-  CSS dissolves the old one out (fade, blur, a few pixels of drift) and the
-  new one in, products staggered, with a plum glow swelling behind. It
-  plays Clinicians → PGs → Researchers → … by itself: the active tab's bar
-  fills over 5.2 s and its animationend brings the next role in, so there
-  is only ever one timer. A pick restarts the bar; pointing at the products
-  or controls, keyboard focus in the section, the pause button, the
-  section being off screen or the browser tab hidden all pause it. Tabs
-  follow the tab pattern (arrow keys). Under reduced motion nothing plays by
-  itself and roles swap without the dissolve. Below 860px it stacks, each
-  role's products in one swipeable row of equal height. Product shots come
+  brief 2026-10-29; redesigned 2026-10-30 as a product discovery block).
+  Top: "Built around you / Who are you here as?" with "Discover the
+  intelligence, tools and technology designed around your role in
+  advancing healthcare." and the pause control beside it. Then the three
+  roles as selectable cards in one row (index, a mark that is hollow or
+  filled, so the choice reads without colour, the role, its line, how many
+  products), then that role's products in an even grid that fits the count
+  (one: picture and copy side by side; two or three: columns). Each card
+  has a picture of one fixed height, the product's tagline, its name, a
+  line paraphrasing its own description and "Explore product" (or the Ask
+  / Talk link for Contact offerings). Under them the software platforms as
+  chips and "View all products". The roles and their products are `roles`
+  in `shared/data/audiences.ts`: Clinicians -> Surgical Assistant, Slit
+  Lamp Module; PGs -> Gaming, Slit Lamp Module, ChakraVue System;
+  Researchers -> Sidekick (pilot, Contact with "Sidekick (research)"
+  chosen). A role with no products would show a short note and a Contact
+  link. Every role's products share one grid cell, so on wider screens
+  changing role never moves the page: the old set fades out (0.2 s) and
+  the new one fades and rises 8px in (0.32 s), with a plum glow swelling
+  behind. It plays Clinicians -> PGs -> Researchers by itself: the active
+  card's bar fills over 6 s and its animationend brings the next role in,
+  so there is only ever one timer. A pick restarts the bar; pointing at
+  the cards or products, keyboard focus in the section, the pause button,
+  the section being off screen or the browser tab hidden all pause it.
+  The cards follow the tab pattern (arrow keys). Phones (700px and below)
+  and reduced motion never change role by themselves; on phones the cards
+  are compact, the chosen role's line sits under them and its products
+  stack (only the chosen set is laid out). Product shots come
   from `public/images/home/products/` (the Integrated Devices shot's battery
   rating was painted out 2026-10-29); Gaming uses the hands-on session
   photo; Sidekick has no product imagery, so it uses the blueprint
@@ -287,19 +295,27 @@ grade leaves images alone). The campaign scenes appear on Home and About
 only; elsewhere the character is just the small growth rail in the margin.
 
 **Product Suite**
-- **Hero** (`SuiteHero.tsx`): ChakraVue AI at the centre, with the page's
-  statement "We Add Intelligence to Your Devices." inside its ring, and the
-  four products at the corners, each showing its own screen
-  (`public/images/product-suite/hero/`: the surgical live view, the slit-lamp
-  eye, the anonymised EMR dashboard, and a render of the module). Links run
-  from every screen into the ring and data travels along them; they are
-  measured off the laid-out cards, so they follow any screen size. The ring
-  opens, the products arrive from their corners and their links draw in.
-  Hovering a product lights its link and quiets the rest; the diagram tilts
-  slightly with the pointer. Below 900px the same diagram stands upright:
-  the statement on top, then two products, the ring (the mark at its
-  centre) and two more, every screen facing the ring and linked into it.
-  The scroll fade is desktop-only, so phones never dim the products.
+- **Hero** (`SuiteHero.tsx`): an editorial slideshow of the four products,
+  one at a time: its render large on the left
+  (`public/images/product-suite/slides/`, rendered on black from the 3D
+  models), and on the right its number, name, tagline, brief and Built for
+  between hairlines, View product and its call to action. Arrows, the
+  numbered indicators, the arrow keys and a swipe change slides; it plays
+  in a loop and holds off screen. A change takes about half a second: the
+  outgoing product and copy fade a few pixels away (0.2 to 0.28 s), the new
+  product comes in from the side asked for (0.45 s) with its copy just
+  behind; a click mid-change kills the running tweens, so rapid clicks
+  never stack. The product stands on a platform (`.ps-hero__base`,
+  2026-10-30): an ellipse fitted to its footprint in the render (measured
+  from the slides; the cases and the module each have their own fit,
+  `data-shape`, and it eases between them), so its lowest point meets the
+  lit front of the rim. Only the front is lit because the renders blend
+  with "lighten", so a back rim would show through the case. The products
+  hover a few pixels over it (`.ps-hero__float`, 6 s, eased, alternating)
+  while the light pooled on the platform dims and tightens in step: both
+  are CSS animations of one shared duration, so they never drift apart.
+  The float layer does the "lighten" blending, so the stage itself must
+  not start a stacking context. Under reduced motion nothing floats.
 - "Intelligence, Engineered for the Operating Room." follows the hero as a
   compact band that lights as it passes (not pinned).
 - **The products, as a spec sheet** (`ProductTheater.tsx`, `theater.css`;
@@ -314,8 +330,19 @@ only; elsewhere the character is just the small growth rail in the margin.
   turn (owner, 2026-10-30). The
   parts are not named (no label layer, `anatomy: []`). Touch screens and the
   keyboard use the "Look inside" / "Close it up" button, and the hint
-  changes with it. Each row builds its own small theater when it nears the
-  screen, assembling once as it arrives. The canvas clears to the panel's
+  changes with it. Each row has its own small theater. They are built one
+  at a time in idle moments from soon after the page loads (a row about to
+  come on screen jumps the queue). Each compiles its shaders with
+  `compileAsync` once its interface captures have loaded (a capture
+  arriving changes its material's shader), against the composer's buffer
+  (which needs different shader variants from the canvas), then draws one
+  frame. Building them as they scrolled in compiled every shader
+  synchronously and froze the page for seconds (2026-10-30: about 14 s of
+  blocked main thread in one scroll, under 1 s once built). A row
+  assembles once as it comes into view. While the page scrolls, or once
+  the product is at rest, a theater draws every other frame (only its
+  screen effects move then); opening up and assembling get every frame.
+  Shader error checks run in development only. The canvas clears to the panel's
   computed colour with alpha 0, so the grade pass leaves it alone and it
   matches the CSS panel exactly; the scan slice is left out there for the
   same reason. Rows keep the product ids as anchors (`/product-suite#…`).

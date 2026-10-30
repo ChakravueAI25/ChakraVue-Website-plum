@@ -19,6 +19,38 @@ const canPoint = typeof window !== "undefined" && window.matchMedia("(hover: hov
 const builtFor = (id: string) => audiences.filter((a) => a.items.some((item) => item.key === id)).map((a) => a.label);
 
 /**
+ * The theaters are built one at a time, in idle moments, from soon after the
+ * page loads: each compiles its shaders and draws a first frame, which is
+ * heavy, and doing all four as they scrolled into view froze the page for
+ * seconds. A row about to come on screen jumps the queue.
+ */
+type Job = { run: () => Promise<void>; done: boolean };
+const jobs: Job[] = [];
+let busy = false;
+const idle = (cb: () => void) =>
+  typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(cb, { timeout: 1500 }) : window.setTimeout(cb, 120);
+function pump() {
+  if (busy) return;
+  const job = jobs.find((j) => !j.done);
+  if (!job) return;
+  busy = true;
+  idle(() => {
+    job.done = true;
+    job.run().finally(() => {
+      busy = false;
+      pump();
+    });
+  });
+}
+function enqueue(job: Job, urgent = false) {
+  const at = jobs.indexOf(job);
+  if (at >= 0) jobs.splice(at, 1);
+  if (urgent) jobs.unshift(job);
+  else jobs.push(job);
+  pump();
+}
+
+/**
  * The product suite as a spec sheet: one product after another, the copy on
  * the left and the product, in 3D, on the right. Pointing at a product (or
  * pressing "Look inside") opens it up to show what's inside. That is its
@@ -26,8 +58,9 @@ const builtFor = (id: string) => audiences.filter((a) => a.items.some((item) => 
  * turn (owner, 2026-10-30). Nothing here is driven by scrolling.
  *
  * Each product has its own small inline theater (motion/webgl/theater),
- * created as it nears the screen. Without WebGL, or with reduced motion, the
- * product photographs stand in.
+ * built ahead of time (see the queue above) and assembled once as its row
+ * comes into view. Without WebGL, or with reduced motion, the product
+ * photographs stand in.
  */
 export function ProductTheater() {
   return (
@@ -52,41 +85,62 @@ function ProductRow({ product }: { product: Product }) {
   const [open, setOpen] = useState(false);
   const roles = builtFor(product.id);
 
-  // The 3D view is built when the row nears the screen, not before.
+  // The 3D view is built in the queue, and assembles as the row comes into view.
   useEffect(() => {
     const row = rowRef.current;
     const canvas = canvasRef.current;
     if (mode !== "3d" || !row || !canvas) return;
     let cancelled = false;
     let offReveal = () => {};
-    const near = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        near.disconnect();
+    let inView = false;
+    const job: Job = {
+      done: false,
+      run: () =>
         import("../../../motion/webgl/theater/engine")
           .then(({ createTheater }) => {
             if (cancelled) return;
             // No label layer: the parts open up without being named.
-            theater.current = createTheater(canvas, {
+            const built = createTheater(canvas, {
               mode: "inline",
               products: [{ id: product.id, anatomy: [] }],
               floor: 0.8,
               // The panel's colour as the page shows it (after the palette).
               backdrop: getComputedStyle(canvas.parentElement ?? canvas).backgroundColor,
             });
-            offReveal = whenRevealed(() => theater.current?.start());
+            theater.current = built;
+            if (inView) offReveal = whenRevealed(() => built.start());
+            return built.ready;
           })
           .catch((error) => {
             console.warn(`[specs] 3D unavailable for ${product.id}, showing the photograph.`, error);
             setMode("static");
-          });
+          }),
+    };
+    enqueue(job);
+    // About to come on screen: build it next. On screen: assemble it.
+    const near = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !job.done) enqueue(job, true);
       },
-      { rootMargin: "300px 0px" },
+      { rootMargin: "100% 0px" },
+    );
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        seen.disconnect();
+        inView = true;
+        const built = theater.current;
+        if (built) offReveal = whenRevealed(() => built.start());
+      },
+      { threshold: 0.2 },
     );
     near.observe(row);
+    seen.observe(row);
     return () => {
       cancelled = true;
+      job.done = true;
       near.disconnect();
+      seen.disconnect();
       offReveal();
       theater.current?.destroy();
       theater.current = null;

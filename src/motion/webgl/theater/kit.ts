@@ -149,6 +149,17 @@ export class Kit {
 
   /** Interface captures by URL, so every layer cut from one capture shares one texture. */
   private captures = new Map<string, { texture?: THREE.Texture; waiting: Array<(capture: THREE.Texture) => void> }>();
+  /** One per capture: settles when it has loaded (or failed). */
+  private loading: Promise<void>[] = [];
+
+  /**
+   * Settles when every capture asked for so far is on its material. A
+   * capture arriving swaps its material's shader for one with a map, so the
+   * theater compiles its shaders after this, not before.
+   */
+  loaded() {
+    return Promise.all(this.loading).then(() => {});
+  }
 
   /**
    * A display showing a capture of a real product interface, as captured.
@@ -185,13 +196,23 @@ export class Kit {
     if (!entry) {
       const created: { texture?: THREE.Texture; waiting: Array<(capture: THREE.Texture) => void> } = { waiting: [] };
       this.captures.set(url, created);
-      new THREE.TextureLoader().load(url, (capture) => {
-        capture.colorSpace = THREE.SRGBColorSpace;
-        capture.anisotropy = 8;
-        created.texture = this.own(capture);
-        created.waiting.forEach((wake) => wake(capture));
-        created.waiting = [];
-      });
+      this.loading.push(
+        new Promise((settle) => {
+          new THREE.TextureLoader().load(
+            url,
+            (capture) => {
+              capture.colorSpace = THREE.SRGBColorSpace;
+              capture.anisotropy = 8;
+              created.texture = this.own(capture);
+              created.waiting.forEach((wake) => wake(capture));
+              created.waiting = [];
+              settle();
+            },
+            undefined,
+            () => settle(),
+          );
+        }),
+      );
       entry = created;
     }
     if (entry.texture) show(entry.texture);
