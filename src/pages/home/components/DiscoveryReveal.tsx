@@ -1,6 +1,3 @@
-import { useRef } from "react";
-import { ScrollTrigger } from "../../../motion/gsap";
-import { useMotion } from "../../../motion/useMotion";
 import "./discovery.css";
 
 /**
@@ -11,59 +8,29 @@ import "./discovery.css";
  * (Replay plays it again). Without motion the scene is simply open.
  */
 export function DiscoveryReveal() {
-  const ref = useRef<HTMLElement>(null);
-
-  useMotion(ref, (root) => {
-    root.classList.add("is-armed");
-    const trigger = ScrollTrigger.create({
-      trigger: root,
-      start: "top 55%",
-      once: true,
-      onEnter: () => root.classList.remove("is-armed"),
-    });
-    return () => {
-      trigger.kill();
-      root.classList.remove("is-armed", "is-resetting");
-    };
-  });
-
-  const replay = () => {
-    const root = ref.current;
-    if (!root) return;
-    // Close the sheet at once, then burn it open again.
-    root.classList.add("is-resetting", "is-armed");
-    void root.offsetWidth;
-    root.classList.remove("is-resetting");
-    window.setTimeout(() => root.classList.remove("is-armed"), 120);
-  };
-
   return (
-    <section ref={ref} className="discovery section" aria-labelledby="discovery-title">
+    <section className="discovery section" aria-labelledby="discovery-title">
       <img
         className="discovery__scene"
-        src="/images/campaign/circuit-reveal.jpg"
-        alt="The boy from the film, delighted, beside the burnt-open blueprint and the glowing AI circuitry beneath it."
+        src="/images/campaign/connected-care.webp"
+        alt="An ophthalmology slit lamp linked to iris imaging and connected clinical records in a modern examination room."
         loading="lazy"
         decoding="async"
       />
-      <img className="discovery__sheet" src="/images/campaign/burn-hole.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
       <div className="discovery__shade" aria-hidden="true" />
-
       <div className="section__inner discovery__copy">
-        <p className="section-label">The spark</p>
+        <p className="section-label">WHAT WE DO</p>
         <h2 id="discovery-title" className="discovery__title">
-          Not to burn the past.
+          We connect clinicians, data and devices.
         </h2>
-        <p className="discovery__lead">To see what was underneath it all along.</p>
-        <p className="discovery__bridge">
-          Four new powers for the tools doctors already use
-          <span aria-hidden="true">↓</span>
-        </p>
+        <p className="discovery__lead">From the instrument to the record, in one connected line of sight.</p>
+        <img className="discovery__mascot" src="/images/campaign/grow/toddler-still.webp" alt="Chakravue AI's curly-haired mascot in his colorful vehicle-print shirt." loading="lazy" decoding="async" />
+        <div className="discovery__cards">
+          <article><h3>CLINICIANS</h3><p>Guidance in theatre and findings at the slit lamp, in real time.</p></article>
+          <article><h3>DATA</h3><p>Imaging, device output and clinical notes in one timeline.</p></article>
+          <article><h3>DEVICES</h3><p>The equipment you already own, feeding patient records.</p></article>
+        </div>
       </div>
-
-      <button type="button" className="discovery__replay" onClick={replay}>
-        Replay
-      </button>
     </section>
   );
 }

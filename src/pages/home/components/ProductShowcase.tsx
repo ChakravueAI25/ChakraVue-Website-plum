@@ -4,10 +4,11 @@ import { gsap, ScrollTrigger } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
 import { Link } from "../../../shared/components/Link";
 import { products } from "../../product-suite/data";
+import { EarlyBirdOffer } from "./EarlyBirdOffer";
 import "./showcase.css";
 
 /** How long each product stays open while the showcase plays by itself. */
-const INTERVAL = 6.5;
+const INTERVAL = 4.5;
 /** Width of a closed panel's slit, as a fraction of the product shot. */
 const SLIT_MIN = 0.028;
 
@@ -266,6 +267,8 @@ export function ProductShowcase() {
             View all products <span aria-hidden="true">→</span>
           </Link>
         </header>
+
+        <EarlyBirdOffer />
 
         <div className="showcase__stage" onKeyDown={onKeyDown}>
           {products.map((product, i) => {
