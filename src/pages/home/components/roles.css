@@ -1,0 +1,550 @@
+/* "Who are you here as?" (RoleShowcase.tsx): the role on the left (about
+   38%), its products on the right. Every role sits in the same grid cell;
+   .is-active dissolves one in (opacity, a little blur, a few pixels of
+   drift) while the others dissolve out a beat faster. Images keep their own
+   colours. */
+
+.role {
+  --dur-in: 0.85s;
+  --dur-out: 0.45s;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(88px, 9vw, 130px) 0 clamp(64px, 6vw, 96px);
+  background: #030102;
+}
+
+/* Swells and settles each time a role comes in. */
+.role__glow {
+  position: absolute;
+  top: 10%;
+  right: -10%;
+  width: 70%;
+  height: 80%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 139, 18, 0.16), transparent 70%);
+  pointer-events: none;
+  animation: roleGlow 2.4s var(--ease) both;
+}
+
+@keyframes roleGlow {
+  0% {
+    opacity: 0.35;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.55;
+  }
+}
+
+.role__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+  gap: clamp(32px, 4.4vw, 72px);
+  align-items: stretch;
+}
+
+/* --- Left: who you are ------------------------------------------------------ */
+
+.role__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.role__eyebrow {
+  color: #ffb46a;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.role__title {
+  margin-top: 14px;
+  color: rgba(255, 243, 231, 0.72);
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 400;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.role__who {
+  display: grid;
+  width: 100%;
+  margin-top: clamp(22px, 2.4vw, 34px);
+}
+
+/* Shared by both sides: each role in one cell, dissolving in and out. */
+.role__state {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(8px);
+  translate: 0 -6px;
+  transition:
+    opacity var(--dur-out) ease,
+    filter var(--dur-out) ease,
+    translate var(--dur-out) ease,
+    visibility 0s linear var(--dur-out);
+}
+
+.role__state.is-active {
+  opacity: 1;
+  visibility: visible;
+  filter: blur(0);
+  translate: 0 0;
+  transition:
+    opacity var(--dur-in) var(--ease) 0.2s,
+    filter var(--dur-in) var(--ease) 0.2s,
+    translate var(--dur-in) var(--ease) 0.2s,
+    visibility 0s;
+}
+
+/* The way in starts a few pixels low; the way out leaves a few high. */
+.role__state:not(.is-active) {
+  translate: 0 -6px;
+}
+
+.role__state.is-active:not(.role__products) {
+  animation: roleRise var(--dur-in) var(--ease) 0.2s both;
+}
+
+@keyframes roleRise {
+  from {
+    translate: 0 8px;
+  }
+}
+
+.role__question {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.4vw, 50px);
+  line-height: 1.08;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.role__line {
+  max-width: 440px;
+  margin-top: 18px;
+  color: rgba(255, 243, 231, 0.66);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.role__count {
+  margin-top: auto;
+  padding-top: clamp(24px, 3vw, 40px);
+  color: rgba(255, 243, 231, 0.45);
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+.role__count span {
+  color: #ffb46a;
+}
+
+.role__controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.role__tabs {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.role__tab {
+  display: grid;
+  gap: 8px;
+  padding: 10px 0 0;
+  border: 0;
+  background: none;
+  color: rgba(255, 243, 231, 0.5);
+  font-family: var(--font-display);
+  font-size: 12px;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.35s ease;
+}
+
+.role__tab-index {
+  color: rgba(255, 180, 106, 0.6);
+  font-size: 10px;
+}
+
+.role__tab:hover,
+.role__tab.is-active {
+  color: #fff;
+}
+
+.role__tab:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.role__bar {
+  position: relative;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 214, 170, 0.16);
+}
+
+.role__tab.is-active .role__bar {
+  background: rgba(255, 214, 170, 0.28);
+}
+
+/* The only timer: when this fills, the next role comes in. */
+.role__fill {
+  position: absolute;
+  inset: 0;
+  background: #ffb46a;
+  box-shadow: 0 0 8px rgba(255, 139, 18, 0.7);
+  transform-origin: 0 50%;
+  animation: roleFill 5.2s linear both;
+}
+
+@keyframes roleFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.role__pause {
+  display: grid;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 180, 106, 0.4);
+  border-radius: 50%;
+  background: transparent;
+  color: #fbd896;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.role__pause svg {
+  fill: currentColor;
+}
+
+.role__pause:hover,
+.role__pause:focus-visible {
+  border-color: #ffb46a;
+  background: rgba(255, 139, 18, 0.1);
+}
+
+.role__pause:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+}
+
+.role__all {
+  margin-top: clamp(24px, 2.6vw, 34px);
+}
+
+/* --- Right: the products ------------------------------------------------------ */
+
+.role__stage {
+  display: grid;
+  min-height: clamp(460px, 40vw, 600px);
+}
+
+.role__products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 18px);
+}
+
+.role__products[data-count="1"] {
+  grid-template-columns: 1fr;
+}
+
+.role__products[data-count="1"] .role__product,
+.role__products[data-count="2"] .role__product {
+  grid-row: 1 / -1;
+}
+
+/* Three: the first tall on the left, the other two stacked beside it. */
+.role__products[data-count="3"] .role__product:first-child {
+  grid-row: 1 / -1;
+}
+
+.role__product {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border: 1px solid rgba(255, 214, 170, 0.16);
+  border-radius: 22px;
+  background: #0b0705;
+  color: #fff;
+  transition: border-color 0.35s ease;
+}
+
+.role__product:hover,
+.role__product:focus-visible {
+  border-color: rgba(255, 180, 106, 0.7);
+}
+
+.role__product:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+}
+
+.role__product img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 1.2s var(--ease);
+}
+
+.role__product:hover img {
+  scale: 1.03;
+}
+
+/* Products arrive one after another, from a little softer and larger. */
+.role__products .role__product {
+  opacity: 0;
+  filter: blur(10px);
+  scale: 1.015;
+  transition:
+    opacity var(--dur-out) ease,
+    filter var(--dur-out) ease,
+    scale var(--dur-out) ease,
+    border-color 0.35s ease;
+}
+
+.role__products.is-active .role__product {
+  opacity: 1;
+  filter: blur(0);
+  scale: 1;
+  transition:
+    opacity var(--dur-in) var(--ease) calc(0.3s + var(--i) * 0.14s),
+    filter var(--dur-in) var(--ease) calc(0.3s + var(--i) * 0.14s),
+    scale 1.1s var(--ease) calc(0.3s + var(--i) * 0.14s),
+    border-color 0.35s ease;
+}
+
+/* The products side dissolves through its cards, not as a block. */
+.role__state.role__products {
+  filter: none;
+  translate: none;
+}
+
+.role__product-body {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: clamp(18px, 1.8vw, 26px);
+  padding-top: 64px;
+  background: linear-gradient(180deg, transparent, rgba(5, 2, 3, 0.82) 46%, rgba(5, 2, 3, 0.94));
+}
+
+.role__product-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.4vw, 21px);
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.role__status {
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 180, 106, 0.55);
+  border-radius: 999px;
+  color: #ffd29a;
+  font-size: 10px;
+}
+
+.role__product-line {
+  max-width: 520px;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.role__product-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  color: #ffb46a;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.role__product-cta span {
+  transition: translate 0.35s var(--ease);
+}
+
+.role__product:hover .role__product-cta span,
+.role__product:focus-visible .role__product-cta span {
+  translate: 4px 0;
+}
+
+/* The two stacked products of three are shorter: one line, no extra space. */
+.role__products[data-count="3"] .role__product:not(:first-child) .role__product-line {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.role__products[data-count="3"] .role__product:not(:first-child) .role__product-body {
+  padding-top: 40px;
+}
+
+/* --- The software platforms ---------------------------------------------- */
+
+.role__more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(36px, 4vw, 56px);
+}
+
+.role__more-label {
+  margin-right: 8px;
+  color: rgba(255, 243, 231, 0.55);
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.role__chip {
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 214, 170, 0.22);
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.role__chip:hover,
+.role__chip:focus-visible {
+  border-color: rgba(255, 180, 106, 0.8);
+  background: rgba(255, 139, 18, 0.1);
+}
+
+/* --- Tablets and phones --------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .role__inner {
+    grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+    gap: 32px;
+  }
+
+  .role__stage {
+    min-height: 480px;
+  }
+}
+
+@media (max-width: 860px) {
+  /* Stacked: who you are, the controls, then the products. */
+  .role__inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .role__count {
+    margin-top: 22px;
+    padding-top: 0;
+  }
+
+  /* One swipeable row per role, every row the same height, so changing
+     role never moves the page. */
+  .role__stage {
+    min-height: 0;
+  }
+
+  .role__products,
+  .role__products[data-count] {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .role__products::-webkit-scrollbar {
+    display: none;
+  }
+
+  .role__products[data-count] .role__product {
+    flex: 0 0 calc(50% - 6px);
+    height: 420px;
+    scroll-snap-align: start;
+  }
+
+  .role__products[data-count="1"] .role__product {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .role__products[data-count] .role__product {
+    flex-basis: 84%;
+    height: 380px;
+  }
+
+  .role__products[data-count="1"] .role__product {
+    flex-basis: 100%;
+  }
+
+  .role__tab {
+    font-size: 11px;
+  }
+
+  .role__line {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role__state,
+  .role__state.is-active,
+  .role__products .role__product,
+  .role__products.is-active .role__product {
+    filter: none;
+    scale: none;
+    translate: none;
+    transition: none;
+    animation: none;
+  }
+
+  .role__glow {
+    animation: none;
+    opacity: 0.55;
+  }
+}

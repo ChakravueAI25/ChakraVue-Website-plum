@@ -6,8 +6,8 @@
 .discovery {
   position: relative;
   display: grid;
-  height: min(800px, 92vh);
-  min-height: 540px;
+  height: min(860px, 96vh);
+  min-height: 640px;
   overflow: hidden;
   isolation: isolate;
   align-items: end;
@@ -45,7 +45,7 @@
   z-index: -1;
   background:
     linear-gradient(180deg, #030102 0%, transparent 14%),
-    linear-gradient(0deg, #030102 0%, rgba(3, 1, 2, 0.85) 20%, transparent 50%);
+    linear-gradient(0deg, #030102 0%, rgba(3, 1, 2, 0.85) 28%, transparent 60%);
   pointer-events: none;
 }
 
@@ -67,8 +67,9 @@
 }
 
 .discovery__lead {
-  max-width: 560px;
+  max-width: 640px;
   margin-top: 16px;
+  text-wrap: balance;
   color: #ffb46a;
   font-size: clamp(15px, 1.3vw, 18px);
   line-height: 1.6;
@@ -94,40 +95,114 @@
   transition-delay: 2.4s;
 }
 
-/* The way on into the four products, the powers, just below. */
-.discovery__bridge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 28px;
-  color: rgba(255, 243, 231, 0.82);
-  font-family: var(--font-ui);
-  font-size: 11px;
-  letter-spacing: 0.12em;
+/* The three things connected: one line runs through their dots and fills
+   from the left once the words are in, each node lighting as it reaches it. */
+.discovery__links {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 28px);
+  width: min(920px, 100%);
+  margin-top: clamp(28px, 4vh, 40px);
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.discovery__links::before,
+.discovery__links::after {
+  content: "";
+  position: absolute;
+  top: 25px;
+  left: 6%;
+  right: 6%;
+  z-index: 1;
+  height: 1px;
+  pointer-events: none;
+}
+
+.discovery__links::before {
+  background: rgba(255, 214, 170, 0.18);
+}
+
+.discovery__links::after {
+  background: linear-gradient(90deg, #ff8b12, #ffd29a 50%, #ff8b12);
+  box-shadow: 0 0 10px rgba(255, 139, 18, 0.6);
+  transform-origin: 0 50%;
+  transition: scale 1.4s cubic-bezier(0.65, 0, 0.25, 1) 2.6s;
+}
+
+.discovery__node {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  height: 100%;
+  padding: 18px 20px 20px;
+  border: 1px solid rgba(255, 214, 170, 0.16);
+  border-radius: 14px;
+  background: rgba(10, 5, 2, 0.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.discovery__node:hover,
+.discovery__node:focus-visible {
+  border-color: rgba(255, 180, 106, 0.6);
+  background-color: rgba(24, 11, 4, 0.72);
+}
+
+.discovery__node:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+}
+
+.discovery__dot {
+  position: relative;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255, 214, 170, 0.5);
+  border-radius: 50%;
+  background: #05030a;
+  transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+  transition-delay: calc(2.7s + var(--i) * 0.55s);
+}
+
+.discovery__name {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(17px, 1.5vw, 21px);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.discovery__bridge span {
-  color: #ffb46a;
-  animation: bridgeNudge 1.8s ease-in-out infinite;
+.discovery__line {
+  color: rgba(255, 243, 231, 0.74);
+  font-size: 13px;
+  line-height: 1.55;
 }
 
-@keyframes bridgeNudge {
-  50% {
-    translate: 0 4px;
-  }
+/* Lit: the default, so the joined state shows without motion. */
+.discovery__dot {
+  border-color: #ffd29a;
+  background: #ff8b12;
+  box-shadow: 0 0 0 4px rgba(255, 139, 18, 0.18), 0 0 14px rgba(255, 139, 18, 0.8);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .discovery__bridge span {
-    animation: none;
-  }
+.discovery__title em {
+  font-style: normal;
+  color: #fbd896;
 }
 
-/* At the content column's right edge, clear of the growth rail. */
+/* At the content column's left edge, clear of the growth rail and the
+   assistant's button on the right. */
 .discovery__replay {
   position: absolute;
-  right: max(20px, (100% - 1180px) / 2);
+  left: max(20px, (100% - 1180px) / 2);
   bottom: 24px;
   min-height: 40px;
   padding: 0 16px;
@@ -170,6 +245,16 @@
   translate: 0 14px;
 }
 
+.discovery.is-armed .discovery__links::after {
+  scale: 0 1;
+}
+
+.discovery.is-armed .discovery__dot {
+  border-color: rgba(255, 214, 170, 0.5);
+  background: #05030a;
+  box-shadow: none;
+}
+
 /* Replay: snap the sheet shut without animating. */
 .discovery.is-resetting *,
 .discovery.is-armed .discovery__copy > * {
@@ -178,9 +263,59 @@
 }
 
 @media (max-width: 760px) {
+  /* The scene on top, the words and the stacked nodes below it. */
   .discovery {
-    height: min(640px, 82vh);
-    min-height: 480px;
+    height: auto;
+    min-height: 0;
+    padding-top: min(78vw, 360px);
+  }
+
+  .discovery__scene,
+  .discovery__sheet {
+    height: min(100vw, 460px);
+  }
+
+  .discovery__shade {
+    background:
+      linear-gradient(180deg, #030102 0%, transparent 14%),
+      linear-gradient(0deg, #05030a 0%, #05030a calc(100% - min(100vw, 460px)), rgba(5, 3, 10, 0.2) calc(100% - min(100vw, 460px) * 0.45), transparent calc(100% - min(100vw, 460px) * 0.2));
+  }
+
+  .discovery__links {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* The line runs down through the dots instead. */
+  .discovery__links::before,
+  .discovery__links::after {
+    top: 28px;
+    bottom: 28px;
+    left: 23px;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .discovery__links::after {
+    background: linear-gradient(180deg, #ff8b12, #ffd29a 50%, #ff8b12);
+    transform-origin: 50% 0;
+  }
+
+  .discovery.is-armed .discovery__links::after {
+    scale: 1 0;
+  }
+
+  .discovery__node {
+    grid-template-columns: 12px 1fr;
+    column-gap: 14px;
+    row-gap: 4px;
+    padding: 14px 16px;
+  }
+
+  .discovery__dot {
+    grid-row: span 2;
+    margin-top: 5px;
   }
 
   /* The boy and the chip, not the whole burn. */
@@ -191,6 +326,7 @@
   .discovery__replay {
     top: 16px;
     bottom: auto;
+    left: auto;
     right: 14px;
   }
 }

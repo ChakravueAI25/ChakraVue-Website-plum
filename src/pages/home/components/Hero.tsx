@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { reduceMotion } from "../../../motion/env";
 import { whenRevealed } from "../../../motion/gate";
 import { gsap, SplitText } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
 import { Link } from "../../../shared/components/Link";
-import { products } from "../../product-suite/data";
 
 // The whole film, looping (owner's request, 2026-10-27): the boy walks the
 // blueprint, strikes the match, and it burns open onto the circuit. The cut
@@ -21,22 +20,19 @@ type HeroProps = {
 };
 
 /**
- * The homepage hero, and the dream: the boy, who wants to be a doctor, walks
- * across an old engineering blueprint and strikes a match, and the
- * blueprint burns open onto a circuit. The film loops. Over it: the story line, the headline, one line on
- * what ChakraVue does, the two next steps, and a way into each product. The
- * film starts once the curtain opens (never under the intro), pauses when
- * the hero is off screen, and waits on its poster under reduced motion until
- * someone presses play.
+ * The homepage hero, and the dream: the boy walks across an old engineering
+ * blueprint and strikes a match, and the blueprint burns open onto a
+ * circuit. The film loops. Over it, only the headline and the two next steps
+ * (owner, 2026-10-29: the story line, the summary, the film's play/pause chip
+ * and the product shortcuts were taken out). The film starts once the
+ * curtain opens (never under the intro), pauses when the hero is off screen,
+ * and stays on its poster under reduced motion.
  */
 export function Hero({ onIntroDone }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const introDone = useRef(onIntroDone);
   introDone.current = onIntroDone;
-  const [playing, setPlaying] = useState(false);
-  // Someone pressed pause: scrolling back up doesn't override them.
-  const held = useRef(reduceMotion);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -45,7 +41,7 @@ export function Hero({ onIntroDone }: HeroProps) {
     const off = whenRevealed(() => {
       observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting && !held.current) video.play().catch(() => {});
+          if (entry.isIntersecting && !reduceMotion) video.play().catch(() => {});
           else if (!entry.isIntersecting) video.pause();
         },
         { threshold: 0.2 },
@@ -58,24 +54,11 @@ export function Hero({ onIntroDone }: HeroProps) {
     };
   }, []);
 
-  const toggle = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      held.current = false;
-      video.play().catch(() => {});
-    } else {
-      held.current = true;
-      video.pause();
-    }
-  };
-
   useMotion(ref, (root) => {
     const title = root.querySelector<HTMLElement>("h1");
     if (!title) return;
 
-    // Letters flip up out of a blur; then the line, the buttons, the film's
-    // caption and the product shortcuts follow in order.
+    // Letters flip up out of a blur; then the buttons follow.
     const split = SplitText.create(title, { type: "words,chars", charsClass: "hero-char" });
     gsap.set(title, { autoAlpha: 1 });
     gsap
@@ -97,14 +80,9 @@ export function Hero({ onIntroDone }: HeroProps) {
       )
       .add(() => introDone.current?.(), 0.95)
       .from(
-        root.querySelectorAll(".hero__eyebrow, .hero__lead, .hero__actions > *, .hero__chip"),
+        root.querySelectorAll(".hero__actions > *"),
         { autoAlpha: 0, y: 18, duration: 1, stagger: 0.08, clearProps: "transform,opacity,visibility" },
         0.9,
-      )
-      .from(
-        root.querySelectorAll(".hero__product"),
-        { autoAlpha: 0, y: 24, duration: 1, stagger: 0.07, clearProps: "transform,opacity,visibility" },
-        1.15,
       );
 
     // Nothing in the hero moves with scroll: it simply scrolls away whole.
@@ -122,8 +100,6 @@ export function Hero({ onIntroDone }: HeroProps) {
         playsInline
         preload="metadata"
         aria-describedby="hero-film-desc"
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
       />
       <p id="hero-film-desc" className="sr-only">
         A short looping film without sound: a boy walks across an old engineering blueprint, kneels and strikes a match, and the blueprint burns open onto a glowing circuit.
@@ -132,57 +108,21 @@ export function Hero({ onIntroDone }: HeroProps) {
 
       <div className="section__inner hero__content">
         <div className="hero__copy">
-          <p className="hero__eyebrow">Every doctor started small</p>
           <h1 id="hero-title">
             Add <em>Intelligence</em> to Your Practice
           </h1>
-          <p className="hero__lead">
-            ChakraVue AI develops intelligent software, device integrations and clinical systems for ophthalmic healthcare.
-          </p>
           <div className="hero__actions">
             <Link href="/product-suite" className="hero__btn hero__btn--primary" data-magnetic="0.2">
               Explore products
               <span aria-hidden="true">→</span>
             </Link>
-            <Link href="/contact-us" className="hero__btn hero__btn--ghost">
-              Contact us
+            <Link href="/try-demo" className="hero__btn hero__btn--ghost">
+              Book a demo
             </Link>
           </div>
         </div>
 
-        <div className="hero__chip">
-          <span className="hero__chip-label">The campaign film</span>
-          <button
-            type="button"
-            className="hero__chip-toggle"
-            onClick={toggle}
-            aria-label={playing ? "Pause the film" : "Play the film"}
-          >
-            {playing ? (
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12">
-                <rect x="6" y="5" width="4" height="14" />
-                <rect x="14" y="5" width="4" height="14" />
-              </svg>
-            ) : (
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
-          </button>
-        </div>
       </div>
-
-      <nav className="hero__products" aria-label="Products">
-        {products.map((product) => (
-          <Link key={product.id} href={`/product-suite#${product.id}`} className="hero__product">
-            <span className="hero__product-index">{product.index}</span>
-            <span className="hero__product-name">{product.title}</span>
-            <span className="hero__product-arrow" aria-hidden="true">
-              →
-            </span>
-          </Link>
-        ))}
-      </nav>
     </section>
   );
 }

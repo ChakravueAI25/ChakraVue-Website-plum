@@ -46,15 +46,18 @@ export function ValueCards() {
   });
 
   return (
-    <section ref={ref} className="hsteps section" aria-labelledby="hsteps-title">
+    <section ref={ref} id="how-it-works" className="hsteps section" aria-labelledby="hsteps-title">
       <div className="section__inner">
         <header className="hsec-head hsec-head--center">
           <h2 className="section-label" data-scramble>
-            How it works
+            Know how it works
           </h2>
           <h3 id="hsteps-title" className="hsec-title" data-split>
             From the instrument to the decision.
           </h3>
+          <p className="hsteps__lead" data-split="fade" data-delay="0.1">
+            Every product follows the same four steps, inside the workflow your team already runs. The software assists; the clinician decides.
+          </p>
         </header>
 
         <ol className="hsteps__list">

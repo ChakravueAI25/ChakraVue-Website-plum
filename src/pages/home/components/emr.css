@@ -1,0 +1,259 @@
+/* EMR × ChakraVue AI (EmrConnect.tsx): the record at the centre, what feeds
+   it on either side, the clinic's workflow underneath. The capture keeps its
+   own colours (images aren't graded). */
+
+.emrx {
+  --g: clamp(28px, 3.4vw, 56px);
+  padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
+  background:
+    radial-gradient(45% 45% at 50% 52%, rgba(255, 139, 18, 0.1), transparent 70%),
+    #030102;
+}
+
+.emrx__lead {
+  max-width: 640px;
+  margin-top: 18px;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.emrx__map {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.1fr) minmax(0, 1fr);
+  gap: var(--g);
+  align-items: center;
+}
+
+.emrx__side {
+  display: grid;
+  gap: clamp(16px, 2vw, 28px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.emrx__source {
+  position: relative;
+}
+
+/* Each source is linked to the record across the gap, a pulse running in. */
+.emrx__source::before,
+.emrx__source::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  pointer-events: none;
+}
+
+.emrx__source::before {
+  width: var(--g);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.25), rgba(255, 180, 106, 0.7));
+}
+
+.emrx__side--l .emrx__source::before {
+  left: 100%;
+}
+
+.emrx__side--r .emrx__source::before {
+  right: 100%;
+  transform: scaleX(-1);
+}
+
+.emrx__source::after {
+  width: 6px;
+  height: 6px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #fff3e2;
+  box-shadow: 0 0 10px 3px rgba(255, 170, 80, 0.85);
+  animation: emrxIn 2.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+
+.emrx__side--l .emrx__source::after {
+  left: 100%;
+}
+
+.emrx__side--r .emrx__source::after {
+  right: 100%;
+  animation-name: emrxInR;
+}
+
+.emrx__source:nth-child(2)::after {
+  animation-delay: 1.2s;
+}
+
+@keyframes emrxIn {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    translate: calc(var(--g) - 6px) 0;
+    opacity: 0;
+  }
+}
+
+@keyframes emrxInR {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    translate: calc(6px - var(--g)) 0;
+    opacity: 0;
+  }
+}
+
+.emrx__card {
+  display: grid;
+  gap: 10px;
+  padding: clamp(18px, 1.8vw, 24px);
+  border: 1px solid rgba(255, 214, 170, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+  color: #fff;
+  transition: border-color 0.35s ease, translate 0.35s var(--ease-out);
+}
+
+.emrx__card:hover,
+.emrx__card:focus-visible {
+  border-color: rgba(255, 180, 106, 0.7);
+  translate: 0 -3px;
+}
+
+.emrx__name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.emrx__body {
+  color: rgba(255, 243, 231, 0.66);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* The record, in a window frame. */
+.emrx__screen {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 180, 106, 0.45);
+  border-radius: 18px;
+  background: #0b0705;
+  box-shadow: 0 0 0 6px rgba(255, 139, 18, 0.05), 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(255, 120, 20, 0.18);
+}
+
+.emrx__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 214, 170, 0.12);
+  color: rgba(255, 243, 231, 0.6);
+  font-family: var(--font-display);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.emrx__bar i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 214, 170, 0.25);
+}
+
+.emrx__bar span {
+  margin-left: 8px;
+}
+
+.emrx__screen img {
+  display: block;
+  width: 100%;
+}
+
+/* --- The workflow ---------------------------------------------------------- */
+
+.emrx__stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: min(760px, 100%);
+  margin: clamp(32px, 3.4vw, 48px) auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.emrx__stages li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 10px;
+  border: 1px solid rgba(255, 214, 170, 0.16);
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.emrx__stages span {
+  color: #ffb46a;
+}
+
+.emrx__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(28px, 3vw, 40px);
+}
+
+@media (max-width: 900px) {
+  /* The record first, then its sources two by two. */
+  .emrx__map {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .emrx__screen {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .emrx__side {
+    gap: 14px;
+  }
+
+  .emrx__source::before,
+  .emrx__source::after {
+    display: none;
+  }
+
+  .emrx__stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .emrx__map {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emrx__source::after {
+    display: none;
+  }
+}

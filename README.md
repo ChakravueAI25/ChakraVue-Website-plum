@@ -73,14 +73,18 @@ product PDF (see "Product Assistant" below). It uses no AI service or API key.
 
 **Home.** A company homepage built on the original design: the original
 sections and art, plus the parts a company site needs (clear calls to action,
-product shortcuts, the team, the latest posts). Nothing on the homepage pins;
+the team, the latest posts). Nothing on the homepage pins;
 sections animate in as they arrive. It tells the kid's story in six
 chapters (`shared/data/story.ts`): The dream, The beginning, The discovery,
 The transformation, The journey, The aspiration. Each starts at a
 `ChapterMark` placed between sections, so the technical sections carry no
-story code; the growth rail reads the marks. In order:
-- **Hero: the dream** (`Hero.tsx`, `home.css`). The kid, who wants to be a
-  doctor, walks across an old engineering blueprint and strikes a match, and
+story code; the growth rail reads the marks. The order follows the owner's
+homepage brief (2026-10-29): hero, who are you here as (the products), how it works,
+integrated devices, the ChakraVue System, surgical tools, why
+ChakraVue AI, then book a demo / collaborate. The story's beginning (from
+analog to intelligent) and discovery sit between the products and how it
+works. In order:
+- **Hero: the dream** (`Hero.tsx`, `home.css`). The kid walks across an old engineering blueprint and strikes a match, and
   the blueprint burns open onto a circuit. The whole film loops
   (`campaign/analogue-to-ai-loop.mp4`; `-loop-sm.mp4`, a lighter encode,
   below 760px; owner's request, 2026-10-27), dissolving from the circuit
@@ -88,11 +92,14 @@ story code; the growth rail reads the marks. In order:
   replaced the sunset, the particle landscape and the centred logo
   (2026-10-26, at the owner's request). Framed into the site: the nav's band
   and the copy's corner are shaded, the edges vignetted, the bottom melts
-  into the page over a warm hairline. Over it, low on the left: "Every
-  doctor started small", the headline, the one-line summary, "Explore
-  products" and "Contact us"; on the right a chip with play/pause; the four product shortcuts along the bottom.
+  into the page over a warm hairline. Over it, low on the left, only the
+  headline, "Add Intelligence to Your Practice", and two buttons: "Explore
+  products" and "Book a demo" (`/try-demo`). The story line, the one-line
+  summary, the film's play/pause chip and the product shortcuts were
+  removed (owner, 2026-10-29) so the headline stands alone.
   The film starts once the curtain opens (never under the intro), pauses
-  off screen, and waits on its poster under reduced motion. On phones the
+  off screen, and stays on its poster under reduced motion (there is no
+  play button any more). On phones the
   film fills the top half and fades into the copy, so the boy stays in
   view. Nothing in the hero moves with scroll. The full campaign film
   (`analogue-to-ai.mp4`) is no longer used.
@@ -104,64 +111,127 @@ story code; the growth rail reads the marks. In order:
   TV and digital media interviews at the AI Impact Summit 2026, New Delhi.
   Read about it →" links to `/blog#media`. Add a channel there only when the
   coverage is confirmed.
+- **Our journey** (`JourneyStrip.tsx`, `journey.css`, owner, 2026-10-29): a
+  small strip of real photographs on an endless CSS loop (60s; the list
+  rendered twice, moved by one copy), paused under the pointer and still,
+  scrollable, under reduced motion. The blog's AI Impact Summit photos
+  (`mediaAppearance.photos`) and the four retouched real-theatre photos, each
+  with a short caption; "Read the story →" links to `/blog#media`. Real photos
+  only: `about/hoarding.jpg` is a generated render and is left out.
 - **Statement.** "Built from Experience. Guided by Science. Elevated by
   Intelligence." lights word by word as it passes, closed by "Shaping What
   Healthcare Can See, Understand, and Do." under a short rule.
-- **The beginning: problem reels** (`ProblemReels.tsx`, `reels.css`). "Still
-  on the old blueprint / Every doctor knows these days." Three scenes
-  from the campaign's reel wall, each linking to the product that answers
-  it: an old car (Integrated Devices), a clerk buried in paperwork (AI
-  Powered EMR), a wobbly tower (Dental Implant Planning). The car and the
-  clerk turn into their "after" (jet engine; clear desk) as the card
-  arrives, with a "Before" / "With ChakraVue AI" tag; hovering peeks back at
-  the old day. Images in `public/images/campaign/reels/`, retouched: the
-  State Emblem on the government files and the car maker's badge are
-  painted out.
+- **The beginning: from analog to intelligent** (`AnalogToIntelligent.tsx`,
+  `analog.css`, `#analog-to-intelligent`; replaced the "Still on the old
+  blueprint" problem reels, owner, 2026-10-29). "How practice is changing /
+  From analog to intelligent." and "Move beyond fragmented, paper-based
+  workflows to connected clinical systems that bring your practice
+  together." Three stages on one line, Analog → Digital → Intelligent:
+  the campaign's paperwork scene (`campaign/reels/records-before.webp`,
+  retouched, faded back), the ChakraVue System's anonymised patient
+  dashboard, and the Slit Lamp Module's analysis with a beam sweeping it.
+  Each has a title, one line and four tags (paper records … manual admin;
+  digitised records … easier access; connected systems … workflow
+  support). As the section arrives the line fills and the stages light in
+  turn, once; nothing pins. On tablets and phones the line gives way to a
+  stack with arrows between, and each image carries its stage. Links: the
+  ChakraVue System, Know how it works. The other reel images (car, dental
+  tower, clerk's "after") stay in `public/images/campaign/reels/`, unused.
 - **The discovery** (`DiscoveryReveal.tsx`, `discovery.css`), from the
   blueprint redesign's logo reveal. The burnt blueprint (`burn-hole.webp`)
   hangs over the scene; as the section arrives it opens out past the screen
   and the boy is there at the glowing circuit (`circuit-reveal.jpg`), then
-  "The spark / Not to burn the past. / To see what was underneath it all
-  along." and the way on into the products: "Four new powers, built into
-  the tools doctors already use ↓". The only place the burn is shown (the
-  hero stops at the match). Plays once, with Replay; open from the start
+  the company's tagline (owner, 2026-10-29; it replaced "The spark / Not to
+  burn the past."): "What we do / We connect clinicians, data and devices."
+  and "From the instrument to the record, in one connected line of sight."
+  Under it the three things connected, as glass cards on one line:
+  Clinicians (guidance in theatre, findings at the slit lamp; links to Who
+  are you here as?), Data (imaging, device output and notes in one
+  timeline; links to the ChakraVue System) and Devices (the equipment you
+  already own, feeding patient records; links to Integrated devices). Each
+  line paraphrases its product's description. Once the words are in, the
+  line fills from the left and each card's dot lights as it reaches it; on
+  phones the cards stack and the line runs down through the dots. The only
+  place the burn is shown (the hero stops at the match). Plays once, with
+  Replay (bottom left, clear of the assistant); open and lit from the start
   without motion.
-- **Product suite showcase.** "Four products, one connected line of
-  sight." Four dark panels, each crossed by a slit of
-  light (a nod to the slit lamp) showing a sliver of its product. Opening a
-  panel widens it and splits the slit into two beams that sweep apart until
-  the whole product is lit. Opens on hover, click, tap or keyboard; plays by
-  itself with a progress line until the visitor picks one. Product shots are
-  cut from the Product Suite hero render (`public/images/home/products/`).
-- **Who we serve** (`shared/components/AudienceMap.tsx`).
-  "Technology Built for Every Role in Surgery.": four equal panels, one per
-  audience. Each has a picture of its product at work (the product screens
-  from the Product Suite hero, the EMR's patient cards in
-  `campaign/audience/emr-cover.webp`, and the two photos), its number and
-  how many offerings it has, the role and its need, then its products as
-  rows at the foot, each with where it leads ("In the suite" / "Talk to us")
-  and a round arrow. Pointing at a panel's second product shows that
-  product's picture. The panels share rows (CSS subgrid), so the roles and
-  product rows line up across the four. 2×2 on tablets, stacked on phones
-  with a shorter picture.
-- **The core idea** (original).
-- **How it works.** Capture → Connect → Analyse → Assist on one line; a signal
-  of light travels through the stages as you scroll and lights each one.
+- **Who are you here as?** (`RoleShowcase.tsx`, `roles.css`,
+  `#who-are-you-here-as`; replaced the slit-lit product showcase, owner's
+  brief 2026-10-29). Left (about 38%): "Built around you / Who are you here
+  as?", then the role's question ("Are you a clinician?", "… a PG?", "… a
+  researcher?") and its line, "01 / 03", three tabs and a pause button,
+  "View all products". Right: that role's products as large image panels
+  (name, a line paraphrasing the product's own description, Explore / Ask
+  link). The roles and their products are `roles` in
+  `shared/data/audiences.ts`: Clinicians → Surgical Assistant, Slit Lamp
+  Module; PGs → Gaming, Slit Lamp Module, ChakraVue System; Researchers →
+  Sidekick (pilot, Contact with "Sidekick (research)" chosen). Every role is
+  rendered in the same grid cell, so changing role never moves the page:
+  CSS dissolves the old one out (fade, blur, a few pixels of drift) and the
+  new one in, products staggered, with a plum glow swelling behind. It
+  plays Clinicians → PGs → Researchers → … by itself: the active tab's bar
+  fills over 5.2 s and its animationend brings the next role in, so there
+  is only ever one timer. A pick restarts the bar; pointing at the products
+  or controls, keyboard focus in the section, the pause button, the
+  section being off screen or the browser tab hidden all pause it. Tabs
+  follow the tab pattern (arrow keys). Under reduced motion nothing plays by
+  itself and roles swap without the dissolve. Below 860px it stacks, each
+  role's products in one swipeable row of equal height. Product shots come
+  from `public/images/home/products/` (the Integrated Devices shot's battery
+  rating was painted out 2026-10-29); Gaming uses the hands-on session
+  photo; Sidekick has no product imagery, so it uses the blueprint
+  redesign's research reel (`campaign/reels/research-before.webp`, the
+  campaign's "sidekick" scene). Under it, the software platforms as chips,
+  each linking to `/product-suite#platforms`.
+- **The core idea** (original): "We don't replace the device. We extend
+  what it can do."
+- **Know how it works** (`ValueCards.tsx`, `#how-it-works`). Capture →
+  Connect → Analyse → Assist on one line; a signal of light travels through
+  the stages as you scroll and lights each one. A lead line says every
+  product follows these steps inside the existing workflow.
+- **Integrated devices** (`IntegratedDevices.tsx`, `devices.css`,
+  `#integrated-devices`). "The equipment you already own, connected.": your
+  equipment (generic kinds only) → the connectivity module → patient records, with
+  pulses along the links (upright on tablets and phones), then three points
+  drawn from the product's description and "Compatibility depends on the
+  device. We confirm yours before anything is installed."
+- **The ChakraVue System** (`EmrConnect.tsx`, `emr.css`, `#emr`; "EMR ×
+  ChakraVue AI" until the 2026-10-29 renaming). "Every
+  patient on one timeline.": the anonymised patient dashboard in a window
+  frame, the Surgical Assistant, Slit Lamp Module, Integrated Devices and
+  clinical notes linked into it from either side (each line from that
+  product's description), and the clinic's stages as the dashboard tags
+  them: Reception, Optometry, Examination, Check-out.
+- **Surgical tools** (`SurgicalTools.tsx`, `surgical.css`,
+  `#surgical-tools`). "AI-powered assistance, in the surgeon's field of
+  view.": the Surgical Assistant's interface capture (an analysis beam
+  sweeps it) beside ID (who it's for), Platform (what it does) and Research
+  (what it's built on: real theatres and the AI Impact Summit
+  demonstration). No validation or outcome claims. Book a demo, and a link
+  to the summit post.
 - **The journey: real theatres** (`RealTheatres.tsx`, `theatres.css`). "Not
   a render / In real theatres, with real surgeons.": four real photographs
   (`public/images/campaign/theatres/`): the Surgical Assistant at the
   microscope, the Slit Lamp Module, the AI Impact Summit, a hands-on
   session. The microscope maker's marks, its REF/SN plate and an on-screen
   FPS readout are painted out or cropped.
+- **Why ChakraVue AI** (`WhyChakraVue.tsx`, `why.css`, `#why`). "Practical
+  to adopt. Built on research.": the owner's six differentiators (data
+  security, ease of integration, easy onboarding, no new medical hardware,
+  local data management, research & development) as cards. Deliberately
+  general: no security mechanisms, certifications or storage details until
+  they're confirmed (see "Copy to confirm").
 - **Team.** The three leaders and the wider team, linking to About.
 - **Blog.** The three latest posts, linking to the blog.
 - **The aspiration** (`CampaignClose.tsx`, `campaign.css`). A height chart:
-  the toddler at 0.95 m and, beside him, the doctor he grows into rising to
+  the toddler at 0.95 m and, beside him, the clinician he grows into rising to
   1.74 m as the section arrives, the tape lighting with him. "The dream,
-  within reach / A doctor with new powers." and the four powers, each
+  within reach / A clinician with new powers." and the four powers, each
   drawn from its product's own description: "Every case captured. Every
   examination remembered. Every patient on one timeline. Every instrument
-  connected. Join the revolution." Then Explore products / Contact us.
+  connected. Join the revolution." Then the page's last step as two
+  cards: Book a demo (`/try-demo`) and Collaborate (Contact, with
+  Partnership / Collaboration chosen), and "Or simply contact us".
 
 **In the media** (`blog/components/MediaFeature.tsx`, `mediaAppearance` in
 `blog/data.ts`), at the top of the Blog page (`/blog#media`), above the
@@ -178,9 +248,9 @@ mapping (2026-10-26):
 
 | Audience | Products | Link |
 | --- | --- | --- |
-| Doctors & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their product rows (`/product-suite#…`) |
-| PG Students & Surgical Trainees | Gaming | `/contact-us?interest=VR/AR Gaming Environment` |
-| Hospitals & Training Institutions | AI Powered EMR | Its product row |
+| Clinicians & Surgeons | Digital Surgical Assistant, Slit Lamp Module | Their product rows (`/product-suite#…`) |
+| PGs & Surgical Trainees | Gaming | `/contact-us?interest=VR/AR Gaming Environment` |
+| Hospitals & Training Institutions | ChakraVue System | Its product row |
 | OEMs & Medical Device Manufacturers | Microscope Software Integrations | `/contact-us?interest=Partnership / Collaboration` |
 
 Products on the Product Suite page are referenced by id, so their names,
@@ -717,24 +787,76 @@ Campaign copy (from the blueprint redesign, adapted). Please review:
 - Who we serve / Try Demo: the audiences' "need" lines, the Gaming and
   Microscope Software Integrations descriptions and taglines, and the two photos used for Gaming (the
   hands-on session) and the integrations (the surgeon at the microscope).
-- Hero: "Every doctor started small" above the headline. The headline itself
-  is unchanged until the owner decides whether the story line should replace
-  it.
-- Reels: "Still on the old blueprint?", "Every hospital knows these days.",
-  each card's hook and punchline, and which product each links to.
-- Discovery: "The spark" / "Not to burn the past." / "To see what was
-  underneath it all along." / "Four new powers for the tools doctors
-  already use".
+- Discovery: "What we do" / "We connect clinicians, data and devices."
+  ("clinicians", confirmed by the owner 2026-10-29) /
+  "From the instrument to the record, in one connected line of sight." and
+  the three cards' lines.
 - Real theatres: "Not a render", "In real theatres, with real surgeons." and
   the four captions. Confirm consent for the people shown, and that the
   summit appearance can be named.
-- Aspiration: "The dream, within reach" / "A doctor with new powers." and the
+- Aspiration: "The dream, within reach" / "A clinician with new powers." and the
   four power lines.
 - About: "Why we exist", the blueprint's About hero lines, and the two
   captions under the height chart.
 - The film shows the boy striking a match; confirm that's acceptable for a
   healthcare brand.
 - Growth rail: "Every doctor started small." and the height readings.
+
+Who are you here as? (2026-10-29, third brief). Please review before launch:
+- Sidekick: nothing in this project describes it. The blueprint redesign
+  lists a pilot "Research Assistant" ("From your own de-identified EMR data
+  to a paper, poster or slides"), and its research reel image is named
+  `sidekick_before.jpg`, so Sidekick is shown as that, marked Pilot, with
+  the research illustration and a Contact link. Confirm the name, the line
+  and the status, and supply product imagery and a page if there is one.
+- PGs: the brief suggested the Slit Lamp Module and the EMR; Gaming (the
+  owner's training offering for PGs) leads, and none of the three claims a
+  teaching feature. Confirm the three.
+- Each product's one-line summary, and every role's question and line (the
+  questions and lines are the brief's own).
+- The older "Who are you?" section (`AudienceMap`, four audiences incl.
+  Hospitals and OEMs, each with a next step) was removed from Home at the
+  owner's request (2026-10-29), so Hospitals and OEMs no longer have a path
+  on Home; they're still on Try Demo ("Who Are You?") and in the closing
+  Collaborate card.
+
+Refinement (2026-10-29, second brief). Please review before launch:
+- From analog to intelligent: the eyebrow "How practice is changing", each
+  stage's title, line and four tags, and the choice of images (the
+  paperwork illustration, the patient dashboard, the slit-lamp analysis).
+- Terminology, applied to visible copy site-wide: "AI Powered EMR" and
+  "EMR" → "ChakraVue System"; doctor(s) → clinician(s); "PG Students" →
+  "PGs" (audience "PGs & Surgical Trainees"); "Hospital Intelligence"
+  appeared nowhere, so nothing changed for it. Where "EMR" meant any
+  clinic's records software (Integrated Devices' description, the module
+  diagram) it now reads "patient records", so the copy doesn't claim the
+  module only feeds the ChakraVue System. Kept on purpose: the product
+  names "ChakraVue Doctor App" and "ChakraVue Doctor Patient App"; the
+  audience "Hospitals & Training Institutions"; internal ids
+  (`ai-powered-emr`, `doctors`) and anchors, so old links still work. Text
+  inside the EMR screen captures and the 3D interfaces is unchanged.
+  Confirm the two product names, and the contact form's "ChakraVue System"
+  interest (was "EMR Dashboard").
+- The hero film now loops with no pause control (removed on request). Under
+  reduced motion it stays on its poster.
+
+Homepage restructure (2026-10-29, from the owner's notes). Please review
+before launch:
+- The section titles and leads of Integrated devices, the ChakraVue System,
+  Surgical tools and Why ChakraVue AI, and the How it works lead line.
+- Integrated devices: the generic device kinds ("Diagnostic devices",
+  "Imaging systems", "Clinical instruments"). Which devices the module
+  supports isn't stated anywhere yet.
+- ChakraVue System: the "Clinical notes" card and the four workflow stages (taken from
+  the dashboard's status tags).
+- Surgical tools: "Ophthalmic surgeons and their teams, at the operating
+  microscope", "It runs from a portable case beside the microscope", and
+  the Research line. Add validation or studies only when they can be cited.
+- Why ChakraVue AI: every card, above all Data security, Easy onboarding
+  and Local data management. The notes ask for specific security and
+  storage claims only where verified, so these stay general until the
+  product team confirms what each product stores locally and how.
+- Closing: "See a product working." / "Build it with us." and their lines.
 
 New on the homepage. Please review before launch:
 - "How it works" / "From the instrument to the decision." (above the value cards)

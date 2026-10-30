@@ -4,11 +4,27 @@ import { useMotion } from "../../../motion/useMotion";
 import { Link } from "../../../shared/components/Link";
 import "./campaign.css";
 
+const paths = [
+  {
+    label: "Book a demo",
+    title: "See a product working.",
+    body: "Product trials and demonstrations for your team.",
+    href: "/try-demo",
+  },
+  {
+    label: "Collaborate",
+    title: "Build it with us.",
+    body: "Partnerships and integrations with hospitals, institutions and device manufacturers.",
+    href: `/contact-us?interest=${encodeURIComponent("Partnership / Collaboration")}`,
+  },
+];
+
 /**
  * The aspiration, closing the homepage: the kid's dream come true. The
  * toddler from the clip stands at the height chart, and beside him the
  * doctor he grows into rises to full height as the section arrives (the
- * growth rail hands over to this scene). Then the next steps.
+ * growth rail hands over to this scene). Then the next steps: book a demo,
+ * or collaborate.
  */
 export function CampaignClose() {
   const ref = useRef<HTMLElement>(null);
@@ -45,20 +61,29 @@ export function CampaignClose() {
             The dream, within reach
           </p>
           <h2 id="campaign-close-title" className="campaign-close__title" data-split>
-            A doctor with <em>new powers</em>.
+            A clinician with <em>new powers</em>.
           </h2>
           <p className="campaign-close__lead" data-split="fade" data-delay="0.15">
             Every case captured. Every examination remembered. Every patient on one timeline. Every instrument connected. Join the revolution.
           </p>
-          <div className="campaign-close__actions">
-            <Link href="/product-suite" className="hero__btn hero__btn--primary" data-magnetic="0.2" data-reveal>
-              Explore products
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link href="/contact-us" className="hero__btn hero__btn--ghost" data-reveal>
-              Contact us
-            </Link>
-          </div>
+          {/* The page's last step, either way in: try a product, or work with us. */}
+          <ul className="campaign-close__paths">
+            {paths.map((path) => (
+              <li key={path.label} data-reveal>
+                <Link href={path.href} className="close-path">
+                  <span className="close-path__label">{path.label}</span>
+                  <strong className="close-path__title">{path.title}</strong>
+                  <span className="close-path__body">{path.body}</span>
+                  <span className="close-path__arrow" aria-hidden="true">
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href="/contact-us" className="hsec-link campaign-close__contact" data-reveal>
+            Or simply contact us <span aria-hidden="true">→</span>
+          </Link>
         </div>
       </div>
     </section>

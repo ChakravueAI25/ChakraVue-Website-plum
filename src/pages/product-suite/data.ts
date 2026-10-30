@@ -71,11 +71,11 @@ export const products: Product[] = [
   {
     id: "ai-powered-emr",
     index: "03",
-    label: "AI Powered EMR",
+    label: "ChakraVue System",
     tagline: "Clinical data and workflow intelligence",
-    title: "AI Powered EMR",
+    title: "ChakraVue System",
     description:
-      "An electronic medical record built around ophthalmic workflows that brings imaging, device output and clinical notes into one timeline, surfacing the insight each consultation needs.",
+      "A clinical records system built around ophthalmic workflows that brings imaging, device output and clinical notes into one timeline, surfacing the insight each consultation needs.",
     image: `${IMG}/emr-case.webp`,
     imageFit: "photo",
     cta: { label: "Request a demo", href: "/try-demo#demos" },
@@ -97,7 +97,7 @@ export const products: Product[] = [
     tagline: "Legacy equipment, connected",
     title: "Integrated Devices",
     description:
-      "A connectivity module for the equipment you already own. It captures data from existing devices over a wired or wireless link and routes it into your EMR or EHR in real time, with no replacement hardware and no manual transcription.",
+      "A connectivity module for the equipment you already own. It captures data from existing devices over a wired or wireless link and routes it into your patient records in real time, with no replacement hardware and no manual transcription.",
     image: `${IMG}/integration-module.webp`,
     imageFit: "render",
     cta: { label: "Talk to us", href: "/contact-us" },

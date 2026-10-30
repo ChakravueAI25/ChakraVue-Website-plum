@@ -13,9 +13,9 @@ const photos = [
   },
   {
     src: `${IMG}/slit-lamp.webp`,
-    alt: "A doctor beside the slit lamp, its analysis on the screen in front of him.",
+    alt: "A clinician beside the slit lamp, its analysis on the screen in front of him.",
     title: "Slit Lamp Module",
-    detail: "on the doctor's own slit lamp",
+    detail: "on the clinician's own slit lamp",
     position: "62% 50%",
   },
   {

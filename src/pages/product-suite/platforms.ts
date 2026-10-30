@@ -42,15 +42,15 @@ export const platforms: Platform[] = [
   {
     id: "doctor-patient-app",
     index: "06",
-    category: "EMR ecosystem · Doctors & patients",
+    category: "ChakraVue System ecosystem · Clinicians & patients",
     title: "ChakraVue Doctor Patient App",
-    summary: "One connected pair of apps: the doctor and the patient each have their own, and the care between visits runs through both.",
+    summary: "One connected pair of apps: the clinician and the patient each have their own, and the care between visits runs through both.",
     glyph: "bundle",
     features: [],
     apps: [
       {
         title: "ChakraVue Doctor App",
-        summary: "The doctor's side of the ecosystem: patient information and patient requests on a phone, not just at the desk.",
+        summary: "The clinician's side of the ecosystem: patient information and patient requests on a phone, not just at the desk.",
         glyph: "doctor",
         features: ["Patient information", "Drug adherence", "Submitted test results", "Patient call requests", "Video consultation"],
       },

@@ -1,0 +1,267 @@
+/* Integrated devices (IntegratedDevices.tsx): equipment → module → record,
+   then three points. Shared by the EMR section's links: a pulse runs along
+   each .idev__wire. */
+
+.idev {
+  padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
+  background:
+    radial-gradient(50% 40% at 50% 46%, rgba(255, 139, 18, 0.07), transparent 70%),
+    #030102;
+}
+
+.idev__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px clamp(32px, 5vw, 80px);
+  align-items: end;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+
+.idev__head .hsec-title {
+  margin-top: 16px;
+}
+
+.idev__lead {
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* --- The flow -------------------------------------------------------------- */
+
+.idev__flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(40px, 0.5fr) minmax(0, 1.5fr) minmax(40px, 0.5fr) minmax(0, 1fr);
+  align-items: center;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 22px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+}
+
+.idev__node {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid rgba(255, 214, 170, 0.22);
+  border-radius: 16px;
+  background: rgba(14, 6, 2, 0.6);
+  color: #fff;
+}
+
+.idev__node--to {
+  justify-items: start;
+}
+
+.idev__node strong {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 400;
+}
+
+.idev__kicker,
+.idev__note {
+  color: #ffb46a;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.idev__note {
+  color: rgba(255, 243, 231, 0.55);
+}
+
+.idev__devices {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.idev__devices li {
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 10px;
+  color: rgba(255, 243, 231, 0.85);
+  font-size: 13px;
+}
+
+.idev__module {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  margin: 0;
+}
+
+.idev__module img {
+  display: block;
+  width: 100%;
+  border-radius: 14px;
+}
+
+.idev__module figcaption {
+  color: rgba(255, 243, 231, 0.62);
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* A link with a pulse travelling along it, from the source to the record. */
+.idev__wire {
+  position: relative;
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.25), rgba(255, 180, 106, 0.7));
+}
+
+.idev__wire i {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff3e2;
+  box-shadow: 0 0 10px 3px rgba(255, 170, 80, 0.85);
+  animation: idevPulse 2.6s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+
+.idev__flow .idev__wire:nth-of-type(2) i {
+  animation-delay: 1.3s;
+}
+
+@keyframes idevPulse {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 7px);
+    opacity: 0;
+  }
+}
+
+/* --- Points ---------------------------------------------------------------- */
+
+.idev__points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+  margin: clamp(20px, 2.4vw, 32px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.idev__points li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: clamp(20px, 2vw, 28px);
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 18px;
+  background: rgba(14, 8, 4, 0.55);
+}
+
+.idev__index {
+  color: #ffb46a;
+  font-family: var(--font-display);
+  font-size: 12px;
+}
+
+.idev__points h3 {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.idev__points p {
+  color: rgba(255, 243, 231, 0.68);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.idev__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 32px;
+  margin-top: clamp(28px, 3vw, 40px);
+}
+
+.idev__foot p {
+  color: rgba(255, 243, 231, 0.55);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.idev__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+@media (max-width: 900px) {
+  .idev__head {
+    grid-template-columns: 1fr;
+  }
+
+  /* The flow stands upright: equipment, module, record. */
+  .idev__flow {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+
+  .idev__wire {
+    width: 1px;
+    height: 36px;
+    justify-self: center;
+    background: linear-gradient(180deg, rgba(255, 139, 18, 0.25), rgba(255, 180, 106, 0.7));
+  }
+
+  .idev__wire i {
+    left: -3px;
+    animation-name: idevPulseDown;
+  }
+
+  .idev__module img {
+    max-width: 420px;
+  }
+
+  .idev__points {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes idevPulseDown {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: calc(100% - 7px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idev__wire i {
+    display: none;
+  }
+}

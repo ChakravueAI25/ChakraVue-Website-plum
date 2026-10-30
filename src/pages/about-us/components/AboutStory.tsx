@@ -31,7 +31,7 @@ export function AboutStory() {
             Built inside a working eye hospital. <em>For every hospital.</em>
           </p>
           <p className="about-story__lead" data-split="fade" data-delay="0.15">
-            We are doctors and engineers in Secunderabad. We watched small hospitals do the same work as the big ones with a fraction of the tools,
+            We are clinicians and engineers in Secunderabad. We watched small hospitals do the same work as the big ones with a fraction of the tools,
             and decided to level the field.
           </p>
         </div>

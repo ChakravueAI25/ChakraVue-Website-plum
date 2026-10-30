@@ -1,0 +1,123 @@
+/* "Our journey" (JourneyStrip.tsx): real photographs on a slow, endless loop
+   under the Featured-in strip. Photos aren't graded, so they keep their own
+   colours. */
+
+.journey-strip {
+  padding: clamp(28px, 3vw, 40px) 0 clamp(32px, 3.4vw, 46px);
+  background: #000;
+  border-bottom: 1px solid #efbf7a;
+  border-image: linear-gradient(90deg, transparent, rgba(239, 191, 122, 0.6) 18%, rgba(239, 191, 122, 0.6) 82%, transparent) 1;
+}
+
+.journey-strip__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto 20px;
+}
+
+.journey-strip__title {
+  color: #fff;
+  font-family: var(--font-nav);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  text-transform: uppercase;
+}
+
+.journey-strip__link {
+  color: #ffb46a;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.journey-strip__link:hover,
+.journey-strip__link:focus-visible {
+  color: #ffd29a;
+}
+
+.journey-strip__viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.journey-strip__track {
+  display: flex;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: marquee 60s linear infinite;
+}
+
+.journey-strip__viewport:hover .journey-strip__track {
+  animation-play-state: paused;
+}
+
+/* Spacing on the item, not the row, so one copy is exactly half the track
+   (see .featured-strip__track li). */
+.journey-strip__track li {
+  flex: none;
+  margin-right: 16px;
+}
+
+.journey-strip__card {
+  position: relative;
+  width: clamp(220px, 21vw, 300px);
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 214, 170, 0.16);
+  border-radius: 14px;
+  background: #0b0705;
+}
+
+.journey-strip__card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.6s var(--ease-out);
+}
+
+.journey-strip__card:hover img {
+  scale: 1.05;
+}
+
+.journey-strip__card figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 28px 14px 12px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.82));
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .journey-strip__card {
+    width: 200px;
+  }
+
+  .journey-strip__track {
+    animation-duration: 45s;
+  }
+}
+
+/* Under reduced motion the strip stands still and scrolls by hand. */
+@media (prefers-reduced-motion: reduce) {
+  .journey-strip__viewport {
+    overflow-x: auto;
+  }
+
+  .journey-strip__track {
+    animation: none;
+  }
+}

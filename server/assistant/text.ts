@@ -53,6 +53,10 @@ const QUERY_SYNONYMS: Record<string, string[]> = {
   compatible: ["compatibility", "support"],
   feature: ["function", "capability"],
   spec: ["specification"],
+  // The site says "clinician" and "ChakraVue System"; product documents may still say "doctor" and "EMR".
+  clinician: ["doctor"],
+  doctor: ["clinician"],
+  emr: ["system", "record"],
   specification: ["spec"],
 };
 

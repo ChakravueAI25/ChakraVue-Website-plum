@@ -1,0 +1,133 @@
+/* Surgical tools (SurgicalTools.tsx): the interface beside ID / Platform /
+   Research. The capture keeps its own colours. */
+
+.stools {
+  padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
+  background:
+    radial-gradient(50% 45% at 30% 50%, rgba(255, 139, 18, 0.08), transparent 70%),
+    #030102;
+}
+
+.stools__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.6vw, 40px);
+  align-items: start;
+}
+
+.stools__screen {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 180, 106, 0.4);
+  border-radius: 18px;
+  background: #0b0705;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(255, 120, 20, 0.14);
+}
+
+.stools__screen img {
+  display: block;
+  width: 100%;
+}
+
+.stools__screen figcaption {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 214, 170, 0.12);
+  color: rgba(255, 243, 231, 0.6);
+  font-family: var(--font-display);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+/* An analysis beam sweeping across the live view. */
+.stools__beam {
+  position: absolute;
+  top: 0;
+  bottom: 40px;
+  left: 0;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgba(255, 180, 106, 0.16) 70%, rgba(255, 220, 170, 0.5) 99%, transparent);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: stoolsBeam 5.5s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+
+@keyframes stoolsBeam {
+  0% {
+    translate: -100% 0;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    translate: 560% 0;
+    opacity: 0;
+  }
+}
+
+.stools__facets {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stools__facets li {
+  display: grid;
+  gap: 8px;
+  padding: clamp(18px, 1.8vw, 24px);
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+}
+
+.stools__key {
+  justify-self: start;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 180, 106, 0.55);
+  border-radius: 999px;
+  color: #ffb46a;
+  font-family: var(--font-display);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.stools__facets h3 {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.stools__facets p {
+  color: rgba(255, 243, 231, 0.68);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.stools__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 32px;
+  margin-top: clamp(28px, 3vw, 40px);
+}
+
+@media (max-width: 900px) {
+  .stools__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stools__beam {
+    display: none;
+  }
+}

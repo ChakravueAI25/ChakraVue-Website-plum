@@ -1,0 +1,86 @@
+/* Why ChakraVue AI (WhyChakraVue.tsx): six differentiators, 3 × 2. */
+
+.why {
+  padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
+  background: #030102;
+}
+
+.why__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.why__card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: clamp(22px, 2.2vw, 32px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 20px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+  transition: border-color 0.35s ease;
+}
+
+.why__card:hover {
+  border-color: rgba(255, 180, 106, 0.55);
+}
+
+.why__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.why__icon {
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border: 1px solid rgba(255, 180, 106, 0.5);
+  border-radius: 12px;
+  background: rgba(255, 139, 18, 0.08);
+  fill: none;
+  stroke: #ffb46a;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.why__index {
+  color: rgba(255, 243, 231, 0.4);
+  font-family: var(--font-display);
+  font-size: 12px;
+}
+
+.why__card h3 {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.why__card p {
+  color: rgba(255, 243, 231, 0.68);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+@media (max-width: 1000px) {
+  .why__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .why__grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,296 @@
+/* From analog to intelligent (AnalogToIntelligent.tsx): three stages on one
+   line. The line fills and each node lights (--lit, 0 to 1) as the section
+   arrives. Images keep their own colours; the analog scene is faded back a
+   little so the eye travels to the right. */
+
+.a2i {
+  padding: clamp(88px, 9vw, 130px) 0 clamp(72px, 7vw, 110px);
+  background:
+    radial-gradient(60% 50% at 80% 30%, rgba(255, 139, 18, 0.09), transparent 70%),
+    #030102;
+}
+
+.a2i__head {
+  max-width: 760px;
+  margin-bottom: clamp(36px, 4.4vw, 56px);
+}
+
+.a2i__head .hsec-title {
+  margin-top: 16px;
+}
+
+.a2i__lead {
+  margin-top: 18px;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* --- The line --------------------------------------------------------------- */
+
+.a2i__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+  margin-bottom: 22px;
+}
+
+.a2i__line {
+  position: absolute;
+  top: 50%;
+  left: calc(100% / 6);
+  right: calc(100% / 6);
+  height: 1px;
+  background: rgba(255, 214, 170, 0.16);
+}
+
+.a2i__fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255, 139, 18, 0.35), #ffb46a);
+  box-shadow: 0 0 12px rgba(255, 139, 18, 0.55);
+  transform-origin: 0 50%;
+}
+
+.a2i__node {
+  --lit: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  gap: 10px;
+  padding: 8px 16px 8px 10px;
+  border: 1px solid rgba(255, 214, 170, calc(0.16 + var(--lit) * 0.3));
+  border-radius: 999px;
+  background: #0b0705;
+  color: rgba(255, 243, 231, calc(0.45 + var(--lit) * 0.55));
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.a2i__node i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffb46a;
+  box-shadow: 0 0 calc(var(--lit) * 12px) calc(var(--lit) * 3px) rgba(255, 170, 80, 0.8);
+  opacity: calc(0.3 + var(--lit) * 0.7);
+}
+
+/* --- The stages -------------------------------------------------------------- */
+
+.a2i__stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a2i__stage {
+  position: relative;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 22px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+}
+
+.a2i__stage--intelligent {
+  border-color: rgba(255, 180, 106, 0.45);
+  box-shadow: 0 0 50px rgba(255, 120, 20, 0.14);
+}
+
+/* An arrow in the gap to the next stage. */
+.a2i__stage:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  /* Level with the middle of the image (16:10, the card's width). */
+  top: 31.25cqw;
+  right: calc(clamp(14px, 1.6vw, 22px) / -2);
+  z-index: 1;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(255, 180, 106, 0.5);
+  border-radius: 50%;
+  background: #0b0705;
+  color: #ffb46a;
+  font-size: 13px;
+  translate: 50% -50%;
+}
+
+.a2i__art {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 21px 21px 0 0;
+}
+
+.a2i__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.a2i__stage--analog .a2i__art img {
+  filter: saturate(0.6) brightness(0.85);
+}
+
+.a2i__stage--digital .a2i__art img {
+  object-position: 0 0;
+}
+
+.a2i__stage--intelligent .a2i__art img {
+  object-position: 50% 45%;
+}
+
+/* An analysis beam across the intelligent stage's image. */
+.a2i__beam {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 22%;
+  background: linear-gradient(90deg, transparent, rgba(255, 180, 106, 0.18) 70%, rgba(255, 220, 170, 0.55) 99%, transparent);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: a2iBeam 5s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+
+@keyframes a2iBeam {
+  0% {
+    translate: -100% 0;
+    opacity: 0;
+  }
+  12%,
+  70% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    translate: 460% 0;
+    opacity: 0;
+  }
+}
+
+.a2i__tag {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 214, 170, 0.3);
+  border-radius: 999px;
+  background: rgba(10, 5, 2, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.a2i__tag span {
+  color: #ffb46a;
+}
+
+.a2i__body {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: clamp(20px, 2vw, 28px);
+}
+
+.a2i__body h3 {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.3vw, 19px);
+  font-weight: 400;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.a2i__body p {
+  color: rgba(255, 243, 231, 0.68);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.a2i__marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a2i__marks li {
+  padding: 6px 11px;
+  border: 1px solid rgba(255, 214, 170, 0.16);
+  border-radius: 999px;
+  color: rgba(255, 243, 231, 0.8);
+  font-size: 12px;
+}
+
+.a2i__stage--analog .a2i__marks li {
+  border-style: dashed;
+  color: rgba(255, 243, 231, 0.6);
+}
+
+.a2i__stage--intelligent .a2i__marks li {
+  border-color: rgba(255, 180, 106, 0.45);
+  color: #ffd29a;
+}
+
+.a2i__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 36px;
+  margin-top: clamp(28px, 3vw, 40px);
+}
+
+@media (max-width: 900px) {
+  /* The stages stack, an arrow pointing down between them. */
+  .a2i__track {
+    display: none;
+  }
+
+  /* Without the line, each image carries its stage. */
+  .a2i__tag {
+    display: flex;
+  }
+
+  .a2i__stages {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .a2i__stage:not(:last-child)::after {
+    content: "↓";
+    top: auto;
+    right: 50%;
+    bottom: -20px;
+    translate: 50% 50%;
+  }
+
+  .a2i__art {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a2i__beam {
+    display: none;
+  }
+}

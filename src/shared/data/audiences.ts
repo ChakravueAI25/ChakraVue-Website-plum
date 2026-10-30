@@ -3,8 +3,8 @@ import { interestOptions } from "../../pages/contact/data.ts";
 
 /**
  * Who ChakraVue AI is built for, and which products serve each of them: the
- * owner's mapping (2026-10-26), the single source for Home's audience
- * section (AudienceMap.tsx), the Try Demo page and the Product Suite rows'
+ * owner's mapping (2026-10-26), with `roles` (Home's "Who are you here
+ * as?") below, the single source for the Try Demo page and the Product Suite rows'
  * "Built for". Change the mapping here only.
  *
  * Products on the Product Suite page are referenced by id, so their names,
@@ -72,7 +72,7 @@ function product(id: Product["id"], imageAlt: string, coverPosition?: string): A
 export const audiences: Audience[] = [
   {
     id: "doctors",
-    label: "Doctors & Surgeons",
+    label: "Clinicians & Surgeons",
     need: "Support for their surgical, clinical and ophthalmic workflows.",
     items: [
       product("surgical-assistant", "The Surgical Assistant's live view of an eye during surgery."),
@@ -81,7 +81,7 @@ export const audiences: Audience[] = [
   },
   {
     id: "trainees",
-    label: "PG Students & Surgical Trainees",
+    label: "PGs & Surgical Trainees",
     need: "Skill development and surgical training.",
     items: [
       {
@@ -103,7 +103,7 @@ export const audiences: Audience[] = [
     label: "Hospitals & Training Institutions",
     need: "Clinical documentation and the workflows around it.",
     items: [{
-        ...product("ai-powered-emr", "The AI Powered EMR's patient dashboard."),
+        ...product("ai-powered-emr", "The ChakraVue System's patient dashboard."),
         // The dashboard's patient cards, below its title bar (which a corner badge would cover).
         cover: "/images/campaign/audience/emr-cover.webp",
       }],
@@ -135,3 +135,97 @@ export const audiences: Audience[] = [
  * It's a stated figure only: nothing on the site tracks or spends points.
  */
 export const DEMO_POINTS = 10_000;
+
+/** One product in "Who are you here as?", with a short line drawn from its own description. */
+export type RoleProduct = AudienceItem & {
+  summary: string;
+  /** A stage the product is at, shown beside its name (only where it isn't released). */
+  status?: string;
+};
+
+export type Role = {
+  id: string;
+  /** The audience's name on its tab. */
+  label: string;
+  /** The question the section asks this visitor. */
+  question: string;
+  line: string;
+  products: RoleProduct[];
+};
+
+const item = (key: string) => {
+  const found = audiences.flatMap((a) => a.items).find((i) => i.key === key);
+  if (!found) throw new Error(`Unknown audience item "${key}"`);
+  return found;
+};
+
+/**
+ * Home's "Who are you here as?" (RoleShowcase.tsx, owner's brief 2026-10-29):
+ * three visitors and the products most relevant to each. Products come from
+ * the mapping above (and so from product-suite/data.ts); each `summary`
+ * paraphrases that product's own description and claims nothing more. Add a
+ * role or a product here; the component needs no change.
+ */
+export const roles: Role[] = [
+  {
+    id: "clinicians",
+    label: "Clinicians",
+    question: "Are you a clinician?",
+    line: "Bring clinical precision and real-time intelligence into your ophthalmic practice.",
+    products: [
+      {
+        ...item("surgical-assistant"),
+        summary: "Real-time visual overlays and guidance in the surgeon's field of view, with structured data captured from every procedure.",
+      },
+      {
+        ...item("slit-lamp-module"),
+        summary: "Captures each examination, highlights relevant findings in real time and files structured records into the patient history.",
+      },
+    ],
+  },
+  {
+    id: "pgs",
+    label: "PGs",
+    question: "Are you a PG?",
+    line: "Explore a smarter way to learn, understand, and work with ophthalmic clinical information.",
+    products: [
+      {
+        ...item("gaming"),
+        summary: "Supports skill development and surgical training through gaming-based experiences.",
+      },
+      {
+        ...item("slit-lamp-module"),
+        summary: "Every examination captured in high fidelity, with relevant findings highlighted as they appear.",
+      },
+      {
+        ...product("ai-powered-emr", "The ChakraVue System's patient dashboard."),
+        summary: "Imaging, device output and clinical notes on one timeline, built around ophthalmic workflows.",
+      },
+    ],
+  },
+  {
+    id: "researchers",
+    label: "Researchers",
+    question: "Are you a researcher?",
+    line: "Explore new possibilities in ophthalmic intelligence, clinical data, and AI-assisted research.",
+    products: [
+      {
+        // The research assistant from the blueprint redesign (its art is the
+        // campaign's "sidekick" scene). Confirm the description with the owner.
+        key: "sidekick",
+        name: "Sidekick",
+        tagline: "AI-assisted research",
+        description: "From your own de-identified ChakraVue System data to a paper, poster or slides.",
+        summary: "From your own de-identified ChakraVue System data to a paper, poster or slides.",
+        status: "Pilot",
+        image: "/images/campaign/reels/research-before.webp",
+        cover: "/images/campaign/reels/research-before.webp",
+        coverPosition: "50% 30%",
+        imageAlt: "A researcher at a conference, notes on his lap, waiting for his turn to present.",
+        href: contactAbout("Sidekick (research)"),
+        action: "Ask about Sidekick",
+        hint: "Talk to us",
+      },
+    ],
+  },
+];

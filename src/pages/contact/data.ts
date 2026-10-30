@@ -40,10 +40,11 @@ export const whoAreYouOptions = ["Investors", "Working Professionals", "Student"
 
 export const interestOptions = [
   "AI Surgical Assistant",
-  "EMR Dashboard",
+  "ChakraVue System",
   "VR/AR Gaming Environment",
   "AI Powered Optical Camera",
   "Dental Solutions",
+  "Sidekick (research)",
   "Partnership / Collaboration",
   "Our Future Vision",
   "Training Solutions",

@@ -122,7 +122,7 @@ export function PlatformConsole() {
   };
 
   return (
-    <section ref={ref} className="plat section" aria-labelledby="plat-title">
+    <section ref={ref} id="platforms" className="plat section" aria-labelledby="plat-title">
       <div className="section__inner">
         <header className="plat__head">
           <p className="section-label" data-scramble>

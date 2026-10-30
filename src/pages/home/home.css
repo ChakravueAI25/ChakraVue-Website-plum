@@ -1,7 +1,7 @@
 /* ==========================================================================
    Homepage additions: the parts a company homepage needs on top of the
    original sections (hero actions and product shortcuts, section headers,
-   team, latest posts; the product showcase has its own showcase.css). Same
+   team, latest posts; "Who are you here as?" has its own roles.css). Same
    language as the rest of the site: Audiowide, black and amber, rounded dark
    cards with amber hairlines.
    ========================================================================== */
@@ -13,8 +13,8 @@
 
 /* --- Hero ----------------------------------------------------------------- */
 
-/* The hero fills the first screen, up to 882px, so the product shortcuts are
-   never cut off by the fold. The campaign film fills it (Hero.tsx). */
+/* The hero fills the first screen, up to 882px. The campaign film fills it
+   (Hero.tsx); over it, only the headline and the two buttons. */
 .home .hero {
   height: clamp(640px, 100vh, 882px);
   height: clamp(640px, 100svh, 882px);
@@ -60,11 +60,12 @@
   box-shadow: 0 0 18px rgba(255, 139, 18, 0.45);
 }
 
-/* The copy sits low on the left, clear of the burn, above the shortcuts. */
+/* The copy sits low on the left, under the boy and clear of the burn, on
+   the shaded corner of the film. */
 .home .hero__content {
   align-content: end;
   justify-items: start;
-  padding-bottom: 150px;
+  padding-bottom: clamp(72px, 12vh, 132px);
 }
 
 .hero__copy {
@@ -86,60 +87,6 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-shadow: 0 1px 10px rgba(10, 4, 0, 0.7);
-}
-
-/* The film's caption and its play/pause control, low on the right. */
-.hero__chip {
-  position: absolute;
-  right: 0;
-  bottom: 150px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 5px 5px 14px;
-  border: 1px solid rgba(255, 214, 170, 0.28);
-  border-radius: 999px;
-  background: rgba(14, 6, 2, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 0 22px rgba(255, 139, 18, 0.18);
-}
-
-.hero__chip-label {
-  color: rgba(255, 243, 231, 0.82);
-  font-family: var(--font-ui);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.hero__chip-toggle {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  padding: 0;
-  border: 1px solid rgba(255, 180, 106, 0.5);
-  border-radius: 50%;
-  background: rgba(10, 5, 2, 0.6);
-  color: #fbd896;
-  cursor: pointer;
-  transition: border-color 0.35s ease, background-color 0.35s ease;
-}
-
-.hero__chip-toggle svg {
-  fill: currentColor;
-}
-
-.hero__chip-toggle:hover,
-.hero__chip-toggle:focus-visible {
-  border-color: #ffb46a;
-  background: rgba(20, 8, 2, 0.85);
-}
-
-.hero__chip-toggle:focus-visible {
-  outline: 2px solid #ffb46a;
-  outline-offset: 3px;
 }
 
 .hero__lead {
@@ -221,58 +168,6 @@
   background: rgba(10, 5, 2, 0.45);
 }
 
-.hero__products {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  z-index: 2;
-  display: grid;
-  width: min(1180px, calc(100% - 96px));
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  translate: -50% 0;
-}
-
-.hero__product {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 20px;
-  border: 1px solid rgba(255, 214, 170, 0.28);
-  border-radius: 16px;
-  background: rgba(14, 6, 2, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 12px;
-  line-height: 1.35;
-  text-transform: uppercase;
-  transition: border-color 0.35s ease, background-color 0.35s ease, translate 0.35s var(--ease-out);
-}
-
-.hero__product-index {
-  color: #ffb46a;
-}
-
-.hero__product-arrow {
-  margin-left: auto;
-  color: #ffb46a;
-  transition: translate 0.35s var(--ease-out);
-}
-
-.hero__product:hover,
-.hero__product:focus-visible {
-  border-color: rgba(255, 180, 106, 0.85);
-  background: rgba(20, 8, 2, 0.65);
-  translate: 0 -3px;
-}
-
-.hero__product:hover .hero__product-arrow,
-.hero__product:focus-visible .hero__product-arrow {
-  translate: 4px 0;
-}
-
 /* --- Section headers ------------------------------------------------------- */
 
 .hsec-head {
@@ -341,6 +236,14 @@
   --node: 64px;
   padding: clamp(90px, 9vw, 130px) 0 clamp(90px, 9vw, 130px);
   background: #030102;
+}
+
+.hsteps__lead {
+  max-width: 620px;
+  margin-top: 18px;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .hsteps__list {
@@ -834,7 +737,7 @@
 
 @media (max-width: 760px) {
   .home .hero__content {
-    padding-bottom: 230px;
+    padding-bottom: 112px;
   }
 
   .hero__lead {
@@ -843,8 +746,7 @@
 
   /* Phones: the film fills the top half and fades into the copy below,
      instead of sitting behind it. Scaled to that height it shows about half
-     the frame's width, so the boy stays in view wherever he walks; the
-     caption sits in its top corner, clear of him and of the headline. */
+     the frame's width, so the boy stays in view wherever he walks. */
   .hero__film {
     height: 56%;
     object-position: 40% 0;
@@ -863,28 +765,9 @@
       linear-gradient(0deg, #030102 0%, #030102 44%, rgba(3, 1, 2, 0.7) 52%, transparent 66%);
   }
 
-  .hero__chip {
-    top: 88px;
-    bottom: auto;
-  }
-
   .hero__btn {
     padding: 14px 22px;
     font-size: 11px;
-  }
-
-  /* Two rows of tiles, just under the horizon. */
-  .hero__products {
-    bottom: 56px;
-    width: calc(100% - 36px);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .hero__product {
-    gap: 10px;
-    padding: 12px;
-    font-size: 10px;
   }
 
   /* Leaders as a compact list: portrait beside name and role. */

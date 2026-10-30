@@ -32,6 +32,13 @@ when you change one.
 - **Audiowide is the only typeface.** Never add another. (Its metric-matched
   Arial fallbacks in `global.css` only show until it loads; they stop the
   page jumping when it swaps in.)
+- **Terminology (owner, 2026-10-29), in all visible copy:** the EMR is the
+  "ChakraVue System" (never "EMR" or "AI Powered EMR"); "clinician(s)", not
+  "doctor(s)"; the trainee audience is "PGs", not "PG Students"; "Practice
+  Intelligence", not "Hospital Intelligence". Where "EMR" means any clinic's
+  records software, write "patient records". Internal ids (`ai-powered-emr`,
+  `doctors`) stay. The product names "ChakraVue Doctor App" / "Doctor
+  Patient App" are kept until the owner confirms renaming them.
 - **The name is always written "ChakraVue AI"**, even inside labels set in
   capitals: wrap it with `BrandText` / `setBrandText`
   (`src/shared/components/BrandText.tsx`), which applies `.brand-name`
@@ -52,7 +59,7 @@ when you change one.
   tablet (1024×768) and phone (390×844) after layout changes, and say what
   was checked.
 
-## Current state of the site (as of 2026-10-02)
+## Current state of the site (as of 2026-10-29)
 
 - **Palette:** Plum only, with no switcher. The stylesheets are still
   authored in the original Ember colours; `src/theme/theme.ts` rewrites
@@ -72,16 +79,30 @@ when you change one.
   `sessionStorage.cv-intro-seen = "1"` skips it.
 - **Home**, in order:
   - Hero (`pages/home/components/Hero.tsx`), rebuilt 2026-10-26 at the
-    owner's request: the dream. The whole campaign film (the kid walks a
+    owner's request: the dream. Since 2026-10-29 (owner) it holds only the
+    nav, the film, the headline and two buttons (Explore products, Book a
+    demo): no story line, summary, film chip or product shortcuts. Don't
+    add them back. The whole campaign film (the kid walks a
     blueprint, strikes a match, and it burns open onto the circuit) loops
     (owner, 2026-10-27), dissolving back into the walk. Two encodes
     (`analogue-to-ai-loop.mp4`, `-sm` for phones). It replaced the sunset,
     the particle landscape (`dataHorizon.ts`, now unused) and the centred
-    logo. "Every doctor started small" above the unchanged headline (the
-    owner hasn't yet decided whether the story line replaces it), copy low
-    on the left, a play/pause chip, product shortcuts along
-    the bottom. On phones the film fills the top half so the boy stays in
+    logo. Copy low on the left. On phones the film fills the top half so the boy stays in
     view. Nothing in the hero moves with scroll.
+  - Order (owner's homepage brief, 2026-10-29): hero, Featured-in
+    marquee, Our journey (looping strip of real summit and theatre photos,
+    `JourneyStrip.tsx`), statement band, Who are you here as? (`RoleShowcase`:
+    three roles and their products, plays by itself, plus the software
+    platform chips; replaced the product showcase), the beginning (From analog to intelligent: Analog →
+    Digital → Intelligent),
+    the discovery, the core idea, Know how it works, Integrated devices,
+    the ChakraVue System, the journey: Surgical tools (ID / Platform / Research), real
+    theatres, Why ChakraVue AI (six differentiators), Team, Latest posts,
+    then the aspiration with Book a demo / Collaborate.
+  - Why ChakraVue AI, Integrated devices and Surgical tools make no
+    security, storage, compatibility or validation claims beyond the
+    product descriptions; the owner's notes say to add specifics only once
+    verified. Keep it that way until the product team confirms them.
   - Featured-in (NDTV) marquee: home only.
   - The page tells the kid's story in six chapters (`shared/data/story.ts`,
     added 2026-10-26 at the owner's request): dream, beginning, discovery,
@@ -96,18 +117,25 @@ when you change one.
   - Statement band: "Built from Experience. / Guided by Science. / Elevated
     by Intelligence.", closed by the coda "Shaping What Healthcare Can See,
     Understand, and Do." (the `coda` prop of `InsightStatement`).
-  - The beginning: problem reels (`ProblemReels.tsx`), three campaign
-    scenes linking to products; the car and clerk turn into their "after".
+  - The beginning: From analog to intelligent (`AnalogToIntelligent.tsx`,
+    owner, 2026-10-29), which replaced the "Still on the old blueprint"
+    reels: three stages on one line that fills once as it arrives.
   - The discovery (`DiscoveryReveal.tsx`): the burnt blueprint opens out
-    onto the boy at the circuit, once, with Replay. Not pinned.
-  - Product showcase: "Four products, one connected line of sight."
-  - Who we serve (`AudienceMap`, overview): "Technology Built for Every
-    Role in Surgery", the owner's product-to-audience mapping.
-  - The core idea (eclipse glow), then How it works.
+    onto the boy at the circuit, once, with Replay. Not pinned. Since
+    2026-10-29 (owner) it carries the tagline "We connect clinicians, data
+    and devices." with three linked cards (Clinicians, Data, Devices).
+  - Who are you here as? (`RoleShowcase.tsx`): Clinicians, PGs,
+    Researchers; the roles and their products are `roles` in
+    `shared/data/audiences.ts`. Sidekick is the blueprint redesign's pilot
+    research assistant until the owner supplies its real copy and art.
+  - The older "Who are you?" section (`AudienceMap`) was removed from Home
+    and deleted (owner, 2026-10-29): "Who are you here as?" replaces it.
+    Don't bring both back.
+  - The core idea (eclipse glow), then Know how it works.
   - The journey: real theatres (`RealTheatres.tsx`), four real photos.
   - Team and Latest posts.
   - The aspiration (`CampaignClose.tsx`): toddler and doctor at a height
-    chart, the doctor rising to full height; Explore products / Contact us.
+    chart, the doctor rising to full height; Book a demo / Collaborate cards.
   - The art pipeline (frames, sprites, retouching, film cuts) is in
     `tools/campaign-art/`; rebuild art from there, not by hand.
   - Campaign and reel art is retouched before it ships: no State Emblem,
@@ -198,9 +226,9 @@ when you change one.
   - The "By role" section was removed (2026-10-26, owner's request); the
     audience picker now lives only on Try Demo.
   - The audience mapping lives only in `shared/data/audiences.ts` (owner,
-    2026-10-26): Doctors & Surgeons → Digital Surgical Assistant, Slit Lamp;
-    PG Students & Surgical Trainees → Gaming; Hospitals & Training
-    Institutions → EMR; OEMs & Medical Device Manufacturers → microscope
+    2026-10-26): Clinicians & Surgeons → Digital Surgical Assistant, Slit Lamp;
+    PGs & Surgical Trainees → Gaming; Hospitals & Training
+    Institutions → ChakraVue System; OEMs & Medical Device Manufacturers → microscope
     software integrations. Don't misclassify or add products. Gaming and
     the integrations have no section yet, so they link to Contact with the
     interest chosen (`?interest=`).

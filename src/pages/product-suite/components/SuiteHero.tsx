@@ -12,7 +12,7 @@ import { products } from "../data";
 const SCREENS: Record<string, { image: string; status: string; alt: string }> = {
   "surgical-assistant": { image: "surgical-assistant", status: "Live view", alt: "The Surgical Assistant's live view of an eye during surgery" },
   "slit-lamp-module": { image: "slit-lamp-module", status: "Analysis", alt: "The Slit Lamp Module's view of an eye under examination" },
-  "ai-powered-emr": { image: "ai-powered-emr", status: "Records", alt: "The AI Powered EMR's patient dashboard, with test patients" },
+  "ai-powered-emr": { image: "ai-powered-emr", status: "Records", alt: "The ChakraVue System's patient dashboard, with test patients" },
   "integrated-devices": { image: "integrated-devices", status: "Linked", alt: "The Integrated Devices connectivity module" },
 };
 

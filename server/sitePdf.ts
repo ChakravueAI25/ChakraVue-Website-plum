@@ -43,10 +43,10 @@ for (const card of valueCards) text(`${card.title}: ${card.body}`);
 // Who each product is for: the website's audience mapping (shared/data/audiences.ts).
 // Said plainly, per audience and inside each product's own section, so a
 // keyword search can't pair an audience with the wrong product.
-const lower = (label: string) => label.replace("&", "and").toLowerCase().replace(/^pg /, "PG ").replace(/^oems /, "OEMs ");
+const lower = (label: string) => label.replace("&", "and").toLowerCase().replace(/^pgs /, "PGs ").replace(/^oems /, "OEMs ");
 const forWhom = new Map(audiences.flatMap((a) => a.items.map((item) => [item.key, a.label] as const)));
 // Each audience under its own heading: a question naming an audience
-// ("surgical trainees", "doctors and surgeons") then matches its section
+// ("surgical trainees", "clinicians and surgeons") then matches its section
 // rather than a product whose name shares a word with it.
 for (const audience of audiences) {
   const names = audience.items.map((item) => item.name).join(", ").replace(/, ([^,]*)$/, " and $1");
