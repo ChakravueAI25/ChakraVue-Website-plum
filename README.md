@@ -309,7 +309,9 @@ only; elsewhere the character is just the small growth rail in the margin.
   `shared/data/audiences.ts`, and a hint) and the product in 3D on the right,
   on a dark panel with its large outlined index. Nothing is driven by
   scrolling: pointing at a row opens the product up (the engine's inline
-  mode, `setPeek(true, 0.9)`), leaving closes it, and dragging turns it. The
+  mode, `setPeek(true, 0.9)`) and leaving closes it. That is the only
+  motion: the product holds one angle, with no idle spin and no drag to
+  turn (owner, 2026-10-30). The
   parts are not named (no label layer, `anatomy: []`). Touch screens and the
   keyboard use the "Look inside" / "Close it up" button, and the hint
   changes with it. Each row builds its own small theater when it nears the

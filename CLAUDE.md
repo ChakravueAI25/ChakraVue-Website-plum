@@ -178,8 +178,10 @@ when you change one.
   - The products (rebuilt 2026-10-26 at the owner's request, after a
     reference spec sheet): one row per product, stacked, copy on the left
     and the product in 3D on the right, in the site's own colours. No
-    scrolling drives them: pointing at a row opens the product up, drag
-    turns it, and "Look inside" does it on touch. The owner asked for the
+    scrolling drives them: pointing at a row opens the product up, and
+    "Look inside" does it on touch. That's the only motion: no idle spin
+    and no drag to turn (owner, 2026-10-30), so don't add rotation
+    back. The owner asked for the
     parts not to be named, so no labels. Each row is an inline theater
     (`motion/webgl/theater/`) with a backdrop matched to the panel. The
     scroll-driven stage (chapters, labels, focus beat, AI readouts) is no

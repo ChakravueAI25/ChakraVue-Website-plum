@@ -21,9 +21,9 @@ import { contactShadow } from "./textures";
  * through a scan line, turn, dismantle into labelled parts, reassemble,
  * dematerialise.
  *
- * "inline" (home carousel): transparent, sitting on the painted podium.
- * Products swap by dismantling out and assembling in, drag to turn, hover
- * to peek inside.
+ * "inline" (Product Suite rows): transparent, sitting on the painted
+ * podium. The product holds one angle (no spin, no drag; owner,
+ * 2026-10-30); hovering opens it up to peek inside.
  */
 
 const BUILDERS: Record<string, (kit: Kit) => ProductModel> = {
@@ -63,8 +63,6 @@ export type Theater = {
   swap(index: number): Promise<void>;
   /** Inline mode: open the product to show what's inside (`amount`, 0 to 1; part-way by default). */
   setPeek(on: boolean, amount?: number): void;
-  /** Turn the product by a pointer drag (pixels). */
-  drag(dx: number): void;
   start(): void;
   destroy(): void;
   /** Current (smoothed) state, for tests and debugging. */
@@ -403,8 +401,6 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
   let active = -1;
   const goal = { build: 0, explode: 0, labels: 0, yaw: -0.6, focus: 0, readouts: 0 };
   const now = { build: 0, explode: 0, labels: 0, yaw: -0.6, focus: 0, readouts: 0 };
-  let userYaw = 0;
-  let spin = 0;
   let peek = false;
   let visible = true;
   let started = false;
@@ -646,9 +642,7 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     now.yaw += (goal.yaw - now.yaw) * k;
     now.focus += (goal.focus - now.focus) * k;
     now.readouts += (goal.readouts - now.readouts) * k;
-    if (!stage && !options.reduced) spin += (deltaMs / 1000) * (peek ? 0.12 : 0.3);
-
-    model.group.rotation.y = now.yaw + userYaw + spin;
+    model.group.rotation.y = now.yaw;
     applyExplode(model.parts, now.explode);
     model.update?.(now.explode, time, now.focus);
     kit.m.edge.opacity = smooth(0.15, 0.6, now.explode) * 0.6;
@@ -813,10 +807,6 @@ export function createTheater(canvas: HTMLCanvasElement, options: TheaterOptions
     setPeek(on, amount = 0.55) {
       peek = on;
       gsap.to(goal, { explode: on ? amount : 0, labels: on ? 1 : 0, duration: 0.9, ease: "cv.out", overwrite: "auto" });
-    },
-
-    drag(dx) {
-      userYaw += dx * 0.008;
     },
 
     start() {

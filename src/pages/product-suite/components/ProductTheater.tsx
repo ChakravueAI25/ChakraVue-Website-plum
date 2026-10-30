@@ -21,8 +21,9 @@ const builtFor = (id: string) => audiences.filter((a) => a.items.some((item) => 
 /**
  * The product suite as a spec sheet: one product after another, the copy on
  * the left and the product, in 3D, on the right. Pointing at a product (or
- * pressing "Look inside") opens it up to show what's inside; drag to turn
- * it. Nothing here is driven by scrolling.
+ * pressing "Look inside") opens it up to show what's inside. That is its
+ * only motion: the product holds one angle, with no spin and no drag to
+ * turn (owner, 2026-10-30). Nothing here is driven by scrolling.
  *
  * Each product has its own small inline theater (motion/webgl/theater),
  * created as it nears the screen. Without WebGL, or with reduced motion, the
@@ -47,7 +48,6 @@ function ProductRow({ product }: { product: Product }) {
   const rowRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const theater = useRef<Theater | null>(null);
-  const drag = useRef<{ x: number; id: number } | null>(null);
   const [mode, setMode] = useState<"3d" | "static">(reduceMotion ? "static" : "3d");
   const [open, setOpen] = useState(false);
   const roles = builtFor(product.id);
@@ -97,24 +97,12 @@ function ProductRow({ product }: { product: Product }) {
     theater.current?.setPeek(open, OPEN);
   }, [open]);
 
-  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    drag.current = { x: event.clientX, id: event.pointerId };
-  };
-  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const start = drag.current;
-    if (!start || start.id !== event.pointerId) return;
-    theater.current?.drag(event.clientX - start.x);
-    start.x = event.clientX;
-  };
-  const endDrag = () => (drag.current = null);
-
   // A mouse opens it by pointing; touch and keyboard use the button.
   const onEnter = (event: PointerEvent) => {
     if (event.pointerType === "mouse") setOpen(true);
   };
   const onLeave = (event: PointerEvent) => {
     if (event.pointerType === "mouse") setOpen(false);
-    endDrag();
   };
 
   return (
@@ -153,8 +141,8 @@ function ProductRow({ product }: { product: Product }) {
             <dd>{mode === "static"
                 ? "Shown as photographed."
                 : canPoint
-                  ? "Point at the product to open it up; drag to turn it."
-                  : "Tap “Look inside” to open it up; drag to turn it."}</dd>
+                  ? "Point at the product to open it up."
+                  : "Tap “Look inside” to open it up."}</dd>
           </div>
         </dl>
 
@@ -164,14 +152,7 @@ function ProductRow({ product }: { product: Product }) {
         </Link>
       </div>
 
-      <div
-        className="spec__view"
-        data-cursor={mode === "3d" ? "Drag" : undefined}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-      >
+      <div className="spec__view">
         <span className="spec__number" aria-hidden="true">
           {product.index}
         </span>
