@@ -90,8 +90,9 @@ when you change one.
     logo. Copy low on the left. On phones the film fills the top half so the boy stays in
     view. Nothing in the hero moves with scroll.
   - Order (2026-10-30, a storytelling flow: introduction, who we are,
-    what we do, products, in practice, people, action): hero,
-    Featured-in marquee, statement band, the glowing banner and early-bird
+    what we do, products, in practice, action): hero, Our journey
+    (`JourneyStrip.tsx`, real summit and theatre photos; in place of the
+    Featured-in marquee since 2026-10-30), statement band, the glowing banner and early-bird
     offer (`IntroBridge.tsx`: a light travels round the banner's outline,
     CSS-only SVG dash), Who we are (`WhoWeAre.tsx`, was Why ChakraVue AI:
     lead plus six principles), the beginning (From analog to intelligent),
@@ -99,13 +100,15 @@ when you change one.
     (`RoleShowcase`: three roles and their products, plays by itself, plus
     the software platform chips), Integrated devices, the ChakraVue System,
     the journey: Surgical tools (ID / Platform / Research), real theatres,
-    Our journey (`JourneyStrip.tsx`, real summit and theatre photos), Team,
-    Latest posts, then the aspiration with Book a demo / Collaborate.
+    then the aspiration with Book a demo / Collaborate. Team and Latest
+    posts were removed from Home (owner, 2026-10-30); don't add them back.
   - Who we are, Integrated devices and Surgical tools make no
     security, storage, compatibility or validation claims beyond the
     product descriptions; the owner's notes say to add specifics only once
     verified. Keep it that way until the product team confirms them.
-  - Featured-in (NDTV) marquee: home only.
+  - Featured-in (NDTV / India TV) marquee: removed from Home (owner,
+    2026-10-30), replaced by Our journey; `FeaturedInStrip.tsx` is kept,
+    unused.
   - The page tells the kid's story in six chapters (`shared/data/story.ts`,
     added 2026-10-26 at the owner's request): dream, beginning, discovery,
     transformation, journey, aspiration. The owner's direction (2026-10-26):
@@ -136,7 +139,6 @@ when you change one.
     Don't bring both back.
   - The core idea (eclipse glow), then Know how it works.
   - The journey: real theatres (`RealTheatres.tsx`), four real photos.
-  - Team and Latest posts.
   - The aspiration (`CampaignClose.tsx`): toddler and doctor at a height
     chart, the doctor rising to full height; Book a demo / Collaborate cards.
   - The art pipeline (frames, sprites, retouching, film cuts) is in

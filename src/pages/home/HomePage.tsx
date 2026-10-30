@@ -3,7 +3,6 @@ import { reduceMotion } from "../../motion/env";
 import { usePageMotion } from "../../motion/useMotion";
 import { ChapterMark } from "../../shared/components/ChapterMark";
 import { Header } from "../../shared/components/Header";
-import { BrandStrip } from "./components/BrandStrip";
 import { CampaignClose } from "./components/CampaignClose";
 import { CoreIdea } from "./components/CoreIdea";
 import { DiscoveryReveal } from "./components/DiscoveryReveal";
@@ -13,26 +12,23 @@ import { InsightBand } from "./components/InsightBand";
 import { IntroBridge } from "./components/IntroBridge";
 import { JourneyStrip } from "./components/JourneyStrip";
 import { IntegratedDevices } from "./components/IntegratedDevices";
-import { LatestPosts } from "./components/LatestPosts";
 import { AnalogToIntelligent } from "./components/AnalogToIntelligent";
 import { RoleShowcase } from "./components/RoleShowcase";
 import { RealTheatres } from "./components/RealTheatres";
 import { SurgicalTools } from "./components/SurgicalTools";
-import { TeamTeaser } from "./components/TeamTeaser";
 import { ValueCards } from "./components/ValueCards";
 import { WhoWeAre } from "./components/WhoWeAre";
 import "./home.css";
 
 /**
  * The homepage, structured as a company site and read top to bottom as one
- * story: who we are (the hero over the "Analogue to AI" campaign film, who
- * has featured us, what we believe, the glowing banner and early-bird
+ * story: who we are (the hero over the "Analogue to AI" campaign film, our
+ * journey in photographs, what we believe, the glowing banner and early-bird
  * offer, then who we are and the principles we work by), what we do (how
  * practice is changing, what we connect, the core idea, how it works), the
  * products (by role, the integrated devices, the ChakraVue System, the
- * surgical tools), the proof (real theatres, our journey), the people (the
- * team, the latest writing), and the campaign's closing frame with a demo
- * or a collaboration, then the contact footer.
+ * surgical tools), the proof (real theatres), and the campaign's closing
+ * frame with a demo or a collaboration, then the contact footer.
  */
 export function HomePage() {
   // As before, the nav only appears once the headline has landed.
@@ -50,14 +46,14 @@ export function HomePage() {
     <main className="site-shell home">
       <Header visible={navIn} />
       {/* The homepage flow (README "Home", 2026-10-30): introduction, who
-          we are, what we do, the products, in practice, the team, then a
-          demo or a collaboration. The kid's story runs alongside in six
+          we are, what we do, the products, in practice, then a demo or
+          a collaboration. The kid's story runs alongside in six
           chapters (story.ts); its markers sit between sections, so the
           sections carry no story code. */}
       {/* Introduction */}
       <ChapterMark id="dream" />
       <Hero onIntroDone={() => setNavIn(true)} />
-      <BrandStrip />
+      <JourneyStrip />
       <InsightBand />
       <IntroBridge />
       <WhoWeAre />
@@ -75,11 +71,8 @@ export function HomePage() {
       <EmrConnect />
       <ChapterMark id="journey" />
       <SurgicalTools />
-      {/* In practice, and the people behind it */}
+      {/* In practice */}
       <RealTheatres />
-      <JourneyStrip />
-      <TeamTeaser />
-      <LatestPosts />
       {/* Action */}
       <ChapterMark id="aspiration" />
       <CampaignClose />

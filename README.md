@@ -79,13 +79,14 @@ chapters (`shared/data/story.ts`): The dream, The beginning, The discovery,
 The transformation, The journey, The aspiration. Each starts at a
 `ChapterMark` placed between sections, so the technical sections carry no
 story code; the growth rail reads the marks. The order (2026-10-30) reads
-as one story, introduction to action: hero, Featured in, the statement band,
+as one story, introduction to action: hero, Our journey, the statement band,
 the glowing banner and early-bird offer, Who we are; then what we do (from
 analog to intelligent, the discovery, the core idea, Know how it works);
 then the products (Who are you here as?, Integrated devices, the ChakraVue
-System, Surgical tools); then in practice (real theatres, Our journey);
-then the people (Team, Latest posts); and the aspiration with Book a demo /
-Collaborate. The bullets below describe each section; `HomePage.tsx` is the
+System, Surgical tools); then in practice (real theatres); and the
+aspiration with Book a demo / Collaborate. Team and Latest posts were
+removed from Home (owner, 2026-10-30); the team lives on About and the
+posts on Blog. The bullets below describe each section; `HomePage.tsx` is the
 source of truth for the order. The sections:
 - **Hero: the dream** (`Hero.tsx`, `home.css`). The kid walks across an old engineering blueprint and strikes a match, and
   the blueprint burns open onto a circuit. The whole film loops
@@ -106,7 +107,10 @@ source of truth for the order. The sections:
   film fills the top half and fades into the copy, so the boy stays in
   view. Nothing in the hero moves with scroll. The full campaign film
   (`analogue-to-ai.mp4`) is no longer used.
-- **Featured in** marquee (homepage only): NDTV and India TV in turn, from
+- **Featured in** marquee: off the page since 2026-10-30 (owner), when Our
+  journey took its place under the hero. `FeaturedInStrip.tsx` and its
+  styles in `global.css` are kept, unused, in case it comes back. It showed
+  NDTV and India TV in turn, from
   `featuredMedia` in `shared/data/content.ts` (owner, 2026-10-26; India TV is
   confirmed by its microphone and camera in the AI Impact Summit photos, and
   its logo is the one on Wikipedia, a non-free logo). Each sits on a tile of
@@ -114,7 +118,8 @@ source of truth for the order. The sections:
   TV and digital media interviews at the AI Impact Summit 2026, New Delhi.
   Read about it →" links to `/blog#media`. Add a channel there only when the
   coverage is confirmed.
-- **Our journey** (`JourneyStrip.tsx`, `journey.css`, owner, 2026-10-29): a
+- **Our journey** (`JourneyStrip.tsx`, `journey.css`, owner, 2026-10-29;
+  right under the hero since 2026-10-30, in place of Featured in): a
   small strip of real photographs on an endless CSS loop (60s; the list
   rendered twice, moved by one copy), paused under the pointer and still,
   scrollable, under reduced motion. The blog's AI Impact Summit photos
@@ -231,8 +236,6 @@ source of truth for the order. The sections:
   local data management, research & development) as cards. Deliberately
   general: no security mechanisms, certifications or storage details until
   they're confirmed (see "Copy to confirm").
-- **Team.** The three leaders and the wider team, linking to About.
-- **Blog.** The three latest posts, linking to the blog.
 - **The aspiration** (`CampaignClose.tsx`, `campaign.css`). A height chart:
   the toddler at 0.95 m and, beside him, the clinician he grows into rising to
   1.74 m as the section arrives, the tape lighting with him. "The dream,
@@ -885,13 +888,8 @@ New on the homepage. Please review before launch:
 - The four value-card lines for Capture, Connect, Analyse and Assist
   (`valueCards` in `src/shared/data/content.ts`). The original site repeats one
   placeholder paragraph on all four.
-- "Engineers, designers and strategists working alongside the founding team."
-  (`pages/home/components/TeamTeaser.tsx`)
 
-The blog cards show the Blog page's current posts, which are still placeholder
-text. Everything else on the homepage is existing site copy: the hero summary
-is the first line of the clinical-systems section, and the team and blog
-headings come from the About and Blog pages.
+Everything else on the homepage is existing site copy.
 #   C h a k r a V u e - W e b s i t e - p l u m 
  
  

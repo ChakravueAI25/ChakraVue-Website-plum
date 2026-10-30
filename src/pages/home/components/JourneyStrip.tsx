@@ -19,8 +19,8 @@ const moments = [
 ];
 
 /**
- * "Our journey" (Home, under the Featured-in strip): a small strip of real
- * photographs that keeps looping. The list is rendered twice and the track
+ * "Our journey" (Home, right under the hero, where the Featured-in strip
+ * was; 2026-10-30): a small strip of real photographs that keeps looping. The list is rendered twice and the track
  * moves by one copy (CSS only); it pauses under the pointer and stands still,
  * scrollable, under reduced motion.
  */
