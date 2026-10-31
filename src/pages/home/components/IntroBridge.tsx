@@ -6,7 +6,7 @@ import "./bridge.css";
 const comet = ["haze", "tail", "trail", "streak", "head"] as const;
 
 /**
- * Between the statement band and "Who we are" (Home): a wide banner whose
+ * Between the statement band and "Who we are" (Home): "We connect" over a wide banner whose
  * outline carries a light that travels round it, then the early-bird offer.
  *
  * The light is an SVG stroke dash, CSS only: each layer is a rounded rect
@@ -19,8 +19,12 @@ export function IntroBridge() {
   const blur = useId();
 
   return (
-    <section className="bridge section" aria-label="What we connect">
+    <section className="bridge section" aria-labelledby="bridge-title">
       <div className="section__inner">
+        <h2 id="bridge-title" className="hsec-title bridge__title">
+          We connect
+        </h2>
+
         <div className="glow-banner">
           <svg className="glow-banner__light" aria-hidden="true">
             <defs>
@@ -45,7 +49,7 @@ export function IntroBridge() {
 
           {/* The company's line from "What we do", set as the banner's only words. */}
           <p className="glow-banner__line">
-            <span>Clinicians</span>
+            <span>Doctors</span>
             <i aria-hidden="true" />
             <span>Data</span>
             <i aria-hidden="true" />

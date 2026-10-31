@@ -11,7 +11,7 @@
 
 .idev__head {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: 24px clamp(32px, 5vw, 80px);
   align-items: end;
   margin-bottom: clamp(40px, 5vw, 64px);
@@ -201,7 +201,7 @@
 
 .idev__foot p {
   color: rgba(255, 243, 231, 0.55);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.6;
 }
 

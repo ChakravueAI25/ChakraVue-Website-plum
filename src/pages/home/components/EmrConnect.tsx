@@ -50,16 +50,21 @@ export function EmrConnect() {
   return (
     <section id="emr" className="emrx section" aria-labelledby="emrx-title">
       <div className="section__inner">
-        <header className="hsec-head hsec-head--center">
-          <p className="section-label" data-scramble>
-            The ChakraVue System
-          </p>
-          <h2 id="emrx-title" className="hsec-title" data-split>
-            Every patient on one timeline.
-          </h2>
+        <header className="emrx__head hsec-head--corner">
+          <div>
+            <p className="section-label" data-scramble>
+              The ChakraVue System
+            </p>
+            <h2 id="emrx-title" className="hsec-title" data-split>
+              Every patient on one timeline.
+            </h2>
+          </div>
           <p className="emrx__lead" data-split="fade" data-delay="0.1">
             The ChakraVue System is where the ecosystem meets. Imaging, device output and clinical notes arrive in one record, built around ophthalmic workflows.
           </p>
+          <Link href="/product-suite#ai-powered-emr" className="hsec-link hsec-corner-link">
+            Explore the ChakraVue System <span aria-hidden="true">→</span>
+          </Link>
         </header>
 
         <div className="emrx__map">
@@ -86,12 +91,6 @@ export function EmrConnect() {
             </li>
           ))}
         </ol>
-
-        <div className="emrx__actions">
-          <Link href="/product-suite#ai-powered-emr" className="hsec-link">
-            Explore the ChakraVue System <span aria-hidden="true">→</span>
-          </Link>
-        </div>
       </div>
     </section>
   );

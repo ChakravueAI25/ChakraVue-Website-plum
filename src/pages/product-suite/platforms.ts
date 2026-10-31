@@ -11,7 +11,8 @@ export type Platform = {
   category: string;
   title: string;
   summary: string;
-  glyph: "implant" | "bundle" | "wellness";
+  /** A line drawing beside the title; Dental Implant Planning has none. */
+  glyph?: "bundle" | "wellness";
   features: string[];
   flow?: string[];
   note?: string;
@@ -27,7 +28,6 @@ export const platforms: Platform[] = [
     category: "Dental AI & 3D visualisation",
     title: "Dental Implant Planning",
     summary: "Patient-specific implant planning. It reconstructs the jaw in 3D, maps the nerve and warns when a planned implant comes too close.",
-    glyph: "implant",
     features: [
       "3D reconstruction from patient scans",
       "Slice, panoramic and cross-section views",

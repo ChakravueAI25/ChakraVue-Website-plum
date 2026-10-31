@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
+import { Logo } from "../../../brand/Logo";
 
 export function BlogHero() {
   const ref = useRef<HTMLElement>(null);
@@ -41,6 +42,10 @@ export function BlogHero() {
   return (
     <section ref={ref} className="blog-hero section">
       <div className="blog-hero__bg" aria-hidden="true" />
+      {/* The footer's faint mark, centred behind the copy. */}
+      <div className="blog-hero__emblem" aria-hidden="true">
+        <Logo disc={false} />
+      </div>
       <div className="section__inner">
         <h2 className="section-label" data-scramble>
           Blog

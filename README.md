@@ -142,8 +142,9 @@ source of truth for the order. The sections:
   digitised records … easier access; connected systems … workflow
   support). As the section arrives the line fills and the stages light in
   turn, once; nothing pins. On tablets and phones the line gives way to a
-  stack with arrows between, and each image carries its stage. Links: the
-  ChakraVue System, Know how it works. The other reel images (car, dental
+  stack with arrows between, and each image carries its stage. One link,
+  Know how it works, at the head's top right (from the Claude Design frames,
+  2026-10-31). The other reel images (car, dental
   tower, clerk's "after") stay in `public/images/campaign/reels/`, unused.
 - **The discovery: what we do** (`DiscoveryReveal.tsx`, `discovery.css`).
   The company's tagline (owner, 2026-10-29; it replaced "The spark / Not to
@@ -155,9 +156,12 @@ source of truth for the order. The sections:
 - **Who are you here as?** (`RoleShowcase.tsx`, `roles.css`,
   `#who-are-you-here-as`; replaced the slit-lit product showcase, owner's
   brief 2026-10-29; redesigned 2026-10-30 as a product discovery block).
-  Top: "Built around you / Who are you here as?" with "Discover the
-  intelligence, tools and technology designed around your role in
-  advancing healthcare." and the pause control beside it. Then the three
+  Top (from the Claude Design frames, 2026-10-31): "ChakraVue ecosystem"
+  centred as the section's heading, with "Discover the intelligence, tools
+  and technology designed around your role in advancing healthcare." under
+  it and the pause control at the right. The question ("Are you a
+  Clinician?") and the chosen audience's actions share a row: question
+  left, actions right. Then the three
   roles as selectable cards in one row (index, a mark that is hollow or
   filled, so the choice reads without colour, the role, its line, how many
   products), then that role's products in an even grid that fits the count
@@ -190,9 +194,10 @@ source of truth for the order. The sections:
   each linking to `/product-suite#platforms`. The early-bird offer that
   used to sit above it moved under the glowing banner (2026-10-30).
 - **Glowing banner and early-bird offer** (`IntroBridge.tsx`,
-  `bridge.css`), right under the statement band. A wide pill-shaped banner,
+  `bridge.css`), right under the statement band, headed "We connect"
+  (centred, 2026-10-31). A wide pill-shaped banner,
   near-black inside with a thin plum outline and a soft ambient glow, reads
-  "Clinicians · Data · Devices" (the company's line from What we do). A
+  "Doctors · Data · Devices" (the company's line from What we do; "Doctors" by request, 2026-10-31, an exception to the "clinicians" wording). A
   light travels round its outline clockwise, about 7s a lap: an SVG stroke
   dash on a rounded rect with `pathLength=100`, in five layers (blurred
   bloom, faint tail, trail, streak, bright head) whose heads meet, animated
@@ -212,21 +217,25 @@ source of truth for the order. The sections:
   equipment (generic kinds only) → the connectivity module → patient records, with
   pulses along the links (upright on tablets and phones), then three points
   drawn from the product's description and "Compatibility depends on the
-  device. We confirm yours before anything is installed."
+  device. We confirm yours before anything is installed." with "Ask about
+  your devices"; "Explore Integrated Devices" sits at the head's top right.
 - **The ChakraVue System** (`EmrConnect.tsx`, `emr.css`, `#emr`; "EMR ×
   ChakraVue AI" until the 2026-10-29 renaming). "Every
   patient on one timeline.": the anonymised patient dashboard in a window
   frame, the Surgical Assistant, Slit Lamp Module, Integrated Devices and
   clinical notes linked into it from either side (each line from that
   product's description), and the clinic's stages as the dashboard tags
-  them: Reception, Optometry, Examination, Check-out.
+  them: Reception, Optometry, Examination, Check-out. The head is split:
+  label and title left, the lead right, "Explore the ChakraVue System" at
+  the top right.
 - **Surgical tools** (`SurgicalTools.tsx`, `surgical.css`,
   `#surgical-tools`). "AI-powered assistance, in the surgeon's field of
-  view.": the Surgical Assistant's interface capture (an analysis beam
-  sweeps it) beside ID (who it's for), Platform (what it does) and Research
-  (what it's built on: real theatres and the AI Impact Summit
-  demonstration). No validation or outcome claims. Book a demo, and a link
-  to the summit post.
+  view.": three cards on the left, who it's for, what it does and what it's
+  built on (real theatres and the AI Impact Summit demonstration, with the
+  link to the summit post), beside the Surgical Assistant's interface
+  capture (an analysis beam sweeps it). No validation or outcome claims.
+  The ID / Platform / Research tags and the Book a demo button were
+  removed (2026-10-31).
 - **The journey: real theatres** (`RealTheatres.tsx`, `theatres.css`). "Not
   a render / In real theatres, with real surgeons.": four real photographs
   (`public/images/campaign/theatres/`): the Surgical Assistant at the
@@ -255,8 +264,10 @@ source of truth for the order. The sections:
   Partnership / Collaboration chosen), and "Or simply contact us".
 
 **In the media** (`blog/components/MediaFeature.tsx`, `mediaAppearance` in
-`blog/data.ts`), at the top of the Blog page (`/blog#media`), above the
-placeholder posts: the AI Impact Summit 2026 (New Delhi, 16–21 February),
+`blog/data.ts`), at the top of the Blog page (`/blog#media`), and since
+2026-10-31 the page's only section under the hero (the placeholder featured
+post and post grid, `FeaturedPost.tsx` / `PostGrid.tsx`, are kept but
+unused): the AI Impact Summit 2026 (New Delhi, 16–21 February),
 from the post on the live site (chakravue.ai/blog-page): what was shown
 live, the channels ("Featured on", the same `featuredMedia`), the coverage
 and the outcome, with three photos from the stall
@@ -374,7 +385,8 @@ only; elsewhere the character is just the small growth rail in the margin.
 platforms: Dental Implant Planning; the ChakraVue Doctor Patient App, one
 bundle showing the Doctor App and the Patient App side by side; and
 ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
-decoding title and a self-drawing line icon.
+decoding title and a self-drawing line icon (Dental Implant Planning has
+none since 2026-10-31).
 
 **3D products.** The page now shows the models in the inline spec rows
 above. The engine's stage mode (fixed stage, chapters, leader labels, the
@@ -487,6 +499,7 @@ adding products.
   Anyone without a profile simply shows no link (Hrushikesh Patki, for now).
 
 **Blog.** The doorway light flickers on, and scrolling walks you toward it.
+The footer's faint logo (14%, never rotated) sits centred behind the hero copy.
 
 **Try Demo (new, 2026-10-26).** `/try-demo`, `src/pages/try-demo/`; in the
 nav as a button at the right of the header bar (`.header__cta`, slimmer

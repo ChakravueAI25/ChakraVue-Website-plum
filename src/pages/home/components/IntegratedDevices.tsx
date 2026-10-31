@@ -29,7 +29,7 @@ export function IntegratedDevices() {
   return (
     <section id="integrated-devices" className="idev section" aria-labelledby="idev-title">
       <div className="section__inner">
-        <header className="idev__head">
+        <header className="idev__head hsec-head--corner">
           <div>
             <p className="section-label" data-scramble>
               Integrated devices
@@ -41,6 +41,9 @@ export function IntegratedDevices() {
           <p className="idev__lead" data-split="fade" data-delay="0.1">
             No new medical hardware. A small connectivity module links compatible devices to your clinical software, so their output becomes part of the patient record.
           </p>
+          <Link href="/product-suite#integrated-devices" className="hsec-link hsec-corner-link">
+            Explore Integrated Devices <span aria-hidden="true">→</span>
+          </Link>
         </header>
 
         <div className="idev__flow" data-reveal>
@@ -86,9 +89,6 @@ export function IntegratedDevices() {
         <div className="idev__foot">
           <p>Compatibility depends on the device. We confirm yours before anything is installed.</p>
           <div className="idev__actions">
-            <Link href="/product-suite#integrated-devices" className="hsec-link">
-              Explore Integrated Devices <span aria-hidden="true">→</span>
-            </Link>
             <Link href="/contact-us" className="hsec-link">
               Ask about your devices <span aria-hidden="true">→</span>
             </Link>

@@ -6,20 +6,10 @@ import "./platforms.css";
 import { BrandText, setBrandText } from "../../../shared/components/BrandText";
 
 /** A line drawing for each platform; every path draws itself on arrival. */
-function Glyph({ kind }: { kind: Platform["glyph"] | App["glyph"] }) {
+function Glyph({ kind }: { kind: NonNullable<Platform["glyph"]> | App["glyph"] }) {
   const p = { pathLength: 1, className: "plat-glyph__line" };
   return (
     <svg className="plat-glyph" viewBox="0 0 120 120" aria-hidden="true">
-      {kind === "implant" && (
-        <>
-          <path {...p} d="M38 30 C 34 16 44 10 52 14 C 56 10 64 10 68 14 C 76 10 86 16 82 30 C 78 38 42 38 38 30 Z" />
-          <path {...p} d="M54 38 h12 v8 h-12 Z" />
-          <path {...p} d="M52 46 h16 l-2 44 l-6 8 l-6 -8 Z" />
-          <path {...p} d="M50 56 h20 M50 66 h20 M51 76 h18 M53 86 h14" />
-          <path {...p} className="plat-glyph__line plat-glyph__line--hot" d="M8 104 C 30 96 44 110 60 106 S 96 96 112 104" />
-          <circle {...p} cx="60" cy="98" r="12" className="plat-glyph__line plat-glyph__line--hot" />
-        </>
-      )}
       {kind === "patient" && (
         <>
           <rect {...p} x="38" y="8" width="44" height="104" rx="8" />
@@ -178,7 +168,7 @@ export function PlatformConsole() {
                   </h3>
                   <p className="plat-screen__summary">{platform.summary}</p>
                 </div>
-                <Glyph kind={platform.glyph} />
+                {platform.glyph && <Glyph kind={platform.glyph} />}
               </div>
 
               {platform.features.length > 0 && (

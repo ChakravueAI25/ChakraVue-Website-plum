@@ -26,8 +26,8 @@ const facets = [
 ];
 
 /**
- * Surgical tools (Home): the Digital Surgical Assistant's interface beside
- * ID / Platform / Research. A soft analysis beam crosses the screen, the
+ * Surgical tools (Home): who it's for, what it does and what it's built on,
+ * beside the Digital Surgical Assistant's interface. A soft analysis beam crosses the screen, the
  * same touch the Product Suite's 3D screens carry. The real theatre photos
  * follow in their own section.
  */
@@ -50,31 +50,25 @@ export function SurgicalTools() {
         </header>
 
         <div className="stools__body">
+          <ol className="stools__facets">
+            {facets.map((facet, i) => (
+              <li key={facet.key} data-reveal>
+                <h3>{facet.title}</h3>
+                <p>{facet.body}</p>
+                {i === facets.length - 1 && (
+                  <Link href="/blog#media" className="hsec-link">
+                    The summit demonstration <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+
           <figure className="stools__screen" data-reveal>
             <img src="/images/product-suite/surgical-interface.webp" alt="The Digital Surgical Assistant's interface during surgery: the live view of the eye with guidance overlays, and the surgical controls either side." loading="lazy" decoding="async" />
             <span className="stools__beam" aria-hidden="true" />
             <figcaption>Digital Surgical Assistant · the surgeon&apos;s live view</figcaption>
           </figure>
-
-          <ol className="stools__facets">
-            {facets.map((facet) => (
-              <li key={facet.key} data-reveal>
-                <span className="stools__key">{facet.key}</span>
-                <h3>{facet.title}</h3>
-                <p>{facet.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div className="stools__actions">
-          <Link href="/try-demo#demos" className="hero__btn hero__btn--primary" data-magnetic="0.2">
-            Book a demo
-            <span aria-hidden="true">→</span>
-          </Link>
-          <Link href="/blog#media" className="hsec-link">
-            The summit demonstration <span aria-hidden="true">→</span>
-          </Link>
         </div>
       </div>
     </section>

@@ -11,12 +11,15 @@
 }
 
 .a2i__head {
-  max-width: 760px;
   margin-bottom: clamp(36px, 4.4vw, 56px);
 }
 
 .a2i__head .hsec-title {
   margin-top: 16px;
+}
+
+.a2i__head > :not(.hsec-corner-link) {
+  max-width: 760px;
 }
 
 .a2i__lead {
@@ -252,13 +255,6 @@
   color: #ffd29a;
 }
 
-.a2i__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px 36px;
-  margin-top: clamp(28px, 3vw, 40px);
-}
 
 @media (max-width: 900px) {
   /* The stages stack, an arrow pointing down between them. */

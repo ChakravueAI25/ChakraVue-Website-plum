@@ -185,6 +185,27 @@
   text-align: center;
 }
 
+/* A head whose one link sits at its top right, level with the label. */
+.hsec-head--corner {
+  position: relative;
+}
+
+.hsec-corner-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Narrower, the link follows the head's copy instead of crowding it. */
+@media (max-width: 1100px) {
+  .hsec-corner-link {
+    position: static;
+    justify-self: start;
+    align-self: flex-start;
+    margin-top: 20px;
+  }
+}
+
 .hsec-title {
   max-width: 760px;
   margin-top: 16px;
@@ -397,6 +418,7 @@
   .hsec-head--center {
     align-items: center;
   }
+
 
   /* How it works turns vertical: nodes down the left, the line between them. */
   .hsteps {

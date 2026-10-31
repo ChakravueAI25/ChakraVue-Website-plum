@@ -45,31 +45,27 @@
 
 .role__head {
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px 56px;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
   margin-bottom: clamp(32px, 3.4vw, 48px);
+  text-align: center;
 }
 
 .role__eyebrow {
   color: #ffb46a;
   font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.16em;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.role__title {
-  margin-top: 14px;
-}
-
-/* The introduction, and under it the control that holds the roles still. */
-.role__aside {
-  display: grid;
-  justify-items: end;
-  gap: 14px;
-  max-width: 400px;
+/* The control that holds the roles still. */
+.role__head .role__pause {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .role__intro {
@@ -85,8 +81,20 @@
   position: relative;
 }
 
-.role__ask {
+/* The question on the left, the chosen audience's next steps on the right. */
+.role__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px 40px;
   margin-bottom: clamp(20px, 2.2vw, 30px);
+}
+
+/* The question keeps its width; the next steps give way, then drop below. */
+.role__ask {
+  flex: none;
+  max-width: 100%;
 }
 
 .role__question {
@@ -310,12 +318,14 @@
 
 .role__actions-stack {
   display: grid;
-  margin-top: clamp(18px, 2vw, 26px);
+  flex: 1 1 0;
+  min-width: 260px;
 }
 
 .role__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   grid-area: 1 / 1;
   gap: 10px;
   opacity: 0;
@@ -665,14 +675,8 @@
 /* --- Tablets and phones --------------------------------------------------------- */
 
 @media (max-width: 1000px) {
-  .role__head {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .role__aside {
-    justify-items: start;
-    max-width: 560px;
+  .role__head .role__pause {
+    position: static;
   }
 
   .role__product-line {

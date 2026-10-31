@@ -3,8 +3,14 @@
    them to Plum, so the light comes out purple-pink. */
 
 .bridge {
-  padding: 0 0 clamp(16px, 2vw, 28px);
+  padding: clamp(32px, 3.4vw, 49px) 0 clamp(16px, 2vw, 28px);
   background: #030102;
+}
+
+.bridge .bridge__title {
+  max-width: none;
+  margin: 0 0 clamp(28px, 2.9vw, 42px);
+  text-align: center;
 }
 
 .glow-banner {

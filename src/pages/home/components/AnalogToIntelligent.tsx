@@ -67,7 +67,7 @@ export function AnalogToIntelligent() {
   return (
     <section ref={ref} id="analog-to-intelligent" className="a2i section" aria-labelledby="a2i-title">
       <div className="section__inner">
-        <header className="a2i__head">
+        <header className="a2i__head hsec-head--corner">
           <p className="section-label" data-scramble>
             How practice is changing
           </p>
@@ -77,6 +77,9 @@ export function AnalogToIntelligent() {
           <p className="a2i__lead" data-split="fade" data-delay="0.1">
             Move beyond fragmented, paper-based workflows to connected clinical systems that bring your practice together.
           </p>
+          <Link href="#how-it-works" className="hsec-link hsec-corner-link">
+            Know how it works <span aria-hidden="true">→</span>
+          </Link>
         </header>
 
         {/* The line the three stages sit on (wide screens). */}
@@ -115,15 +118,6 @@ export function AnalogToIntelligent() {
             </li>
           ))}
         </ol>
-
-        <div className="a2i__actions">
-          <Link href="/product-suite#ai-powered-emr" className="hsec-link">
-            See the ChakraVue System <span aria-hidden="true">→</span>
-          </Link>
-          <Link href="#how-it-works" className="hsec-link">
-            Know how it works <span aria-hidden="true">→</span>
-          </Link>
-        </div>
       </div>
     </section>
   );

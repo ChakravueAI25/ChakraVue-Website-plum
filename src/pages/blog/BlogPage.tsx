@@ -1,9 +1,7 @@
 import { usePageMotion } from "../../motion/useMotion";
 import { Header } from "../../shared/components/Header";
 import { BlogHero } from "./components/BlogHero";
-import { FeaturedPost } from "./components/FeaturedPost";
 import { MediaFeature } from "./components/MediaFeature";
-import { PostGrid } from "./components/PostGrid";
 import "./blog.css";
 
 export function BlogPage() {
@@ -13,10 +11,7 @@ export function BlogPage() {
     <main className="site-shell blog-page">
       <Header />
       <BlogHero />
-      {/* Real news first; the posts below are still placeholders. */}
       <MediaFeature />
-      <FeaturedPost />
-      <PostGrid />
     </main>
   );
 }

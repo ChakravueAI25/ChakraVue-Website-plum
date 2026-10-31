@@ -96,65 +96,74 @@ export function RoleShowcase() {
 
       <div className="section__inner">
         <header className="role__head">
-          <div>
-            <p className="role__eyebrow" data-reveal>
-              Built around you
-            </p>
-            <h2 id="role-title" className="hsec-title role__title" data-split>
-              Who are you here as?
-            </h2>
-          </div>
-          <div className="role__aside">
-            <p className="role__intro" data-reveal>
-              Discover the intelligence, tools and technology designed around your role in advancing healthcare.
-            </p>
-            {autoplay && (
-              <button
-                type="button"
-                className="role__pause"
-                onClick={() => setHeld((h) => !h)}
-                aria-label={held ? "Play the roles" : "Pause the roles"}
-              >
-                {held ? (
-                  <svg aria-hidden="true" viewBox="0 0 24 24" width="11" height="11">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                ) : (
-                  <svg aria-hidden="true" viewBox="0 0 24 24" width="11" height="11">
-                    <rect x="6" y="5" width="4" height="14" />
-                    <rect x="14" y="5" width="4" height="14" />
-                  </svg>
-                )}
-                <span aria-hidden="true">{held ? "Play" : "Pause"}</span>
-              </button>
-            )}
-          </div>
+          <h2 id="role-title" className="role__eyebrow" data-reveal>
+            ChakraVue ecosystem
+          </h2>
+          <p className="role__intro" data-reveal>
+            Discover the intelligence, tools and technology designed around your role in advancing healthcare.
+          </p>
+          {autoplay && (
+            <button
+              type="button"
+              className="role__pause"
+              onClick={() => setHeld((h) => !h)}
+              aria-label={held ? "Play the roles" : "Pause the roles"}
+            >
+              {held ? (
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="11" height="11">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              ) : (
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="11" height="11">
+                  <rect x="6" y="5" width="4" height="14" />
+                  <rect x="14" y="5" width="4" height="14" />
+                </svg>
+              )}
+              <span aria-hidden="true">{held ? "Play" : "Pause"}</span>
+            </button>
+          )}
         </header>
 
         <div className="role__explore" {...hover}>
           {/* The question: "Are you" stays; the audience, with its article, rolls. Screen readers get one plain
-              sentence, not announced as it changes (it changes every few seconds). */}
-          <div className="role__ask" data-motion="own">
-            <p className="role__question">
-              <span className="sr-only">
-                Are you {role.article} {role.noun}?
-              </span>
-              <span className="role__q" aria-hidden="true">
-                <span>Are you</span>{" "}
-                <span className="role__roll">
-                  {roles.map((r, i) => (
-                    <span key={r.id} className={`role__roll-item${state(i)}`}>
-                      {r.article} <span className="role__noun">{r.noun}</span>?
-                    </span>
-                  ))}
+              sentence, not announced as it changes (it changes every few seconds). The chosen audience's next
+              steps sit beside it. */}
+          <div className="role__top">
+            <div className="role__ask" data-motion="own">
+              <p className="role__question">
+                <span className="sr-only">
+                  Are you {role.article} {role.noun}?
                 </span>
-              </span>
-            </p>
-            <div className="role__lines">
+                <span className="role__q" aria-hidden="true">
+                  <span>Are you</span>{" "}
+                  <span className="role__roll">
+                    {roles.map((r, i) => (
+                      <span key={r.id} className={`role__roll-item${state(i)}`}>
+                        {r.article} <span className="role__noun">{r.noun}</span>?
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              </p>
+              <div className="role__lines">
+                {roles.map((r, i) => (
+                  <p key={r.id} className={`role__line${state(i)}`} aria-hidden={i !== active}>
+                    {r.line}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {/* Stacked like the products. */}
+            <div className="role__actions-stack" data-motion="own">
               {roles.map((r, i) => (
-                <p key={r.id} className={`role__line${state(i)}`} aria-hidden={i !== active}>
-                  {r.line}
-                </p>
+                <div key={r.id} className={`role__actions${state(i)}`} aria-hidden={i !== active} inert={i !== active}>
+                  {r.actions.map((a, n) => (
+                    <Link key={a.label} href={a.href} className={`role__action${n === 0 ? " role__action--primary" : ""}`}>
+                      {a.label} <span aria-hidden="true">→</span>
+                    </Link>
+                  ))}
+                </div>
               ))}
             </div>
           </div>
@@ -241,19 +250,6 @@ export function RoleShowcase() {
                         <span aria-hidden="true">→</span>
                       </span>
                     </span>
-                  </Link>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          {/* The chosen audience's next steps, stacked like the products. */}
-          <div className="role__actions-stack" data-motion="own">
-            {roles.map((r, i) => (
-              <div key={r.id} className={`role__actions${state(i)}`} aria-hidden={i !== active} inert={i !== active}>
-                {r.actions.map((a, n) => (
-                  <Link key={a.label} href={a.href} className={`role__action${n === 0 ? " role__action--primary" : ""}`}>
-                    {a.label} <span aria-hidden="true">→</span>
                   </Link>
                 ))}
               </div>
