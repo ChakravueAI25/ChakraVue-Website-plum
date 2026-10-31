@@ -97,7 +97,10 @@
 .idev__module img {
   display: block;
   width: 100%;
+  aspect-ratio: 16 / 10;
   border-radius: 14px;
+  object-fit: cover;
+  object-position: 50% 65%;
 }
 
 .idev__module figcaption {

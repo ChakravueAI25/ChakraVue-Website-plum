@@ -11,6 +11,8 @@ export type Product = {
   image: string;
   /** "photo" fills the card; "render" is a smaller cut-out from the hero shot and is shown contained. */
   imageFit: "photo" | "render";
+  /** Shown as its photograph in the product rows, not as a 3D model. */
+  stillOnly?: boolean;
   cta: { label: string; href: string };
   /**
    * What the 3D exploded view labels, in order (the ids match anchors in the
@@ -98,8 +100,10 @@ export const products: Product[] = [
     title: "Integrated Devices",
     description:
       "A connectivity module for the equipment you already own. It captures data from existing devices over a wired or wireless link and routes it into your patient records in real time, with no replacement hardware and no manual transcription.",
-    image: `${IMG}/integration-module.webp`,
-    imageFit: "render",
+    image: `${IMG}/integrated-devices-photo.webp`,
+    imageFit: "photo",
+    // The owner's photograph of the current unit (2026-10-31); the 3D model shows the older enclosure.
+    stillOnly: true,
     cta: { label: "Talk to us", href: "/contact-us" },
     anatomy: [
       { id: "enclosure", label: "Enclosure" },

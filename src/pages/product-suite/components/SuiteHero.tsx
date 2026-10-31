@@ -31,9 +31,12 @@ const SLIDES: Record<string, { brief: string; alt: string }> = {
   },
   "integrated-devices": {
     brief: "Connects the equipment you already own and routes its data into your patient records in real time.",
-    alt: "The Integrated Devices connectivity module in its clear enclosure",
+    alt: "The Integrated Devices connectivity module, a compact black unit with two antennas",
   },
 };
+
+/** A slide whose picture was replaced keeps a new file name, so no browser shows the old one from cache. */
+const SLIDE_FILE: Record<string, string> = { "integrated-devices": "integrated-devices-unit" };
 
 /** Who each product is for, from the audience mapping (shared/data/audiences.ts). */
 const builtFor = (id: string) => audiences.filter((a) => a.items.some((item) => item.key === id)).map((a) => a.label);
@@ -198,7 +201,7 @@ export function SuiteHero() {
               <img
                 key={product.id}
                 className={`ps-slide__shot ps-slide__shot--${product.id}${i === active ? " is-active" : ""}`}
-                src={`/images/product-suite/slides/${product.id}.webp`}
+                src={`/images/product-suite/slides/${SLIDE_FILE[product.id] ?? product.id}.webp`}
                 alt={SLIDES[product.id].alt}
                 width="1500"
                 height="1200"

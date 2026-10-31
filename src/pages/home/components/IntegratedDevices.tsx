@@ -61,7 +61,7 @@ export function IntegratedDevices() {
           </span>
 
           <figure className="idev__module">
-            <img src="/images/product-suite/integration-module.webp" alt="The Integrated Devices connectivity module in its clear enclosure." loading="lazy" decoding="async" />
+            <img src="/images/product-suite/integration-module.webp" alt="The Integrated Devices connectivity module: a compact black unit with two antennas and a power button." loading="lazy" decoding="async" />
             <figcaption>Connectivity module</figcaption>
           </figure>
 

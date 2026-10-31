@@ -73,9 +73,9 @@
 }
 
 .ps-hero__stage[data-shape="module"] {
-  --base-y: 87.5%;
-  --base-w: 92%;
-  --base-h: 17%;
+  --base-y: 78.5%;
+  --base-w: 66%;
+  --base-h: 14%;
 }
 
 .ps-hero__base {

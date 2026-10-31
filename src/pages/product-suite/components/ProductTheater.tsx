@@ -81,7 +81,7 @@ function ProductRow({ product }: { product: Product }) {
   const rowRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const theater = useRef<Theater | null>(null);
-  const [mode, setMode] = useState<"3d" | "static">(reduceMotion ? "static" : "3d");
+  const [mode, setMode] = useState<"3d" | "static">(reduceMotion || product.stillOnly ? "static" : "3d");
   const [open, setOpen] = useState(false);
   const roles = builtFor(product.id);
 
