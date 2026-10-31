@@ -236,8 +236,9 @@ source of truth for the order. The sections:
   capture (an analysis beam sweeps it). No validation or outcome claims.
   The ID / Platform / Research tags and the Book a demo button were
   removed (2026-10-31).
-- **The journey: real theatres** (`RealTheatres.tsx`, `theatres.css`). "Not
-  a render / In real theatres, with real surgeons.": four real photographs
+- **The journey: real theatres** (`RealTheatres.tsx`, `theatres.css`). "Inside
+  ChakraVue AI / In real theatres, with real surgeons." (label changed
+  2026-10-31): four real photographs
   (`public/images/campaign/theatres/`): the Surgical Assistant at the
   microscope, the Slit Lamp Module, the AI Impact Summit, a hands-on
   session. The microscope maker's marks, its REF/SN plate and an on-screen
@@ -501,8 +502,7 @@ adding products.
 
 **Dental tools (Home)** (`DentalPlanner.tsx`, `dental.css`, `#dental`,
 after Surgical tools, 2026-10-31): Dental Implant Planning from the same
-`platforms.ts` entry, an implant-in-the-jaw line drawing that traces itself
-in, its six features, the planning steps and its use note; then where it
+`platforms.ts` entry (no drawing since 2026-10-31): its six features, the planning steps and its use note; then where it
 runs (Desktop, Web, XR, from the planner's knowledge-transfer document) and
 a link to the Salem session on the Blog.
 
@@ -521,7 +521,10 @@ Vinayaka Mission's Research Foundation, Salem, with the owner's two photos
 **Blog.** The doorway light flickers on, and scrolling walks you toward it.
 The footer's faint logo (14%, never rotated) sits centred behind the hero copy.
 
-**Try Demo (new, 2026-10-26).** `/try-demo`, `src/pages/try-demo/`; in the
+**Try Demo (new, 2026-10-26).** Since 2026-10-31 the cards carry no
+pictures: "Who Are You?" shows a line icon per audience (in
+`RolePicker.tsx`), and each "Choose Your Demo" card opens with a "For …"
+band, then the product's name in the accent colour. `/try-demo`, `src/pages/try-demo/`; in the
 nav as a button at the right of the header bar (`.header__cta`, slimmer
 below 1100px) and as a plain link in the phone menu and the footer.
 - **Hero** (`DemoHero.tsx`): "Experience the Future of Surgery.", the

@@ -1,3 +1,4 @@
+import { BrandText } from "../../../shared/components/BrandText";
 import "./theatres.css";
 
 const IMG = "/images/campaign/theatres";
@@ -46,7 +47,7 @@ export function RealTheatres() {
         <header className="hsec-head">
           <div>
             <p className="section-label" data-scramble>
-              Not a render
+              <BrandText text="Inside ChakraVue AI" />
             </p>
             <h2 id="theatres-title" className="hsec-title" data-split>
               In real theatres, with real surgeons.

@@ -67,21 +67,13 @@ export function DemoCards({
             return (
               // The dimming sits on the <li>, the reveal on the wrapper, so the
               // reveal's inline opacity never overrides it. Each card spans
-              // the list's six rows (subgrid), so the allocations and buttons
+              // the list's six rows (subgrid: band, name, allocation, button,
+              // description, link), so the allocations and buttons
               // line up across the cards however their names wrap.
               <li key={item.key} className={`demo-card${state}`}>
                 <div className="demo-card__reveal" data-reveal>
                   <article className="demo-card__inner" aria-labelledby={`demo-${item.key}`} data-spotlight>
-                    <div className="demo-card__art">
-                      <img
-                        src={item.cover}
-                        alt={item.imageAlt}
-                        loading="lazy"
-                        decoding="async"
-                        style={item.coverPosition ? { objectPosition: item.coverPosition } : undefined}
-                      />
-                      <span className="demo-card__for">For {audience.label}</span>
-                    </div>
+                    <p className="demo-card__band">For {audience.label}</p>
 
                     <div className="demo-card__head">
                       <h3 id={`demo-${item.key}`} className="demo-card__name">

@@ -25,9 +25,9 @@ const stages = [
 
 /**
  * Dental tools (Home): Dental Implant Planning, from the software suite's
- * own data (product-suite/platforms.ts), so the two never disagree. A line
- * drawing of an implant in the jaw traces itself in, then the features and
- * the planning steps follow; pointing at a feature lifts it.
+ * own data (product-suite/platforms.ts), so the two never disagree: its
+ * features, then the planning steps, which follow each other in; pointing
+ * at a feature lifts it.
  */
 export function DentalPlanner() {
   const ref = useRef<HTMLElement>(null);
@@ -35,8 +35,7 @@ export function DentalPlanner() {
   useMotion(ref, (root) => {
     gsap
       .timeline({ scrollTrigger: { trigger: root.querySelector(".dent__body"), start: "top 75%", once: true } })
-      .fromTo(root.querySelectorAll(".dent__line"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.4, stagger: 0.06, ease: "power2.inOut" }, 0)
-      .from(root.querySelectorAll(".dent__flow li"), { autoAlpha: 0, y: 10, duration: 0.45, stagger: 0.08, ease: "cv.out" }, 0.4);
+      .from(root.querySelectorAll(".dent__flow li"), { autoAlpha: 0, y: 10, duration: 0.45, stagger: 0.08, ease: "cv.out" }, 0.2);
   });
 
   return (
@@ -56,18 +55,6 @@ export function DentalPlanner() {
         </header>
 
         <div className="dent__body">
-          <figure className="dent__art" data-reveal>
-            <svg viewBox="0 0 120 120" aria-hidden="true">
-              <path pathLength={1} className="dent__line" d="M38 30 C 34 16 44 10 52 14 C 56 10 64 10 68 14 C 76 10 86 16 82 30 C 78 38 42 38 38 30 Z" />
-              <path pathLength={1} className="dent__line" d="M54 38 h12 v8 h-12 Z" />
-              <path pathLength={1} className="dent__line" d="M52 46 h16 l-2 44 l-6 8 l-6 -8 Z" />
-              <path pathLength={1} className="dent__line" d="M50 56 h20 M50 66 h20 M51 76 h18 M53 86 h14" />
-              <path pathLength={1} className="dent__line dent__line--hot" d="M8 104 C 30 96 44 110 60 106 S 96 96 112 104" />
-              <circle pathLength={1} className="dent__line dent__line--hot" cx="60" cy="98" r="12" />
-            </svg>
-            <figcaption>{planner.category}</figcaption>
-          </figure>
-
           <div className="dent__info">
             <ul className="dent__features">
               {planner.features.map((feature) => (
