@@ -228,6 +228,7 @@ export function RoleShowcase() {
                           alt={p.imageAlt}
                           loading="lazy"
                           decoding="async"
+                          className={p.imageFit === "contain" ? "role__img--contain" : undefined}
                           style={{ objectPosition: p.coverPosition } as CSSProperties}
                         />
                       ) : (

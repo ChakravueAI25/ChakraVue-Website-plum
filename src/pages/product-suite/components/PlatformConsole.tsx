@@ -141,6 +141,16 @@ export function PlatformConsole() {
                   </div>
                 )}
 
+                {platform.shots && (
+                  <div className="plat-shots">
+                    {platform.shots.map((shot) => (
+                      <figure key={shot.src} className="plat-shot">
+                        <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+                      </figure>
+                    ))}
+                  </div>
+                )}
+
                 {platform.features.length > 0 && (
                   <ul className="plat-screen__features">
                     {platform.features.map((f) => (
@@ -160,6 +170,15 @@ export function PlatformConsole() {
                           </h4>
                         </div>
                         <p className="plat-app__summary">{app.summary}</p>
+                        {app.shots && (
+                          <div className="plat-phones">
+                            {app.shots.map((shot) => (
+                              <figure key={shot.src} className="plat-phone">
+                                <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+                              </figure>
+                            ))}
+                          </div>
+                        )}
                         <ul className="plat-screen__features plat-app__features">
                           {app.features.map((f) => (
                             <li key={f}>{f}</li>

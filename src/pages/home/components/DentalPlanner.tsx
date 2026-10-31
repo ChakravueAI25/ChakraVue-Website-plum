@@ -25,8 +25,8 @@ const stages = [
 
 /**
  * Dental tools (Home): Dental Implant Planning, from the software suite's
- * own data (product-suite/platforms.ts), so the two never disagree: its
- * features, then the planning steps, which follow each other in; pointing
+ * own data (product-suite/platforms.ts), so the two never disagree: screens
+ * from the planner, its features, then the planning steps, which follow each other in; pointing
  * at a feature lifts it.
  */
 export function DentalPlanner() {
@@ -55,6 +55,16 @@ export function DentalPlanner() {
         </header>
 
         <div className="dent__body">
+          {planner.shots && (
+            <div className="dent__shots">
+              {planner.shots.map((shot) => (
+                <figure key={shot.src} className="dent__shot" data-reveal>
+                  <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+                </figure>
+              ))}
+            </div>
+          )}
+
           <div className="dent__info">
             <ul className="dent__features">
               {planner.features.map((feature) => (

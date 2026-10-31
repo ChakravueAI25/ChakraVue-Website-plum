@@ -821,3 +821,10 @@
   text-align: center;
   text-transform: uppercase;
 }
+
+/* A whole app screen (the dental planner): uncropped, on black, with a little room. */
+.role__media img.role__img--contain {
+  padding: clamp(8px, 1vw, 14px);
+  object-fit: contain;
+  background: #000;
+}

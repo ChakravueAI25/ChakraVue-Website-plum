@@ -389,7 +389,12 @@ screen on the right (2026-10-31; it was a tabbed console). Dental Implant
 Planning; the ChakraVue Doctor Patient App, one bundle showing the Doctor App
 and the Patient App side by side; and ChakraVue Wellness. As a screen comes
 into view its line drawing traces itself in and its features rise; pointing
-at it runs a scan line down it. Dental Implant Planning has no drawing.
+at it runs a scan line down it. Dental Implant Planning has no drawing. Screens
+from the software (owner's captures, 2026-10-31) sit in the panels:
+`public/images/product-suite/dental/` for the planner (also on Home's Dental
+tools) and `.../apps/` for the Doctor and Patient Apps. App captures had
+the status bar cropped and patient names replaced with "Chakravue 01/02";
+the doctor dashboard capture (a real eye photo and names) was left out.
 
 **3D products.** The page now shows the models in the inline spec rows
 above. The engine's stage mode (fixed stage, chapters, leader labels, the

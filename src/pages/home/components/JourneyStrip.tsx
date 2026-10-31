@@ -3,6 +3,7 @@ import { mediaAppearance } from "../../blog/data";
 import "./journey.css";
 
 const THEATRES = "/images/campaign/theatres";
+const MEDIA = "/images/media";
 
 /**
  * Real photographs only: the summit photos from the blog's media post, then
@@ -18,9 +19,12 @@ const moments: Moment[] = [
   { src: `${THEATRES}/slit-lamp.webp`, alt: "A clinician beside the slit lamp, its analysis on the screen in front of him.", caption: "In the clinic" },
   { src: `${THEATRES}/summit.webp`, alt: "A ChakraVue AI founder interviewed at the company's stand at the AI Impact Summit.", caption: "At our stand" },
   { src: `${THEATRES}/training.webp`, alt: "Clinicians at a hands-on training session, one wearing a headset.", caption: "Hands-on sessions" },
-  // Salem milestone (2026-10-31): a placeholder until the owner supplies its
-  // photographs, date and description. Add `src` and the real caption then.
-  { alt: "Salem milestone, photographs to come.", caption: "Salem · coming soon" },
+  // Owner's photographs (2026-10-31); the microscope makers' marks are painted out.
+  { src: `${MEDIA}/theatre-setup.webp`, alt: "The ChakraVue AI setup in an operating theatre: a headset on the surgical microscope, with the ChakraVue System on screens either side.", caption: "In theatre · the full setup" },
+  { src: `${MEDIA}/headset-microscope.webp`, alt: "A headset mounted on the eyepieces of a surgical microscope.", caption: "Headset on the microscope" },
+  { src: `${MEDIA}/on-air-sansad-tv.webp`, alt: "A Sansad TV interview at the ChakraVue AI stand, AI Impact Summit 2026.", caption: "On air · Sansad TV" },
+  { src: `${MEDIA}/summit-demo-india-tv.webp`, alt: "A visitor trying the headset at the ChakraVue AI stand while an India TV crew films.", caption: "Live demo · India TV" },
+  { src: "/images/blog/salem-session.webp", alt: "The ChakraVue AI team in XR headsets at the dental imaging session in Salem.", caption: "Salem · dental planning session" },
 ];
 
 /**

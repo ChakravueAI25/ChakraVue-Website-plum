@@ -140,6 +140,8 @@ export const DEMO_POINTS = 10_000;
 export type RoleProduct = Omit<AudienceItem, "image" | "cover"> & {
   /** The product's picture; software platforms without one show a plain panel. */
   image?: string;
+  /** "contain" for a whole app screen, shown uncropped on the panel. */
+  imageFit?: "contain";
   summary: string;
   /** A stage the product is at, shown beside its name (only where it isn't released). */
   status?: string;
@@ -170,15 +172,17 @@ const item = (key: string) => {
 /** Try Demo with this product's request form open (TryDemoPage reads `demo`). */
 const demoOf = (key: string) => `/try-demo?demo=${encodeURIComponent(key)}`;
 
-// Two software platforms, condensed from product-suite/platforms.ts (they have no pictures yet).
+// Two software platforms, condensed from product-suite/platforms.ts, with screens from the software.
 const implantPlanning: RoleProduct = {
   key: "implant-planning",
   name: "Dental Implant Planning",
   tagline: "Dental AI & 3D visualisation",
   description: "Patient-specific implant planning. It reconstructs the jaw in 3D, maps the nerve and warns when a planned implant comes too close.",
   summary: "Patient-specific implant planning: the jaw in 3D, the nerve mapped, and a warning when an implant comes too close.",
-  imageAlt: "",
-  href: "/product-suite#platforms",
+  image: "/images/product-suite/dental/planner-arch.webp",
+  imageAlt: "The planner's segmentation view: the dental arch traced point by point on an axial slice of the patient's scan.",
+  imageFit: "contain",
+  href: "/product-suite#implant-planning",
   action: "Explore product",
   hint: "In the suite",
 };
@@ -189,8 +193,10 @@ const doctorPatientApp: RoleProduct = {
   tagline: "Clinicians & patients",
   description: "One connected pair of apps: the clinician and the patient each have their own, and the care between visits runs through both.",
   summary: "A connected pair of apps for the clinician and the patient, so the care between visits runs through both.",
-  imageAlt: "",
-  href: "/product-suite#platforms",
+  image: "/images/product-suite/apps/patient-vision-tests.webp",
+  imageAlt: "The Patient App's vision tests, with recent results.",
+  coverPosition: "50% 0%",
+  href: "/product-suite#doctor-patient-app",
   action: "Explore product",
   hint: "In the suite",
 };
@@ -335,7 +341,7 @@ export const roles: Role[] = [
     line: "Plan implants patient by patient, with the jaw in 3D and the nerve in view.",
     products: [implantPlanning],
     actions: [
-      { label: "Explore dental solutions", href: "/product-suite#platforms" },
+      { label: "Explore dental solutions", href: "/product-suite#implant-planning" },
       // No dental demo card on Try Demo yet: ask through Contact.
       { label: "Try Demo", href: contactAbout("Dental Solutions") },
     ],
