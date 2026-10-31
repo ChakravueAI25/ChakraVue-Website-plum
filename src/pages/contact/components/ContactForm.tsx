@@ -1,7 +1,7 @@
 import { useRef, type FormEvent } from "react";
 import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
-import { gmailComposeUrl, interestOptions, whoAreYouOptions } from "../data";
+import { gmailComposeUrl, interestOptions, referralOptions, whoAreYouOptions } from "../data";
 
 /**
  * No backend/email service is wired up yet, so submitting hands the message
@@ -17,9 +17,10 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
   const email = data.get("email");
   const role = data.get("role");
   const interest = data.get("interest");
+  const heardAbout = data.get("heardAbout");
 
   const subject = `Website enquiry from ${name}`;
-  const body = [`Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Who are you: ${role}`, `Interested in: ${interest}`].join(
+  const body = [`Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Who are you: ${role}`, `Interested in: ${interest}`, `Heard about us: ${heardAbout}`].join(
     "\n",
   );
 
@@ -35,11 +36,13 @@ function interestFromLink() {
   return asked && interestOptions.includes(asked) ? asked : "";
 }
 
-export function ContactForm() {
+/** `inDialog`: shown in a pop-up, so it's there at once, with no entrance. */
+export function ContactForm({ inDialog = false, heading = "Contact Us" }: { inDialog?: boolean; heading?: string }) {
   const ref = useRef<HTMLFormElement>(null);
 
   // The card rises (data-reveal) and its fields follow it in, one by one.
   useMotion(ref, (form) => {
+    if (inDialog) return;
     gsap.from(form.querySelectorAll(".contact-form__heading, .contact-form__field, .contact-form__submit"), {
       y: 26,
       autoAlpha: 0,
@@ -52,8 +55,14 @@ export function ContactForm() {
   });
 
   return (
-    <form ref={ref} className="contact-form" data-reveal data-spotlight onSubmit={handleSubmit}>
-      <h2 className="contact-form__heading">Contact Us</h2>
+    <form
+      ref={ref}
+      className={`contact-form${inDialog ? " contact-form--dialog" : ""}`}
+      data-reveal={inDialog ? undefined : ""}
+      data-spotlight={inDialog ? undefined : ""}
+      onSubmit={handleSubmit}
+    >
+      <h2 className="contact-form__heading">{heading}</h2>
 
       <label className="contact-form__field">
         <span>Your name*</span>
@@ -91,6 +100,20 @@ export function ContactForm() {
             Choose one
           </option>
           {interestOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="contact-form__field">
+        <span>How did you hear about us?*</span>
+        <select name="heardAbout" defaultValue="" required>
+          <option value="" disabled>
+            Choose one
+          </option>
+          {referralOptions.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>

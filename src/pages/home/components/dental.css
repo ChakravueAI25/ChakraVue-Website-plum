@@ -1,0 +1,206 @@
+/* Dental tools on Home (DentalPlanner.tsx). Authored in the Ember colours;
+   theme.ts grades them to Plum. */
+
+.dent {
+  padding: clamp(72px, 8vw, 120px) 0;
+  background: #040302;
+}
+
+.dent__lead {
+  max-width: 640px;
+  margin-top: 18px;
+  color: rgba(255, 243, 231, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.dent__body {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(24px, 3vw, 48px);
+  align-items: center;
+}
+
+.dent__art {
+  position: relative;
+  display: grid;
+  margin: 0;
+  padding: clamp(28px, 4vw, 56px);
+  place-items: center;
+  gap: 18px;
+  border: 1px solid rgba(255, 214, 170, 0.16);
+  border-radius: 22px;
+  background:
+    radial-gradient(60% 55% at 50% 45%, rgba(255, 139, 18, 0.12), transparent 70%),
+    linear-gradient(160deg, #120d0a, #060403);
+  transition: border-color 0.4s ease;
+}
+
+.dent__art:hover {
+  border-color: rgba(255, 180, 106, 0.42);
+}
+
+.dent__art svg {
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  overflow: visible;
+  filter: drop-shadow(0 0 14px rgba(255, 139, 18, 0.35));
+}
+
+.dent__line {
+  fill: none;
+  stroke: rgba(255, 236, 220, 0.82);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+
+.dent__line--hot {
+  stroke: #ff8b12;
+}
+
+.dent__art figcaption {
+  color: rgba(255, 236, 225, 0.55);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dent__features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dent__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 14px;
+  background: linear-gradient(160deg, #17110b 0%, #0b0a08 100%);
+  color: rgba(255, 243, 231, 0.86);
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.5;
+  transition: border-color 0.3s ease, translate 0.3s var(--ease-out);
+}
+
+.dent__features li::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: #ff8b12;
+  box-shadow: 0 0 8px rgba(255, 139, 18, 0.9);
+}
+
+.dent__features li:hover {
+  border-color: rgba(255, 180, 106, 0.4);
+  translate: 0 -2px;
+}
+
+.dent__flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dent__flow li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 214, 170, 0.18);
+  border-radius: 999px;
+  color: rgba(255, 236, 225, 0.8);
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.dent__flow li span {
+  color: #ffb46a;
+}
+
+.dent__note {
+  margin-top: 18px;
+  color: rgba(255, 236, 225, 0.45);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Where it runs: desktop, web, XR, on one line. */
+.dent__stages {
+  display: grid;
+  gap: 22px;
+  margin-top: clamp(32px, 4vw, 52px);
+  padding-top: clamp(24px, 3vw, 36px);
+  border-top: 1px solid rgba(255, 214, 170, 0.14);
+}
+
+.dent__stages ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dent__stages li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 16px;
+  background: rgba(14, 8, 4, 0.55);
+  transition: border-color 0.3s ease;
+}
+
+.dent__stages li:hover {
+  border-color: rgba(255, 180, 106, 0.42);
+}
+
+.dent__stage-key {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.dent__stage-key b {
+  margin-right: 6px;
+  color: #ffb46a;
+  font-weight: 400;
+}
+
+.dent__stages p {
+  color: rgba(255, 243, 231, 0.68);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.dent__stages .hsec-link {
+  justify-self: start;
+}
+
+@media (max-width: 900px) {
+  .dent__stages ol,
+  .dent__body,
+  .dent__features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -47,3 +47,13 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Hover: the photograph brightens and its edge warms. */
+.theatre img {
+  transition: filter 0.4s ease, border-color 0.4s ease;
+}
+
+.theatre:hover img {
+  border-color: rgba(255, 180, 106, 0.45);
+  filter: brightness(1.08);
+}

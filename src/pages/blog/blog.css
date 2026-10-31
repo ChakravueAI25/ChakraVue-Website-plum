@@ -371,6 +371,15 @@
   grid-column: 1 / -1;
 }
 
+/* The Salem visit: a hairline from the summit above, and its two photographs stacked. */
+.media--salem {
+  border-top: 1px solid rgba(255, 214, 170, 0.12);
+}
+
+.media__photos--two {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 @media (max-width: 900px) {
   .media__inner {
     grid-template-columns: 1fr;
@@ -481,4 +490,13 @@
     padding: 16px;
     border-radius: 22px;
   }
+}
+
+/* Hover: the summit photographs ease in. */
+.media__photo img {
+  transition: scale 0.6s var(--ease-out);
+}
+
+.media__photo:hover img {
+  scale: 1.04;
 }

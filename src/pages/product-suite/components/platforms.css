@@ -6,7 +6,7 @@
   --hair: rgba(255, 214, 170, 0.14);
   --soft: rgba(255, 243, 231, 0.72);
   position: relative;
-  padding: clamp(100px, 10vw, 150px) 0;
+  padding: clamp(40px, 4vw, 64px) 0 clamp(80px, 8vw, 120px);
   overflow: clip;
   background:
     radial-gradient(50% 40% at 70% 55%, rgba(255, 110, 24, 0.14), transparent 70%),
@@ -37,93 +37,30 @@
   line-height: 1.8;
 }
 
-.plat__console {
+/* One platform per row, laid out like the hardware rows above (theater.css). */
+.soft {
   display: grid;
-  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-  gap: clamp(18px, 2.4vw, 32px);
-  margin-top: clamp(48px, 5vw, 72px);
-  align-items: start;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: center;
+  padding: clamp(40px, 5vw, 72px) 0;
+  border-top: 1px solid var(--hair);
+  scroll-margin-top: 80px;
 }
 
-/* --- The list --- */
-
-.plat-list {
-  position: relative;
-  display: grid;
-  gap: 6px;
+.soft:first-of-type {
+  margin-top: clamp(36px, 4vw, 56px);
 }
 
-.plat-list button {
-  position: relative;
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  gap: 2px 10px;
-  padding: 16px 18px 16px 16px;
-  overflow: hidden;
-  border: 1px solid transparent;
-  border-radius: 16px;
-  background: none;
-  color: rgba(255, 243, 231, 0.6);
-  font-family: var(--font-display);
-  text-align: left;
-  cursor: pointer;
-  transition: color 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
-}
-
-.plat-list button::before {
-  content: "";
-  position: absolute;
-  top: 14px;
-  bottom: 14px;
-  left: 0;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--amber);
-  box-shadow: 0 0 12px rgba(255, 139, 18, 0.9);
-  scale: 1 0;
-  transition: scale 0.45s var(--ease-out);
-}
-
-.plat-list button:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.plat-list button.is-active {
-  border-color: rgba(255, 139, 18, 0.35);
-  background: linear-gradient(90deg, rgba(255, 139, 18, 0.14), rgba(255, 139, 18, 0.02));
-  color: #fff;
-}
-
-.plat-list button.is-active::before {
-  scale: 1 1;
-}
-
-.plat-list__index {
-  grid-row: 1 / span 2;
-  color: var(--amber);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.plat-list__name {
-  font-size: 13px;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.plat-list__cat {
-  color: rgba(255, 236, 225, 0.45);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.soft:last-child {
+  border-bottom: 1px solid var(--hair);
 }
 
 /* --- The screen --- */
 
 .plat-screen {
   position: relative;
-  min-height: 560px;
+  min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 214, 170, 0.2);
   border-radius: 26px;
@@ -131,6 +68,26 @@
     radial-gradient(80% 60% at 80% 20%, rgba(255, 110, 24, 0.12), transparent 70%),
     linear-gradient(160deg, #120d0a, #060403);
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 236, 220, 0.06);
+  transition: border-color 0.4s ease, translate 0.4s var(--ease-out);
+}
+
+.plat-screen:hover {
+  border-color: rgba(255, 180, 106, 0.42);
+  translate: 0 -3px;
+}
+
+.plat-screen__art {
+  display: flex;
+  justify-content: center;
+}
+
+.plat-screen__features li {
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.plat-screen__features li:hover {
+  border-color: rgba(255, 180, 106, 0.35);
+  background: rgba(255, 139, 18, 0.05);
 }
 
 /* Faint display lines. */
@@ -188,46 +145,6 @@
   position: relative;
   z-index: 1;
   padding: clamp(24px, 3vw, 40px);
-}
-
-.plat-screen__top {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 140px;
-  gap: 24px;
-  align-items: start;
-}
-
-.plat-screen__cat {
-  color: rgba(255, 236, 225, 0.55);
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.plat-screen__cat b {
-  margin-right: 8px;
-  color: var(--amber);
-  font-weight: 400;
-}
-
-.plat-screen__title {
-  margin: 16px 0 0;
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: clamp(24px, 2.6vw, 36px);
-  font-weight: 400;
-  line-height: 1.12;
-  text-transform: uppercase;
-}
-
-.plat-screen__summary {
-  max-width: 560px;
-  margin-top: 16px;
-  color: var(--soft);
-  font-family: var(--font-display);
-  font-size: 14px;
-  line-height: 1.75;
 }
 
 .plat-glyph {
@@ -365,94 +282,24 @@
   background: linear-gradient(90deg, rgba(255, 139, 18, 0.3), var(--amber));
 }
 
-.plat-screen__note {
-  margin-top: 24px;
-  color: rgba(255, 236, 225, 0.45);
-  font-family: var(--font-display);
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-/* --- Phones and tablets: tabs across the top, then the screen --- */
+/* --- Phones and tablets: the copy, then the screen --- */
 
 @media (max-width: 900px) {
-  .plat__console {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .plat-list {
-    display: flex;
-    gap: 8px;
-    margin: 0 -18px;
-    padding: 0 18px 6px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-  }
-
-  .plat-list::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Phones: only three platforms, so they wrap and all show at once,
-     instead of the last one hiding off the edge of a scroller. */
-  @media (max-width: 760px) {
-    .plat-list {
-      flex-wrap: wrap;
-      margin: 0;
-      padding: 0 0 6px;
-      overflow: visible;
-    }
-  }
-
-  .plat-list button {
-    flex: 0 0 auto;
-    grid-template-columns: auto auto;
-    align-items: center;
-    padding: 11px 14px;
-    border-color: var(--hair);
-    border-radius: 999px;
-    scroll-snap-align: start;
-  }
-
-  .plat-list button::before,
-  .plat-list__cat {
-    display: none;
-  }
-
-  .plat-list__index {
-    grid-row: auto;
-  }
-
-  .plat-list__name {
-    font-size: 11px;
-    white-space: nowrap;
-  }
-
-  .plat-screen {
-    min-height: 0;
-  }
-
-  .plat-screen__top {
+  .soft {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .plat-glyph {
-    order: -1;
     width: 84px;
     height: 84px;
   }
 
-  .plat-screen__features {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+  .plat-screen__features,
   .plat-apps {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .plat-app .plat-glyph {
-    order: 0;
     width: 48px;
     height: 48px;
   }

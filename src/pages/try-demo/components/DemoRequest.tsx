@@ -3,12 +3,12 @@ import { lockScroll } from "../../../motion/lenis";
 import { BrandText } from "../../../shared/components/BrandText";
 import { Link } from "../../../shared/components/Link";
 import { DEMO_POINTS } from "../../../shared/data/audiences";
-import { gmailComposeUrl, whoAreYouOptions } from "../../contact/data";
+import { gmailComposeUrl, referralOptions, whoAreYouOptions } from "../../contact/data";
 import type { DemoChoice } from "../demo";
 
 const EMAIL = "chakravueai@chakravue.ai";
 
-type Field = "name" | "phone" | "email" | "role" | "organisation" | "message";
+type Field = "name" | "phone" | "email" | "role" | "heardAbout" | "organisation" | "message";
 type Errors = Partial<Record<Field, string>>;
 
 /** The Contact page's required details, checked the same way on blur and on submit. */
@@ -22,8 +22,9 @@ const rules: Partial<Record<Field, (value: string) => string>> = {
   },
   email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "Please enter a valid email address."),
   role: (v) => (v ? "" : "Please choose who you are."),
+  heardAbout: (v) => (v ? "" : "Please tell us how you heard about us."),
 };
-const ORDER: Field[] = ["name", "phone", "email", "role"];
+const ORDER: Field[] = ["name", "phone", "email", "role", "heardAbout"];
 
 /** The request as plain text: the email body, and what "Copy request" copies. */
 function requestText(choice: DemoChoice, data: FormData) {
@@ -37,6 +38,7 @@ function requestText(choice: DemoChoice, data: FormData) {
     `Phone: ${value("phone")}`,
     `Email: ${value("email")}`,
     `Who are you: ${value("role")}`,
+    `Heard about us: ${value("heardAbout")}`,
     `Organisation: ${value("organisation") || "-"}`,
     `Message: ${value("message") || "-"}`,
   ].join("\n");
@@ -244,6 +246,21 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
                 ))}
               </select>
               {error("role")}
+            </label>
+
+            <label className="demo-req__field demo-req__field--wide" htmlFor="demo-req-heardAbout">
+              <span>How did you hear about us?*</span>
+              <select defaultValue="" required {...fieldProps("heardAbout")}>
+                <option value="" disabled>
+                  Choose one
+                </option>
+                {referralOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {error("heardAbout")}
             </label>
 
             <label className="demo-req__field demo-req__field--wide" htmlFor="demo-req-organisation">

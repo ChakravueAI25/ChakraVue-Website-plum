@@ -16,6 +16,7 @@ import { AnalogToIntelligent } from "./components/AnalogToIntelligent";
 import { RoleShowcase } from "./components/RoleShowcase";
 import { RealTheatres } from "./components/RealTheatres";
 import { SurgicalTools } from "./components/SurgicalTools";
+import { DentalPlanner } from "./components/DentalPlanner";
 import { ValueCards } from "./components/ValueCards";
 import { WhoWeAre } from "./components/WhoWeAre";
 import "./home.css";
@@ -71,6 +72,7 @@ export function HomePage() {
       <EmrConnect />
       <ChapterMark id="journey" />
       <SurgicalTools />
+      <DentalPlanner />
       {/* In practice */}
       <RealTheatres />
       {/* Action */}

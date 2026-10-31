@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
-import { Link } from "../../../shared/components/Link";
+import { ContactDialog } from "../../../shared/components/ContactDialog";
 import "./analog.css";
 
 type Stage = {
@@ -54,6 +54,7 @@ const stages: Stage[] = [
  */
 export function AnalogToIntelligent() {
   const ref = useRef<HTMLElement>(null);
+  const [asking, setAsking] = useState(false);
 
   useMotion(ref, (root) => {
     const track = root.querySelector(".a2i__track");
@@ -77,9 +78,10 @@ export function AnalogToIntelligent() {
           <p className="a2i__lead" data-split="fade" data-delay="0.1">
             Move beyond fragmented, paper-based workflows to connected clinical systems that bring your practice together.
           </p>
-          <Link href="#how-it-works" className="hsec-link hsec-corner-link">
+          {/* Opens the Contact form in a pop-up, so the visitor stays on the page. */}
+          <button type="button" className="hsec-link hsec-link--button hsec-corner-link" onClick={() => setAsking(true)}>
             Know how it works <span aria-hidden="true">→</span>
-          </Link>
+          </button>
         </header>
 
         {/* The line the three stages sit on (wide screens). */}
@@ -119,6 +121,7 @@ export function AnalogToIntelligent() {
           ))}
         </ol>
       </div>
+      <ContactDialog open={asking} onClose={() => setAsking(false)} heading="Know how it works" />
     </section>
   );
 }

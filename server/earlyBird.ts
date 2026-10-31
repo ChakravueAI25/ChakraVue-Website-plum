@@ -63,6 +63,7 @@ export async function handleEarlyBird(req: IncomingMessage, res: ServerResponse)
   const required: Record<string, string> = {
     name: text(body.name, 140), email, phone,
     country: text(body.country, 100), organization: text(body.organization, 200), role: text(body.role, 120),
+    heardAbout: text(body.heardAbout, 60),
   };
   if (Object.values(required).some((value) => !value) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !/^\+[1-9][0-9]{0,3}[ -]?[0-9 ()-]{6,18}$/.test(phone) || selected.length === 0 || body.consent !== "on") {
     return reply(res, 422, { error: "Complete the required fields with valid information and consent." });

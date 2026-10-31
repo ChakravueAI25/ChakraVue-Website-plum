@@ -115,3 +115,30 @@ export const mediaAppearance = {
     { src: "/images/media/summit-team.webp", alt: "The ChakraVue AI team at its stall at the summit." },
   ],
 };
+
+/**
+ * The Salem visit (owner's photographs, 2026-10-31): the dental implant
+ * planning platform at Vinayaka Mission's Research Foundation. What was
+ * shown follows the planner's knowledge-transfer document; no date was
+ * supplied, so none is shown.
+ */
+export const salemVisit = {
+  eyebrow: "Field visit",
+  event: "Vinayaka Mission's Research Foundation",
+  place: "Salem",
+  title: "Dental Implant Planning, Shown in Salem",
+  summary:
+    "At Vinayaka Mission's Research Foundation in Salem, the ChakraVue AI team presented its dental implant planning platform: a session on reading dental imaging, and hands-on time with the plan in an XR headset.",
+  shown: [
+    "3D reconstruction from patient CBCT scans",
+    "Panoramic and cross-section views of the jaw",
+    "Nerve mapping and implant placement",
+    "Implant-to-nerve clearance review",
+    "The plan viewed in an XR headset",
+  ],
+  note: "For planning, training and research; not a standalone clinical navigation system.",
+  photos: [
+    { src: "/images/blog/salem-session.webp", alt: "The ChakraVue AI team in XR headsets during the dental imaging session at Vinayaka Mission's Research Foundation, Salem." },
+    { src: "/images/blog/salem-lecture.webp", alt: "A presenter walking the audience through dental imaging on the screen at the Salem session." },
+  ],
+};

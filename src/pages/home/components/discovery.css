@@ -130,3 +130,12 @@
   .discovery__title { font-size: 25px; }
   .discovery__mascot { width: 90px; max-height: 126px; }
 }
+
+/* Hover: the card's edge lights. */
+.discovery__cards article {
+  transition: border-color 0.3s ease;
+}
+
+.discovery__cards article:hover {
+  border-color: rgba(171, 204, 235, 0.5);
+}

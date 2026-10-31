@@ -142,9 +142,9 @@ source of truth for the order. The sections:
   digitised records … easier access; connected systems … workflow
   support). As the section arrives the line fills and the stages light in
   turn, once; nothing pins. On tablets and phones the line gives way to a
-  stack with arrows between, and each image carries its stage. One link,
-  Know how it works, at the head's top right (from the Claude Design frames,
-  2026-10-31). The other reel images (car, dental
+  stack with arrows between, and each image carries its stage. One button,
+  Know how it works, at the head's top right: it opens the Contact form in
+  a pop-up (`shared/components/ContactDialog.tsx`, 2026-10-31). The other reel images (car, dental
   tower, clerk's "after") stay in `public/images/campaign/reels/`, unused.
 - **The discovery: what we do** (`DiscoveryReveal.tsx`, `discovery.css`).
   The company's tagline (owner, 2026-10-29; it replaced "The spark / Not to
@@ -380,13 +380,15 @@ only; elsewhere the character is just the small growth rail in the margin.
 - **Case studies, "Why work with us" and a contact call to action.** The
   diagrams are illustrative, not simulation output.
 
-**Product Suite: software platforms.** A console under the product rows
-(`PlatformConsole.tsx`, data in `product-suite/platforms.ts`) with three
-platforms: Dental Implant Planning; the ChakraVue Doctor Patient App, one
-bundle showing the Doctor App and the Patient App side by side; and
-ChakraVue Wellness. Choosing one re-renders the screen with a scan line, a
-decoding title and a self-drawing line icon (Dental Implant Planning has
-none since 2026-10-31).
+**Product Suite: our software suite.** Under the product rows
+(`PlatformConsole.tsx`, data in `product-suite/platforms.ts`), "Our software
+suite." shows the three platforms like the hardware: one row each, the copy
+on the left (count, title, category, overview, use, Talk to us) and its
+screen on the right (2026-10-31; it was a tabbed console). Dental Implant
+Planning; the ChakraVue Doctor Patient App, one bundle showing the Doctor App
+and the Patient App side by side; and ChakraVue Wellness. As a screen comes
+into view its line drawing traces itself in and its features rise; pointing
+at it runs a scan line down it. Dental Implant Planning has no drawing.
 
 **3D products.** The page now shows the models in the inline spec rows
 above. The engine's stage mode (fixed stage, chapters, leader labels, the
@@ -488,15 +490,33 @@ adding products.
   points drift, link up and pass signals; the pointer draws the nearest ones
   together.
 - "Why we exist" (`AboutStory.tsx`): "Built inside a working eye hospital.
-  For every hospital." beside the campaign's height-chart pair: the boy well
-  short of an older boy, then on a stool and taller ("The same hospital, with
-  ChakraVue AI").
+  For every hospital." beside the footer's logo (glyphs only, never rotated;
+  the campaign's height-chart pair was removed, owner, 2026-10-31).
 - Leader cards swing in, with the portrait wiping up inside them.
 - The team portraits pop in.
 - Each leader card has a "LinkedIn" pill under the role, and each team card
   has the LinkedIn glyph at its foot (`about-us/components/LinkedInLink.tsx`).
   Profiles opened in a new tab are set in `about-us/data.ts` (`linkedin`).
   Anyone without a profile simply shows no link (Hrushikesh Patki, for now).
+
+**Dental tools (Home)** (`DentalPlanner.tsx`, `dental.css`, `#dental`,
+after Surgical tools, 2026-10-31): Dental Implant Planning from the same
+`platforms.ts` entry, an implant-in-the-jaw line drawing that traces itself
+in, its six features, the planning steps and its use note; then where it
+runs (Desktop, Web, XR, from the planner's knowledge-transfer document) and
+a link to the Salem session on the Blog.
+
+**Forms.** Every form asks "How did you hear about us?" (`referralOptions`
+in `contact/data.ts`): Contact, the Try Demo request and the early-bird
+offer (saved with the lead as `heardAbout`). The early-bird form is laid out
+in four columns so it fits a laptop screen without scrolling, and it (like
+the pop-up Contact form) holds the page's smooth scroll while open
+(`lockScroll`, `data-lenis-prevent`), so the wheel scrolls the form.
+
+**Salem visit** (`blog/components/SalemVisit.tsx`, `salemVisit` in
+`blog/data.ts`, `/blog#salem`, 2026-10-31): the dental implant planner at
+Vinayaka Mission's Research Foundation, Salem, with the owner's two photos
+(`public/images/blog/salem-*.webp`). No date was supplied, so none shows.
 
 **Blog.** The doorway light flickers on, and scrolling walks you toward it.
 The footer's faint logo (14%, never rotated) sits centred behind the hero copy.

@@ -38,6 +38,9 @@ export const mapEmbedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(
 
 export const whoAreYouOptions = ["Investors", "Working Professionals", "Student", "Others"];
 
+/** "How did you hear about us?", asked on every form. */
+export const referralOptions = ["Instagram", "LinkedIn", "Website", "Google search", "Facebook", "YouTube", "Event or conference", "News or media", "Friend or colleague", "Other"];
+
 export const interestOptions = [
   "AI Surgical Assistant",
   "ChakraVue System",

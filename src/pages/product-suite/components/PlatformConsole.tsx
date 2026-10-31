@@ -1,9 +1,10 @@
-import { useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { reduceMotion } from "../../../motion/env";
 import { gsap, ScrollTrigger } from "../../../motion/gsap";
+import { Link } from "../../../shared/components/Link";
 import { platforms, type App, type Platform } from "../platforms";
 import "./platforms.css";
-import { BrandText, setBrandText } from "../../../shared/components/BrandText";
+import { BrandText } from "../../../shared/components/BrandText";
 
 /** A line drawing for each platform; every path draws itself on arrival. */
 function Glyph({ kind }: { kind: NonNullable<Platform["glyph"]> | App["glyph"] }) {
@@ -49,66 +50,36 @@ function Glyph({ kind }: { kind: NonNullable<Platform["glyph"]> | App["glyph"] }
 }
 
 /**
- * The software platforms, as a console: pick one from the list and the
- * screen re-renders it with a scan line, the name decoding and the line
- * drawing tracing itself in. A bundle (the Doctor Patient App) shows each
- * of its apps on its own inside the one screen.
+ * The software suite, shown like the hardware above it: one platform after
+ * another, the copy on the left and its screen on the right. As each screen
+ * comes into view its line drawing traces itself in and its features rise;
+ * pointing at a screen runs a scan line down it. A bundle (the Doctor
+ * Patient App) shows each of its apps on its own inside the one screen.
  */
 export function PlatformConsole() {
-  const [active, setActive] = useState(0);
   const ref = useRef<HTMLElement>(null);
-  // Until the console has been seen, the first platform waits to draw itself in.
-  const seen = useRef(false);
-  const platform = platforms[active];
 
   useLayoutEffect(() => {
     const root = ref.current;
-    if (!root) return;
-    // On phones the list is a sideways strip: bring the chosen tab into view.
-    const list = root.querySelector<HTMLElement>(".plat-list");
-    const tab = list?.children[active] as HTMLElement | undefined;
-    if (list && tab && list.scrollWidth > list.clientWidth) list.scrollTo({ left: tab.offsetLeft - 18, behavior: "smooth" });
-    if (reduceMotion) return;
-    const screen = root.querySelector<HTMLElement>(".plat-screen__content");
-    const title = root.querySelector<HTMLElement>(".plat-screen__title");
-    const tl = gsap.timeline({ paused: !seen.current });
-    if (seen.current) {
-      tl.fromTo(root.querySelector(".plat-screen__scan"), { yPercent: -100, autoAlpha: 1 }, { yPercent: 900, duration: 0.9, ease: "power2.inOut" }, 0);
-    }
-    tl.fromTo(screen, { autoAlpha: 0, filter: "blur(6px)" }, { autoAlpha: 1, filter: "blur(0px)", duration: 0.6, ease: "cv.out", clearProps: "filter" }, 0.1)
-      .fromTo(root.querySelectorAll(".plat-glyph__line"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, stagger: 0.04, ease: "power2.inOut" }, 0.15)
-      .fromTo(
-        root.querySelectorAll(".plat-screen__features li, .plat-screen__flow li"),
-        { autoAlpha: 0, y: 14 },
-        { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.05, ease: "cv.out" },
-        0.3,
-      );
-    if (title) tl.to(title, { duration: 0.9, ease: "none", scrambleText: { text: platforms[active].title, chars: "upperCase", speed: 0.8, revealDelay: 0.15 }, onComplete: () => setBrandText(title, platforms[active].title) }, 0.1);
-    const trigger = seen.current
-      ? null
-      : ScrollTrigger.create({
-          trigger: root.querySelector(".plat-screen"),
-          start: "top 75%",
-          once: true,
-          onEnter: () => {
-            seen.current = true;
-            tl.play();
-          },
-        });
-    return () => {
-      trigger?.kill();
-      tl.kill();
-      if (title) setBrandText(title, platforms[active].title);
-    };
-  }, [active]);
+    if (!root || reduceMotion) return;
+    const triggers = [...root.querySelectorAll<HTMLElement>(".soft")].map((row) => {
+      const tl = gsap
+        .timeline({ paused: true })
+        .fromTo(row.querySelectorAll(".plat-glyph__line"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, stagger: 0.04, ease: "power2.inOut" }, 0)
+        .fromTo(
+          row.querySelectorAll(".plat-screen__features li, .plat-screen__flow li"),
+          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.04, ease: "cv.out" },
+          0.15,
+        );
+      return ScrollTrigger.create({ trigger: row, start: "top 75%", once: true, onEnter: () => tl.play() });
+    });
+    return () => triggers.forEach((t) => t.kill());
+  }, []);
 
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const dir = ["ArrowDown", "ArrowRight"].includes(event.key) ? 1 : ["ArrowUp", "ArrowLeft"].includes(event.key) ? -1 : 0;
-    if (!dir) return;
-    event.preventDefault();
-    const next = (active + dir + platforms.length) % platforms.length;
-    setActive(next);
-    ref.current?.querySelectorAll<HTMLElement>(".plat-list button")[next]?.focus();
+  const scan = (row: HTMLElement) => {
+    if (reduceMotion) return;
+    gsap.fromTo(row.querySelector(".plat-screen__scan"), { yPercent: -100, autoAlpha: 1 }, { yPercent: 900, duration: 0.9, ease: "power2.inOut", overwrite: true });
   };
 
   return (
@@ -119,99 +90,97 @@ export function PlatformConsole() {
             Software platforms
           </p>
           <h2 id="plat-title" className="plat__title" data-split>
-            The software behind the suite.
+            Our software suite.
           </h2>
           <p className="plat__lead" data-split="fade" data-delay="0.15">
             Planning, care and wellness platforms that ChakraVue AI has built alongside its devices.
           </p>
         </header>
 
-        <div className="plat__console" data-reveal>
-          <div className="plat-list" role="tablist" aria-label="Software platforms" aria-orientation="vertical" onKeyDown={onKeyDown}>
-            {platforms.map((item, i) => (
-              <button
-                key={item.id}
-                type="button"
-                role="tab"
-                id={`plat-tab-${item.id}`}
-                aria-selected={i === active}
-                aria-controls="plat-screen"
-                tabIndex={i === active ? 0 : -1}
-                className={i === active ? "is-active" : ""}
-                onClick={() => setActive(i)}
-              >
-                <span className="plat-list__index">{item.index}</span>
-                <span className="plat-list__name">
-                  <BrandText text={item.title} />
-                </span>
-                <span className="plat-list__cat">{item.category}</span>
-              </button>
-            ))}
-          </div>
-
-          <div id="plat-screen" className="plat-screen" role="tabpanel" aria-labelledby={`plat-tab-${platform.id}`}>
-            <div className="plat-screen__bar" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <span>chakravue://{platform.id}</span>
-            </div>
-            <span className="plat-screen__scan" aria-hidden="true" />
-            <div key={platform.id} className="plat-screen__content">
-              <div className="plat-screen__top">
-                <div>
-                  <p className="plat-screen__cat">
-                    <b>{platform.index}</b> {platform.category}
-                  </p>
-                  <h3 className="plat-screen__title">
-                    <BrandText text={platform.title} />
-                  </h3>
-                  <p className="plat-screen__summary">{platform.summary}</p>
+        {platforms.map((platform) => (
+          <article key={platform.id} id={platform.id} className="soft" aria-labelledby={`${platform.id}-title`}>
+            <div className="spec__info">
+              <p className="spec__count">
+                Software <b>{platform.index}</b> / {platforms[platforms.length - 1].index}
+              </p>
+              <h3 id={`${platform.id}-title`} className="spec__title">
+                <BrandText text={platform.title} />
+              </h3>
+              <p className="spec__tagline">
+                <BrandText text={platform.category} />
+              </p>
+              <dl className="spec__grid">
+                <div className="spec__cell spec__cell--wide">
+                  <dt>Overview</dt>
+                  <dd>{platform.summary}</dd>
                 </div>
-                {platform.glyph && <Glyph kind={platform.glyph} />}
+                {platform.note && (
+                  <div className="spec__cell spec__cell--wide">
+                    <dt>Use</dt>
+                    <dd>{platform.note}</dd>
+                  </div>
+                )}
+              </dl>
+              <Link className="spec__cta" href={platform.id === "implant-planning" ? "/contact-us?interest=Dental%20Solutions" : "/contact-us"} data-magnetic="0.25">
+                Talk to us <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+
+            <div className="plat-screen" onPointerEnter={(event) => scan(event.currentTarget)}>
+              <div className="plat-screen__bar" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <span>chakravue://{platform.id}</span>
               </div>
+              <span className="plat-screen__scan" aria-hidden="true" />
+              <div className="plat-screen__content">
+                {platform.glyph && (
+                  <div className="plat-screen__art">
+                    <Glyph kind={platform.glyph} />
+                  </div>
+                )}
 
-              {platform.features.length > 0 && (
-                <ul className="plat-screen__features">
-                  {platform.features.map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-              )}
+                {platform.features.length > 0 && (
+                  <ul className="plat-screen__features">
+                    {platform.features.map((f) => (
+                      <li key={f}>{f}</li>
+                    ))}
+                  </ul>
+                )}
 
-              {platform.apps && (
-                <div className="plat-apps">
-                  {platform.apps.map((app) => (
-                    <article key={app.title} className="plat-app">
-                      <div className="plat-app__head">
-                        <Glyph kind={app.glyph} />
-                        <h4 className="plat-app__title">
-                          <BrandText text={app.title} />
-                        </h4>
-                      </div>
-                      <p className="plat-app__summary">{app.summary}</p>
-                      <ul className="plat-screen__features plat-app__features">
-                        {app.features.map((f) => (
-                          <li key={f}>{f}</li>
-                        ))}
-                      </ul>
-                    </article>
-                  ))}
-                </div>
-              )}
+                {platform.apps && (
+                  <div className="plat-apps">
+                    {platform.apps.map((app) => (
+                      <article key={app.title} className="plat-app">
+                        <div className="plat-app__head">
+                          <Glyph kind={app.glyph} />
+                          <h4 className="plat-app__title">
+                            <BrandText text={app.title} />
+                          </h4>
+                        </div>
+                        <p className="plat-app__summary">{app.summary}</p>
+                        <ul className="plat-screen__features plat-app__features">
+                          {app.features.map((f) => (
+                            <li key={f}>{f}</li>
+                          ))}
+                        </ul>
+                      </article>
+                    ))}
+                  </div>
+                )}
 
-              {platform.flow && (
-                <ol className="plat-screen__flow" aria-label="Workflow">
-                  {platform.flow.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
-              )}
-
-              {platform.note && <p className="plat-screen__note">{platform.note}</p>}
+                {platform.flow && (
+                  <ol className="plat-screen__flow" aria-label="Workflow">
+                    {platform.flow.map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
+          </article>
+        ))}
       </div>
     </section>
   );

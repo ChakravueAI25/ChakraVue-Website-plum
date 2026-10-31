@@ -1,23 +1,10 @@
-import { BrandText } from "../../../shared/components/BrandText";
-
-/** The two frames of the campaign's height chart: too short, then a step up. */
-const frames = [
-  {
-    src: "/images/campaign/level-before.jpg",
-    alt: "The boy from the campaign on tiptoe against a height chart, well short of an older boy.",
-    caption: "The same work, a fraction of the tools",
-  },
-  {
-    src: "/images/campaign/level-after.jpg",
-    alt: "The same boy on a wooden stool, now taller than the older boy, who looks on surprised.",
-    caption: "The same hospital, with ChakraVue AI",
-  },
-];
+import { Logo } from "../../../brand/Logo";
 
 /**
- * Why the company exists, told with the campaign's character: small
- * hospitals do the work of the big ones with a fraction of the tools, and
- * ChakraVue AI is the step that levels the field.
+ * Why the company exists: small hospitals do the work of the big ones with
+ * a fraction of the tools, and ChakraVue AI is the step that levels the
+ * field. Beside it, the footer's mark (glyphs only, never rotated); it
+ * replaced the campaign's height-chart pictures (owner, 2026-10-31).
  */
 export function AboutStory() {
   return (
@@ -36,15 +23,8 @@ export function AboutStory() {
           </p>
         </div>
 
-        <div className="about-story__frames">
-          {frames.map((frame) => (
-            <figure key={frame.src} className="about-story__frame" data-reveal>
-              <img src={frame.src} alt={frame.alt} loading="lazy" decoding="async" />
-              <figcaption>
-                <BrandText text={frame.caption} />
-              </figcaption>
-            </figure>
-          ))}
+        <div className="about-story__mark" aria-hidden="true" data-reveal>
+          <Logo disc={false} />
         </div>
       </div>
     </section>

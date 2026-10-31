@@ -265,7 +265,7 @@ when you change one.
   `DemoRequest.tsx` per product.
 - **About Us:** hero "The Technology Is Only as Strong as the Minds Behind
   It." over a canvas network of minds (`about-us/components/minds.ts`), then
-  "Why we exist" with the campaign's height-chart pair (`AboutStory.tsx`),
+  "Why we exist" with the footer's logo beside it (`AboutStory.tsx`; the height-chart pictures were removed 2026-10-31),
   then the leaders and the team. Each card links to the person's LinkedIn profile
   (`linkedin` in `about-us/data.ts`). Hrushikesh Patki has none yet.
 - **Services:** FEA and tobacco cessation only. The hero reads "Research,

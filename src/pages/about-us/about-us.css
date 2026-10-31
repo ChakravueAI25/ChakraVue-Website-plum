@@ -676,36 +676,27 @@
   line-height: 1.6;
 }
 
-.about-story__frames {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 1.6vw, 22px);
+/* The footer's mark (brand/logo.css), glyphs only, lit in the amber
+   accent; theme.ts grades it to Plum. */
+.about-story__mark {
+  justify-self: center;
+  width: min(100%, 420px);
+  aspect-ratio: 1000 / 968;
 }
 
-.about-story__frame {
-  margin: 0;
-}
-
-.about-story__frame img {
-  display: block;
+.about-story__mark svg {
   width: 100%;
-  aspect-ratio: 900 / 933;
-  object-fit: cover;
-  border: 1px solid rgba(255, 214, 170, 0.18);
-  border-radius: 20px;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+  height: 100%;
+  filter: drop-shadow(0 0 28px rgba(255, 139, 18, 0.25));
 }
 
-.about-story__frame figcaption {
-  margin-top: 14px;
-  color: rgba(255, 242, 232, 0.7);
-  font-size: 12px;
-  line-height: 1.45;
-  text-transform: uppercase;
+.about-story__mark .logo__glyph {
+  fill: #ffb46a;
+  transition: fill 0.4s ease;
 }
 
-.about-story__frame + .about-story__frame figcaption {
-  color: #ffb46a;
+.about-story__mark:hover .logo__glyph {
+  fill: #ffd29a;
 }
 
 @media (max-width: 900px) {
@@ -718,12 +709,8 @@
   }
 }
 
-@media (max-width: 760px) {
-  .about-story__frame img {
-    border-radius: 14px;
-  }
-
-  .about-story__frame figcaption {
-    font-size: 11px;
+@media (max-width: 900px) {
+  .about-story__mark {
+    width: min(70%, 320px);
   }
 }

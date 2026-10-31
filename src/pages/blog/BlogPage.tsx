@@ -2,6 +2,7 @@ import { usePageMotion } from "../../motion/useMotion";
 import { Header } from "../../shared/components/Header";
 import { BlogHero } from "./components/BlogHero";
 import { MediaFeature } from "./components/MediaFeature";
+import { SalemVisit } from "./components/SalemVisit";
 import "./blog.css";
 
 export function BlogPage() {
@@ -12,6 +13,7 @@ export function BlogPage() {
       <Header />
       <BlogHero />
       <MediaFeature />
+      <SalemVisit />
     </main>
   );
 }

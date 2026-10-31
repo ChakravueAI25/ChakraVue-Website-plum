@@ -185,6 +185,14 @@
   text-align: center;
 }
 
+/* A section link that opens something on the page instead of going anywhere. */
+.hsec-link--button {
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
 /* A head whose one link sits at its top right, level with the label. */
 .hsec-head--corner {
   position: relative;
