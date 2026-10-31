@@ -1,31 +1,10 @@
-import { useRef, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { gsap } from "../../../motion/gsap";
 import { useMotion } from "../../../motion/useMotion";
-import { gmailComposeUrl, interestOptions, referralOptions, whoAreYouOptions } from "../data";
+import { EnquiryError, enquiryTypeForInterest, submitEnquiry, type SourceForm } from "../../../shared/api/enquiries";
+import { interestOptions, referralOptions, whoAreYouOptions } from "../data";
 
-/**
- * No backend/email service is wired up yet, so submitting hands the message
- * off to Gmail (compose view, pre-filled) instead of silently doing nothing
- * or faking a "sent" confirmation. Swap this for a real submit handler once
- * one exists.
- */
-function handleSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-  const name = data.get("name");
-  const phone = data.get("phone");
-  const email = data.get("email");
-  const role = data.get("role");
-  const interest = data.get("interest");
-  const heardAbout = data.get("heardAbout");
-
-  const subject = `Website enquiry from ${name}`;
-  const body = [`Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Who are you: ${role}`, `Interested in: ${interest}`, `Heard about us: ${heardAbout}`].join(
-    "\n",
-  );
-
-  window.open(gmailComposeUrl({ subject, body }), "_blank", "noopener");
-}
+type Status = { state: "idle" | "sending" | "sent" | "error"; message?: string };
 
 /**
  * A link can choose the interest for the visitor (`/contact-us?interest=…`,
@@ -36,9 +15,58 @@ function interestFromLink() {
   return asked && interestOptions.includes(asked) ? asked : "";
 }
 
-/** `inDialog`: shown in a pop-up, so it's there at once, with no entrance. */
-export function ContactForm({ inDialog = false, heading = "Contact Us" }: { inDialog?: boolean; heading?: string }) {
+/**
+ * The Contact form, saved to the enquiries backend. `inDialog`: shown in a
+ * pop-up, so it's there at once, with no entrance. `sourceForm` says which
+ * place it was sent from.
+ */
+export function ContactForm({
+  inDialog = false,
+  heading = "Contact Us",
+  sourceForm = "contact-page",
+}: {
+  inDialog?: boolean;
+  heading?: string;
+  sourceForm?: SourceForm;
+}) {
   const ref = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<Status>({ state: "idle" });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (status.state === "sending") return; // a second click while the first is out
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const value = (key: string) => String(data.get(key) ?? "").trim();
+    const interest = value("interest");
+    const type = enquiryTypeForInterest(interest);
+    setStatus({ state: "sending" });
+    setFieldErrors({});
+    try {
+      await submitEnquiry({
+        name: value("name"),
+        phone: value("phone"),
+        email: value("email"),
+        visitorType: value("role"),
+        enquiryType: type,
+        // A product goes in productInterest; anything else is kept as the visitor's choice.
+        productInterest: type === "product" ? [interest] : undefined,
+        message: type === "general" && interest ? `Interested in: ${interest}` : undefined,
+        referralSource: value("heardAbout"),
+        sourceForm,
+        website: value("website"),
+      });
+      form.reset();
+      setStatus({ state: "sent", message: "Thank you. Your enquiry has been received and our team will be in touch soon." });
+    } catch (error) {
+      const e = error instanceof EnquiryError ? error : new EnquiryError("We couldn't send your enquiry. Please try again.");
+      setFieldErrors(e.fields);
+      setStatus({ state: "error", message: e.message });
+    }
+  };
+  const fieldError = (name: string) => (fieldErrors[name] ? <small className="contact-form__error">{fieldErrors[name]}</small> : null);
 
   // The card rises (data-reveal) and its fields follow it in, one by one.
   useMotion(ref, (form) => {
@@ -66,17 +94,20 @@ export function ContactForm({ inDialog = false, heading = "Contact Us" }: { inDi
 
       <label className="contact-form__field">
         <span>Your name*</span>
-        <input type="text" name="name" placeholder="Enter your name" required />
+        <input type="text" name="name" placeholder="Enter your name" required maxLength={140} autoComplete="name" />
+        {fieldError("name")}
       </label>
 
       <label className="contact-form__field">
         <span>Phone number*</span>
-        <input type="tel" name="phone" placeholder="Enter your phone number" required />
+        <input type="tel" name="phone" placeholder="Enter your phone number" required maxLength={32} autoComplete="tel" />
+        {fieldError("phone")}
       </label>
 
       <label className="contact-form__field">
         <span>Email*</span>
-        <input type="email" name="email" placeholder="Enter your email address" required />
+        <input type="email" name="email" placeholder="Enter your email address" required maxLength={254} autoComplete="email" />
+        {fieldError("email")}
       </label>
 
       <label className="contact-form__field">
@@ -121,9 +152,17 @@ export function ContactForm({ inDialog = false, heading = "Contact Us" }: { inDi
         </select>
       </label>
 
-      <button type="submit" className="contact-form__submit" data-magnetic="0.3">
-        Submit
+      {/* Left empty by people; filled only by bots that fill every field. */}
+      <input className="contact-form__trap" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+
+      <button type="submit" className="contact-form__submit" data-magnetic="0.3" disabled={status.state === "sending"} aria-busy={status.state === "sending"}>
+        {status.state === "sending" ? "Sending…" : "Submit"}
       </button>
+      {status.message && (
+        <p className={`contact-form__status contact-form__status--${status.state}`} role={status.state === "error" ? "alert" : "status"}>
+          {status.message}
+        </p>
+      )}
     </form>
   );
 }

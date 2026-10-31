@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { lockScroll } from "../../../motion/lenis";
 import { referralOptions } from "../../contact/data";
+import { EnquiryError, submitEnquiry } from "../../../shared/api/enquiries";
 import { products } from "../../product-suite/data";
 import { platforms } from "../../product-suite/platforms";
 import { BrandText } from "../../../shared/components/BrandText";
@@ -50,8 +51,11 @@ export function EarlyBirdOffer() {
     }
   };
 
+  const [submitError, setSubmitError] = useState("");
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (status === "submitting") return;
     const form = event.currentTarget;
     const data = new FormData(form);
     const selected = data.getAll("products").map(String);
@@ -68,15 +72,36 @@ export function EarlyBirdOffer() {
     if (Object.keys(next).length) return;
 
     setStatus("submitting");
+    setSubmitError("");
+    const value = (key: string) => String(data.get(key) ?? "").trim();
     try {
-      const response = await fetch("/api/early-bird", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...Object.fromEntries(data.entries()), products: selected }),
+      await submitEnquiry({
+        name: value("name"),
+        email: value("email"),
+        phone: value("phone"),
+        country: value("country"),
+        organization: value("organization"),
+        designation: value("role"),
+        visitorType: value("role"),
+        department: value("department"),
+        productInterest: selected,
+        message: value("useCase"),
+        contactMethod: value("contactMethod"),
+        timeline: value("timeline"),
+        referralSource: value("heardAbout"),
+        demoOfferInterest: "10,000-point early-bird offer",
+        consent: data.has("consent"),
+        enquiryType: "early-access",
+        sourceForm: "early-bird-offer",
+        website: value("website"),
       });
-      if (!response.ok) throw new Error("Submission was not saved.");
       setStatus("success");
-    } catch {
+    } catch (error) {
+      const e = error instanceof EnquiryError ? error : new EnquiryError("We couldn't save your inquiry. Please try again in a moment.");
+      // The server's field names that match this form's.
+      const map: Record<string, string> = { productInterest: "products", designation: "role", referralSource: "heardAbout" };
+      setErrors(Object.fromEntries(Object.entries(e.fields).map(([k, v]) => [map[k] ?? k, v])));
+      setSubmitError(e.message);
       setStatus("error");
     }
   };
@@ -107,7 +132,7 @@ export function EarlyBirdOffer() {
             <p className="eb-kicker"><BrandText text="ChakraVue AI" /> · Early-bird offer</p>
             <h2 id="eb-title">Claim Your Early-Bird Access</h2>
             <p id="eb-description" className="eb-description">Tell us a little about yourself and the products you're interested in. Our team will connect with you about early access and your 10,000-point offer.</p>
-            {status === "error" && <p className="eb-submit-error" role="alert">We couldn't save your inquiry. Please try again in a moment.</p>}
+            {status === "error" && <p className="eb-submit-error" role="alert">{submitError || "We couldn't save your inquiry. Please try again in a moment."}</p>}
             <form className="eb-form" onSubmit={submit} noValidate>
               <fieldset><legend>Personal information</legend><div className="eb-grid eb-grid--4">
                 <label className="eb-field">Full name *<input name="name" autoComplete="name" required aria-describedby={errors.name ? "eb-name-error" : undefined} />{fieldError("name")}</label>
@@ -127,6 +152,8 @@ export function EarlyBirdOffer() {
                 <label className="eb-field">Preferred method of contact<select name="contactMethod" defaultValue=""><option value="">No preference</option><option>Email</option><option>Phone</option><option>WhatsApp</option></select></label>
                 <label className="eb-field">Estimated implementation timeline<select name="timeline" defaultValue=""><option value="">Select a timeline</option>{timelines.map((timeline) => <option key={timeline}>{timeline}</option>)}</select></label>
               </div></fieldset>
+              {/* Left empty by people; filled only by bots that fill every field. */}
+              <input className="eb-trap" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
               <div className="eb-foot"><label className="eb-consent"><input type="checkbox" name="consent" required aria-describedby={errors.consent ? "eb-consent-error" : undefined} /><span>I agree to be contacted by the <BrandText text="ChakraVue AI" /> team about this inquiry. *</span></label>{errors.consent && <small className="eb-error" id="eb-consent-error" role="alert">{errors.consent}</small>}
               <div className="eb-actions"><button className="eb-submit" type="submit" disabled={status === "submitting"}>{status === "submitting" ? <><span className="eb-spinner" /> Saving…</> : "Claim my 10,000 points"}</button><button className="eb-later" type="button" onClick={close} disabled={status === "submitting"}>Maybe Later</button></div></div>
               <p className="eb-note">This form registers your interest; points are not credited automatically.</p>

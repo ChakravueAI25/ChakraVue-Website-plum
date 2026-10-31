@@ -2,6 +2,7 @@ import { useEffect, type ComponentType } from "react";
 import { Grain } from "../motion/Grain";
 import { PointerFX } from "../motion/PointerFX";
 import { AboutUsPage } from "../pages/about-us/AboutUsPage";
+import { AdminPage } from "../pages/admin/AdminPage";
 import { BlogPage } from "../pages/blog/BlogPage";
 import { ContactPage } from "../pages/contact/ContactPage";
 import { HomePage } from "../pages/home/HomePage";
@@ -25,6 +26,9 @@ const routes: Record<string, ComponentType> = {
   "/try-demo": TryDemoPage,
 };
 
+/** The private enquiries dashboard: its own page, without the site's chrome. */
+export const ADMIN_PATH = "/admin/enquiries";
+
 export function App() {
   const path = useRoute();
   const Page = routes[path] ?? HomePage;
@@ -32,6 +36,7 @@ export function App() {
   useEffect(() => {
     document.documentElement.dataset.page = path === "/" ? "home" : path.slice(1);
   }, [path]);
+  if (path === ADMIN_PATH) return <AdminPage />;
   return (
     <>
       <Page key={path} />

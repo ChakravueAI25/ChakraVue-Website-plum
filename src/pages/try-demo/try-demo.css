@@ -800,8 +800,7 @@
 }
 
 .demo-req__privacy a,
-.demo-req__alt a,
-.demo-req__link {
+.demo-req__send-error a {
   padding: 0;
   border: 0;
   background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
@@ -816,6 +815,30 @@
   justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
+}
+
+.demo-req__trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.demo-req__actions .demo-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.demo-req__send-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 130, 150, 0.35);
+  border-radius: 10px;
+  background: rgba(105, 24, 45, 0.2);
+  color: #ffb3c1;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .demo-req__how {
@@ -866,12 +889,6 @@
 .demo-req__actions--done {
   justify-content: center;
   margin-top: 24px;
-}
-
-.demo-req__done > p.demo-req__alt {
-  margin-top: 18px;
-  color: rgba(255, 243, 231, 0.5);
-  font-size: 12px;
 }
 
 /* --- Tablets and phones --------------------------------------------------------- */

@@ -260,9 +260,8 @@ when you change one.
   figure only: never present them as money, credits, a balance, or with
   rules or expiry, and never fake deductions. No product has a demo
   environment yet, so "Try Demo" opens a request dialog with the Contact
-  page's fields (owner's request) that hands the request to Gmail like the
-  Contact form; when real demo links or a form backend exist, wire them in
-  `DemoRequest.tsx` per product.
+  page's fields (owner's request) that saves the request to the enquiries
+  backend; when real demo links exist, wire them in `DemoRequest.tsx`.
 - **About Us:** hero "The Technology Is Only as Strong as the Minds Behind
   It." over a canvas network of minds (`about-us/components/minds.ts`), then
   "Why we exist" with the footer's logo beside it (`AboutStory.tsx`; the height-chart pictures were removed 2026-10-31),
@@ -297,6 +296,16 @@ when you change one.
   `className` from React state (it wipes `is-on` and the rest).
   `shared/data/audiences.ts` imports keep `.ts` extensions because
   `server/sitePdf.ts` reads it under Node.
+- **Enquiries backend** (2026-10-31; README "Enquiries backend",
+  `DEPLOYMENT.md`): every form (Contact page, the Know how it works pop-up,
+  Try Demo request, early-bird offer) saves to MongoDB through
+  `POST /api/enquiries`; the admin dashboard is `/admin/enquiries`. Exactly
+  two collections, `enquiries` and `admins`: never add another (no session,
+  user or per-form collections). A new form posts through
+  `src/shared/api/enquiries.ts` with its own `sourceForm` (add it to
+  `SOURCE_FORMS` in `server/enquiries/models.ts`). Never show success before
+  the server confirms the save, and never put database access or secrets in
+  the browser. No email notifications unless the owner approves them.
 - **Cursor:** the standard system cursor, with grab/grabbing on 3D models.
   `PointerFX.tsx` only adds a small tag ("View", "Drag") beside the pointer
   over `[data-cursor]`, plus magnetic buttons and card spotlights. The owner

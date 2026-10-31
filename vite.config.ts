@@ -32,7 +32,7 @@ function productAssistant(): Plugin {
 export default defineConfig(({ mode }) => {
   // Server-only settings from .env (the admin password never reaches the
   // browser: only VITE_-prefixed variables are exposed to client code).
-  Object.assign(process.env, loadEnv(mode, process.cwd(), ["CHAT_", "ADMIN_", "PDF_", "DATA_", "TRUST_"]));
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ["CHAT_", "ADMIN_", "PDF_", "DATA_", "TRUST_", "MONGODB_", "SESSION_", "ALLOWED_", "ENQUIRY_"]));
 
   return {
     plugins: [react(), productAssistant()],

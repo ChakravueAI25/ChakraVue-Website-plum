@@ -55,6 +55,7 @@ body.early-bird-open { overflow: hidden; }
 .eb-submit:hover:not(:disabled) { border-color: #f2c5e8; background: linear-gradient(110deg,#c66db2,#874ca0); }
 .eb-later:hover:not(:disabled) { color: #fff; }
 .eb-close:hover:not(:disabled) { border-color: rgba(255,243,231,.5); background: #241a2a; }
+.eb-trap { position: absolute; left: -10000px; width: 1px; height: 1px; opacity: 0; }
 .eb-note { margin: -6px 0 0; color: rgba(255,243,231,.42); font-size: 10px; line-height: 1.5; }
 .eb-submit-error { padding: 10px 12px; border: 1px solid rgba(255,130,150,.35); border-radius: 9px; background: rgba(105,24,45,.2); color: #ffb3c1; font-size: 12px; }
 .eb-spinner { width: 13px; height: 13px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; animation: ebSpin .7s linear infinite; }

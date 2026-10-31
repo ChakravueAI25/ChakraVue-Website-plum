@@ -40,7 +40,7 @@ export function ContactDialog({ open, onClose, heading }: { open: boolean; onClo
       <button type="button" className="contact-dialog__close" aria-label="Close" onClick={() => ref.current?.close()}>
         ×
       </button>
-      {open && <ContactForm inDialog heading={heading} />}
+      {open && <ContactForm inDialog heading={heading} sourceForm="contact-popup" />}
     </dialog>
   );
 }

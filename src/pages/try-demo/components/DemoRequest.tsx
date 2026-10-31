@@ -3,7 +3,8 @@ import { lockScroll } from "../../../motion/lenis";
 import { BrandText } from "../../../shared/components/BrandText";
 import { Link } from "../../../shared/components/Link";
 import { DEMO_POINTS } from "../../../shared/data/audiences";
-import { gmailComposeUrl, referralOptions, whoAreYouOptions } from "../../contact/data";
+import { EnquiryError, submitEnquiry } from "../../../shared/api/enquiries";
+import { referralOptions, whoAreYouOptions } from "../../contact/data";
 import type { DemoChoice } from "../demo";
 
 const EMAIL = "chakravueai@chakravue.ai";
@@ -26,36 +27,16 @@ const rules: Partial<Record<Field, (value: string) => string>> = {
 };
 const ORDER: Field[] = ["name", "phone", "email", "role", "heardAbout"];
 
-/** The request as plain text: the email body, and what "Copy request" copies. */
-function requestText(choice: DemoChoice, data: FormData) {
-  const value = (key: Field) => String(data.get(key) ?? "").trim();
-  return [
-    `Demo request: ${choice.item.name}`,
-    `For: ${choice.audience.label}`,
-    `Declared demo allocation: ${DEMO_POINTS.toLocaleString("en-US")} points`,
-    "",
-    `Name: ${value("name")}`,
-    `Phone: ${value("phone")}`,
-    `Email: ${value("email")}`,
-    `Who are you: ${value("role")}`,
-    `Heard about us: ${value("heardAbout")}`,
-    `Organisation: ${value("organisation") || "-"}`,
-    `Message: ${value("message") || "-"}`,
-  ].join("\n");
-}
-
-type Sent = { subject: string; body: string; url: string; opened: boolean };
+type Sent = { id: string };
 
 /**
  * "Try Demo": a request for one product's demo, in a modal dialog. It asks
  * for the Contact page's details (name, phone, email, who you are) plus an
  * optional organisation and note; the product is fixed by the card.
  *
- * The site has no form backend or email service yet, so, like the Contact
- * page, sending hands the finished request to Gmail's compose view, and the
- * dialog says plainly that the visitor still has to press Send there. It
- * offers a direct email and a copy of the request if Gmail doesn't open.
- * Swap `send` for a real submit handler once one exists.
+ * Sending saves the request to the enquiries backend (POST /api/enquiries);
+ * the dialog shows "received" only once the server confirms it was saved,
+ * and keeps the details on screen with the server's message if it wasn't.
  *
  * A native <dialog> opened with showModal(): focus stays inside, the page
  * behind is inert, and Esc closes it. Focus returns to the card's button.
@@ -66,7 +47,8 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
   const opener = useRef<HTMLElement | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState<Sent | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   // Keeps the last product on screen while the dialog closes.
   const [shown, setShown] = useState<DemoChoice | null>(null);
 
@@ -77,7 +59,7 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
     setShown(choice);
     setErrors({});
     setSent(null);
-    setCopied(false);
+    setSendError("");
     if (!dialog.open) dialog.showModal();
     lockScroll(true);
   }, [choice]);
@@ -133,29 +115,36 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
       return;
     }
 
-    const subject = `Demo request: ${shown.item.name} (${String(data.get("name")).trim()})`;
-    const body = requestText(shown, data);
-    const url = gmailComposeUrl({ subject, body });
-    // Not "noopener" in the features: that makes open() return null, and we
-    // need to know whether a pop-up blocker stopped it.
-    const tab = window.open(url, "_blank");
-    if (tab) tab.opener = null;
-    setSent({ subject, body, url, opened: !!tab });
+    setSending(true);
+    setSendError("");
+    const value = (key: string) => String(data.get(key) ?? "").trim();
+    submitEnquiry({
+      name: value("name"),
+      phone: value("phone"),
+      email: value("email"),
+      visitorType: value("role"),
+      referralSource: value("heardAbout"),
+      organization: value("organisation"),
+      message: value("message"),
+      productInterest: [shown.item.name],
+      audience: shown.audience.label,
+      demoOfferInterest: `${DEMO_POINTS.toLocaleString("en-US")} demo points`,
+      enquiryType: "demo",
+      sourceForm: "try-demo-request",
+      website: value("website"),
+    })
+      .then(({ id }) => setSent({ id }))
+      .catch((error: unknown) => {
+        const e = error instanceof EnquiryError ? error : new EnquiryError("We couldn't send your request. Please try again.");
+        setErrors((prev) => ({ ...prev, ...(e.fields as Errors) }));
+        setSendError(e.message);
+      })
+      .finally(() => setSending(false));
   };
 
   useEffect(() => {
     if (sent) dialogRef.current?.querySelector<HTMLElement>(".demo-req__done h3")?.focus();
   }, [sent]);
-
-  const copy = async () => {
-    if (!sent) return;
-    try {
-      await navigator.clipboard.writeText(sent.body);
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
-  };
 
   const fieldProps = (name: Field) => ({
     name,
@@ -171,7 +160,6 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
     ) : null;
 
   const item = shown?.item;
-  const mailto = sent ? `mailto:${EMAIL}?subject=${encodeURIComponent(sent.subject)}&body=${encodeURIComponent(sent.body)}` : "";
 
   return (
     <dialog
@@ -286,38 +274,32 @@ export function DemoRequest({ choice, onClose }: { choice: DemoChoice | null; on
             <button type="button" className="demo-btn demo-btn--ghost" onClick={close}>
               Cancel
             </button>
-            <button type="submit" className="demo-btn demo-btn--primary">
-              Send request <span aria-hidden="true">→</span>
+            <button type="submit" className="demo-btn demo-btn--primary" disabled={sending} aria-busy={sending}>
+              {sending ? "Sending…" : "Send request"} <span aria-hidden="true">→</span>
             </button>
           </div>
-          <p className="demo-req__how">Sending opens your request in Gmail, ready for you to send to our team.</p>
+          {/* Left empty by people; filled only by bots that fill every field. */}
+          <input className="demo-req__trap" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+          {sendError ? (
+            <p className="demo-req__send-error" role="alert">
+              {sendError} You can also email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+            </p>
+          ) : (
+            <p className="demo-req__how">Our team receives your request straight away.</p>
+          )}
         </form>
         {sent && (
           <div className="demo-req__done">
             <span className="demo-req__tick" aria-hidden="true">
               ✓
             </span>
-            <h3 tabIndex={-1}>{sent.opened ? "Your request is ready in Gmail" : "One more step"}</h3>
-            <p>
-              {sent.opened
-                ? "We've opened it in a new tab. Press Send there and our team will be in touch to arrange your demo."
-                : "Your browser stopped the new tab. Open your request in Gmail and press Send, and our team will be in touch."}
-            </p>
+            <h3 tabIndex={-1}>Request received</h3>
+            <p>Thank you. Our team will be in touch to arrange your demo of {item?.name ?? "this product"}.</p>
             <div className="demo-req__actions demo-req__actions--done">
-              <a className="demo-btn demo-btn--primary" href={sent.url} target="_blank" rel="noopener noreferrer">
-                {sent.opened ? "Open Gmail again" : "Open in Gmail"} <span aria-hidden="true">↗</span>
-              </a>
-              <button type="button" className="demo-btn demo-btn--ghost" onClick={close}>
+              <button type="button" className="demo-btn demo-btn--primary" onClick={close}>
                 Done
               </button>
             </div>
-            <p className="demo-req__alt">
-              Not using Gmail? <a href={mailto}>Email {EMAIL}</a> from your own mail app, or{" "}
-              <button type="button" className="demo-req__link" onClick={copy}>
-                {copied ? "copied" : "copy the request"}
-              </button>{" "}
-              to paste anywhere.
-            </p>
           </div>
         )}
       </div>

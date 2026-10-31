@@ -8,6 +8,15 @@ import "./motion/motion.css";
 import "./theme/theme.css";
 import { initTheme } from "./theme/theme";
 
+// The admin dashboard opens straight away, without the logo intro.
+if (window.location.pathname.replace(/\/+$/, "") === "/admin/enquiries") {
+  try {
+    sessionStorage.setItem("cv-intro-seen", "1");
+  } catch {
+    // storage blocked: the intro simply plays
+  }
+}
+
 // Before React renders: smooth scroll, flags, and the closed iris, so the
 // first thing on screen is the intro, never an unanimated page.
 bootMotion();

@@ -205,7 +205,8 @@ source of truth for the order. The sections:
   seam. Dash lengths are in px because a unitless `calc()` isn't a valid
   dash length. Under reduced motion the light is hidden and the ambient
   glow stays. Under it, the early-bird offer (`EarlyBirdOffer.tsx`,
-  `earlyBird.css`, posting to `/api/early-bird`).
+  `earlyBird.css`), saved to the enquiries backend as
+  `sourceForm: "early-bird-offer"`.
 - **The core idea** (original): "We don't replace the device. We extend
   what it can do."
 - **Know how it works** (`ValueCards.tsx`, `#how-it-works`). Capture →
@@ -564,14 +565,12 @@ below 1100px) and as a plain link in the phone menu and the footer.
   each (`aria-invalid`, `aria-describedby`); the first bad field takes
   focus. The details carry over to the next product; the first empty
   field (or Send) takes focus on opening.
-- **Sending**: there are no demo environments and no form backend yet, so,
-  like the Contact form, it hands the finished request ("Demo request:
-  <product> (<name>)", with the role, the allocation and every field) to
-  Gmail's compose view, and the dialog says plainly that the visitor
-  still has to press Send there. If a pop-up blocker stops the tab it says
-  so and offers the link; it also offers a `mailto:` and "copy the request".
-  Swap `send` for a real submit handler (and real demo links) once they
-  exist.
+- **Sending**: saved to the enquiries backend (`POST /api/enquiries`,
+  `sourceForm: "try-demo-request"`, the product in `productInterest`, the
+  audience and the declared allocation kept). The button shows "Sending…"
+  and can't be pressed twice; "Request received" appears only once the
+  server confirms the save, otherwise the server's message shows with the
+  email address as a fallback. See "Enquiries backend".
 - The growth rail is a corner badge here, as on Product Suite, so the kid
   never covers the cards.
 
@@ -643,6 +642,43 @@ Changes to existing files are limited to motion hooks and attributes, plus CSS
 that moved from `transform` to `translate`/`scale` so it doesn't fight the
 animations. One side effect fixed an existing bug: the top and bottom
 system-map nodes no longer jump sideways on hover.
+
+## Enquiries backend (MongoDB)
+
+Every website form saves to one MongoDB collection, `enquiries`; the
+administrators who may read them are in `admins`. Those are the only two
+collections. Setup, environment and deployment: `DEPLOYMENT.md`.
+
+- **Where**: `server/enquiries/` (config, models, validation, security,
+  API, setup commands), mounted by `server/routes.ts`, so it runs inside
+  `npm run dev` (Vite middleware) and `npm run serve` (production) alike.
+  No Express: the server is plain `node:http`, like the Product Assistant.
+- **Forms** (all through `src/shared/api/enquiries.ts`):
+
+  | Form | Component | sourceForm | enquiryType |
+  | --- | --- | --- | --- |
+  | Contact page | `contact/components/ContactForm.tsx` | `contact-page` | from "What interests you?" (`enquiryTypeForInterest`) |
+  | Know how it works pop-up (Home) | `ContactForm` in `shared/components/ContactDialog.tsx` | `contact-popup` | same |
+  | Try Demo request | `try-demo/components/DemoRequest.tsx` | `try-demo-request` | `demo` |
+  | Early-bird offer (Home) | `home/components/EarlyBirdOffer.tsx` | `early-bird-offer` | `early-access` |
+
+  Each shows a loading state, can't be sent twice while a request is out,
+  shows success only after the server confirms the save, and shows the
+  server's field errors otherwise. Each has a hidden anti-spam field
+  (`website`). The Chat assistant is not an enquiry form.
+- **API**: `POST /api/enquiries` (public); `POST /api/admin/login`,
+  `POST /api/admin/logout`, `GET /api/admin/me`, `GET /api/admin/dashboard`,
+  `GET /api/admin/enquiries` (page, limit, q, status, enquiryType, product,
+  sort), `GET /api/admin/enquiries/:id`, `PATCH /api/admin/enquiries/:id/status`.
+  Responses are `{ ok: true, data }` or `{ ok: false, error: { code, message, fields? } }`.
+- **Admin dashboard**: `/admin/enquiries` (`src/pages/admin/`), its own page
+  without the site's header, footer or intro. Sessions are a signed,
+  HTTP-only, SameSite=Strict cookie (`__Host-` and Secure in production);
+  nothing is kept in local storage. The PDF upload page at `/admin` is the
+  Product Assistant's and is unchanged.
+- **Tests**: `npm run test:backend` runs the API against a real, temporary
+  MongoDB (mongodb-memory-server); `npm run db:local` starts one for trying
+  the site locally.
 
 ## Product Assistant (PDF chatbot)
 

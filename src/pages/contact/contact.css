@@ -278,3 +278,45 @@
     height: 280px;
   }
 }
+
+/* --- Submission states (the enquiries backend) ------------------------------------ */
+
+.contact-form__submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.contact-form__error {
+  color: #ff9baf;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.contact-form__status {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.contact-form__status--sent {
+  border: 1px solid rgba(255, 180, 106, 0.4);
+  background: rgba(255, 139, 18, 0.08);
+  color: #fbd896;
+}
+
+.contact-form__status--error {
+  border: 1px solid rgba(255, 130, 150, 0.35);
+  background: rgba(105, 24, 45, 0.2);
+  color: #ffb3c1;
+}
+
+/* The anti-spam field: off screen, out of the tab order, hidden from screen readers. */
+.contact-form__trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}

@@ -3,6 +3,8 @@ import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { adminEnabled } from "./assistant/auth.ts";
+import { configProblems, readConfig } from "./enquiries/config.ts";
+import { connectDb } from "./enquiries/db.ts";
 import { documentInfo } from "./assistant/knowledge.ts";
 import { handleAssistantRoute } from "./routes.ts";
 
@@ -15,6 +17,27 @@ import { handleAssistantRoute } from "./routes.ts";
  */
 
 const DIST = resolve(import.meta.dirname, "../dist");
+const PRODUCTION = process.env.NODE_ENV === "production";
+
+// The enquiries backend needs its database and session secret: in production
+// the server refuses to start without them rather than run with forms that fail.
+const problems = configProblems();
+if (problems.length) {
+  if (PRODUCTION) {
+    console.error(`Cannot start: ${problems.join(" ")} See .env.example and DEPLOYMENT.md.`);
+    process.exit(1);
+  }
+  console.warn(`Enquiries backend is off until configured: ${problems.join(" ")}`);
+}
+
+/** Headers on every page and file the server sends. */
+const SECURITY_HEADERS: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  ...(PRODUCTION ? { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" } : {}),
+};
 const PORT = Number(process.env.PORT) || 4175;
 const HOST = process.env.HOST || "0.0.0.0";
 
@@ -74,12 +97,23 @@ createServer(async (req, res) => {
     "Content-Type": TYPES[extname(path).toLowerCase()] ?? "application/octet-stream",
     // Vite fingerprints everything under /assets, so those can be cached for good.
     "Cache-Control": asset && url.pathname.startsWith("/assets/") ? "public, max-age=31536000, immutable" : "no-cache",
-    "X-Content-Type-Options": "nosniff",
+    ...SECURITY_HEADERS,
+    // The admin dashboard's shell is public HTML (its data is not), but keep it out of search engines.
+    ...(url.pathname.startsWith("/admin") ? { "X-Robots-Tag": "noindex, nofollow" } : {}),
   });
   if (req.method === "HEAD") return res.end();
   createReadStream(path).pipe(res);
 }).listen(PORT, HOST, async () => {
   console.log(`ChakraVue AI site on http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`);
+  const config = readConfig();
+  if (config) {
+    try {
+      await connectDb(config.mongoUri);
+      console.log("Enquiries backend: connected to MongoDB.");
+    } catch {
+      console.error("Enquiries backend: could not reach MongoDB yet; forms will return 503 until it can.");
+    }
+  }
   if (!adminEnabled()) console.warn("ADMIN_PASSWORD_HASH is not set: the /admin upload page is switched off.");
   const document = await documentInfo();
   if (document) console.log(`Product Assistant: answering from "${document.name}" (updated ${document.updatedAt}).`);

@@ -9,14 +9,23 @@
     "preview": "vite preview --host 127.0.0.1",
     "serve": "node --experimental-strip-types --no-warnings=ExperimentalWarning --env-file-if-exists=.env server/index.ts",
     "admin:password": "node --experimental-strip-types --no-warnings=ExperimentalWarning server/hashPassword.ts",
-    "test:assistant": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test \"server/tests/*.test.ts\"",
-    "assistant:site-pdf": "node --experimental-strip-types --no-warnings=ExperimentalWarning server/sitePdf.ts"
+    "test:assistant": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test \"server/tests/assistant*.test.ts\"",
+    "assistant:site-pdf": "node --experimental-strip-types --no-warnings=ExperimentalWarning server/sitePdf.ts",
+    "db:init": "node --experimental-strip-types --no-warnings=ExperimentalWarning --env-file-if-exists=.env server/enquiries/setup.ts init",
+    "admin:create": "node --experimental-strip-types --no-warnings=ExperimentalWarning --env-file-if-exists=.env server/enquiries/setup.ts create-admin",
+    "admin:deactivate": "node --experimental-strip-types --no-warnings=ExperimentalWarning --env-file-if-exists=.env server/enquiries/setup.ts deactivate",
+    "test:backend": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test --test-concurrency=1 \"server/tests/enquiries*.test.ts\"",
+    "test": "npm run test:assistant && npm run test:backend",
+    "admin:activate": "node --experimental-strip-types --no-warnings=ExperimentalWarning --env-file-if-exists=.env server/enquiries/setup.ts activate",
+    "db:local": "node --experimental-strip-types --no-warnings=ExperimentalWarning server/tests/devMongo.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@vitejs/plugin-react": "^5.0.0",
+    "bcryptjs": "^3.0.3",
     "gsap": "^3.15.0",
     "lenis": "^1.3.26",
+    "mongoose": "^8.24.7",
     "pdfjs-dist": "^5.4.296",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -28,7 +37,8 @@
     "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/three": "^0.186.0"
+    "@types/three": "^0.186.0",
+    "mongodb-memory-server": "^10.4.3"
   },
   "engines": {
     "node": ">=22.9"
