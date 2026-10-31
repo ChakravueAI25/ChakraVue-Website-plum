@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { usePageMotion } from "../../motion/useMotion";
 import { Header } from "../../shared/components/Header";
+import { audiences } from "../../shared/data/audiences";
 import { DemoCards } from "./components/DemoCards";
 import { DemoHero } from "./components/DemoHero";
 import { DemoRequest } from "./components/DemoRequest";
@@ -19,7 +20,15 @@ import "./try-demo.css";
 export function TryDemoPage() {
   usePageMotion();
   const [selected, setSelected] = useState<string | null>(null);
-  const [choice, setChoice] = useState<DemoChoice | null>(null);
+  // A link can open one product's request straight away (`/try-demo?demo=surgical-assistant`).
+  const [choice, setChoice] = useState<DemoChoice | null>(() => {
+    const key = new URLSearchParams(window.location.search).get("demo");
+    for (const audience of audiences) {
+      const item = audience.items.find((i) => i.key === key);
+      if (item) return { item, audience };
+    }
+    return null;
+  });
 
   const pick = useCallback((id: string | null, scroll: boolean) => {
     setSelected(id);

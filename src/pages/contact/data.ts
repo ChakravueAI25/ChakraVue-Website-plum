@@ -46,6 +46,8 @@ export const interestOptions = [
   "Dental Solutions",
   "Sidekick (research)",
   "Partnership / Collaboration",
+  "Distribution",
+  "OEM Partnership",
   "Our Future Vision",
   "Training Solutions",
   "Investment",

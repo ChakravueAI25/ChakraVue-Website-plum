@@ -101,6 +101,15 @@
   text-transform: uppercase;
 }
 
+/* A milestone whose photographs haven't arrived yet (Salem). */
+.journey-strip__soon {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(50% 60% at 50% 42%, rgba(255, 139, 18, 0.18), transparent 70%),
+    repeating-linear-gradient(135deg, rgba(255, 214, 170, 0.05) 0 1px, transparent 1px 14px);
+}
+
 @media (max-width: 600px) {
   .journey-strip__card {
     width: 200px;

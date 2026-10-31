@@ -74,14 +74,33 @@
   line-height: 1.75;
 }
 
+/* An amber underline draws in from the left under the pointer or focus. */
 .footer__links a {
   white-space: nowrap;
-  transition: color 0.3s ease;
+  background: linear-gradient(#ffb46a, #ffb46a) 0 100% / 0 1px no-repeat;
+  transition:
+    color 0.25s ease,
+    background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .footer__links a:hover,
 .footer__links a:focus-visible {
   color: #fff;
+  background-size: 100% 1px;
+}
+
+.footer__links a:focus-visible,
+.footer__bottom a:focus-visible,
+.footer__top:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__links a {
+    transition: color 0.25s ease;
+  }
 }
 
 /* Oversized wordmark, cropped by the bottom bar like a signature. */

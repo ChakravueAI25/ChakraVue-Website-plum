@@ -1,5 +1,5 @@
-/* "Who are you here as?" (RoleShowcase.tsx): the introduction, the three
-   roles as selectable cards in one row, then the chosen role's products in
+/* "Who are you here as?" (RoleShowcase.tsx): the introduction, the rolling
+   question, the audiences as pills, then the chosen role's products in
    an even grid. Every role's products sit in the same grid cell; the
    active set fades and rises in, the others fade out a beat faster.
    Authored in the Ember colours; theme.ts grades them to Plum. */
@@ -79,55 +79,130 @@
   line-height: 1.7;
 }
 
-/* --- The roles ------------------------------------------------------------------ */
+/* --- The question ----------------------------------------------------------------- */
 
 .role__explore {
   position: relative;
 }
 
-.role__control {
-  display: grid;
-  grid-template-areas: "tabs";
-  grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
-  margin-bottom: clamp(18px, 2vw, 26px);
+.role__ask {
+  margin-bottom: clamp(20px, 2.2vw, 30px);
 }
 
-.role__tabs {
+.role__question {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.2vw, 44px);
+  line-height: 1.15;
+}
+
+/* A stack: every version in one cell, so it's as wide as the longest and
+   nothing beside it moves. The new word rolls up behind a mask. */
+.role__roll {
+  display: inline-grid;
+  justify-items: start;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: top;
+}
+
+.role__noun {
+  color: #ffb46a;
+}
+
+.role__roll-item {
+  grid-area: 1 / 1;
+  opacity: 0;
+  translate: 0 -0.9em;
+  transition:
+    opacity var(--out) ease,
+    translate var(--out) var(--ease);
+}
+
+.role__roll-item.is-active {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--in) ease 0.06s,
+    translate var(--in) var(--ease) 0.06s;
+  animation: roleRoll var(--in) var(--ease) 0.06s both;
+}
+
+@keyframes roleRoll {
+  from {
+    translate: 0 0.9em;
+  }
+}
+
+.role__lines {
   display: grid;
-  grid-area: tabs;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(10px, 1.2vw, 16px);
+  max-width: 640px;
+  margin-top: 12px;
+}
+
+.role__line {
+  grid-area: 1 / 1;
+  margin: 0;
+  color: rgba(255, 243, 231, 0.7);
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--out) ease,
+    visibility 0s linear var(--out);
+}
+
+.role__line.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--in) ease 0.1s;
+}
+
+/* --- The audiences ------------------------------------------------------------------ */
+
+.role__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: clamp(18px, 2vw, 26px);
 }
 
 .role__tab {
   position: relative;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto auto;
-  gap: 8px;
-  padding: 16px 18px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 40px;
+  padding: 0 16px 0 14px;
   overflow: hidden;
-  border: 1px solid rgba(255, 214, 170, 0.12);
-  border-radius: 16px;
+  border: 1px solid rgba(255, 214, 170, 0.14);
+  border-radius: 999px;
   background: rgba(255, 139, 18, 0.015);
-  color: rgba(255, 243, 231, 0.55);
+  color: rgba(255, 243, 231, 0.6);
   font-family: var(--font-display);
-  text-align: left;
   cursor: pointer;
   transition:
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    color 0.25s ease;
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .role__tab:hover {
-  border-color: rgba(255, 180, 106, 0.32);
-  color: rgba(255, 243, 231, 0.85);
+  border-color: rgba(255, 180, 106, 0.4);
+  background: rgba(255, 139, 18, 0.06);
+  color: rgba(255, 243, 231, 0.9);
+}
+
+.role__tab:active {
+  background: rgba(255, 139, 18, 0.12);
 }
 
 .role__tab.is-active {
-  border-color: rgba(255, 180, 106, 0.5);
-  background: linear-gradient(160deg, rgba(255, 139, 18, 0.1), rgba(255, 139, 18, 0.02) 70%);
+  border-color: rgba(255, 180, 106, 0.55);
+  background: rgba(255, 139, 18, 0.1);
   color: #fff;
 }
 
@@ -136,21 +211,11 @@
   outline-offset: 3px;
 }
 
-.role__tab-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.role__tab-index {
-  color: rgba(255, 180, 106, 0.7);
-  font-size: 11px;
-}
-
 /* Hollow when idle, a filled point of light when chosen. */
 .role__mark {
-  width: 10px;
-  height: 10px;
+  flex: none;
+  width: 8px;
+  height: 8px;
   border: 1px solid rgba(255, 214, 170, 0.4);
   border-radius: 50%;
   transition:
@@ -166,43 +231,21 @@
 }
 
 .role__tab-label {
-  font-size: clamp(15px, 1.35vw, 19px);
-  line-height: 1.2;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.role__tab-line {
-  color: rgba(255, 243, 231, 0.55);
-  font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.55;
-  transition: color 0.25s ease;
-}
-
-/* Every card's line, meta and bar sit on the same baselines. */
-.role__tab-meta {
-  align-self: end;
-}
-
-.role__tab.is-active .role__tab-line {
-  color: rgba(255, 243, 231, 0.78);
-}
-
-.role__tab-meta {
-  color: rgba(255, 243, 231, 0.4);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* A hairline along the card's foot; the active one fills as the timer. */
+/* A hairline along the pill's foot; the active one fills as the timer. */
 .role__bar {
-  position: relative;
+  position: absolute;
+  right: 14px;
+  bottom: 0;
+  left: 14px;
   display: block;
   height: 2px;
-  margin: 6px -18px 0;
   overflow: hidden;
-  background: rgba(255, 214, 170, 0.08);
 }
 
 .role__fill {
@@ -211,12 +254,12 @@
   background: #ffb46a;
   box-shadow: 0 0 8px rgba(255, 139, 18, 0.7);
   transform-origin: 0 50%;
-  animation: roleFill 6s linear both;
+  animation: roleFill 7s linear both;
 }
 
-/* No timer (phones, reduced motion): the chosen card's line is simply lit. */
+/* No timer (phones, reduced motion): nothing to fill. */
 .role__fill.is-still {
-  animation: none;
+  display: none;
 }
 
 @keyframes roleFill {
@@ -263,10 +306,86 @@
   outline-offset: 3px;
 }
 
-/* Only phones show the chosen role's line under the cards. */
-.role__lead {
-  display: none;
-  grid-area: lead;
+/* --- The next steps ---------------------------------------------------------------- */
+
+.role__actions-stack {
+  display: grid;
+  margin-top: clamp(18px, 2vw, 26px);
+}
+
+.role__actions {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: 1 / 1;
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--out) ease,
+    visibility 0s linear var(--out);
+}
+
+.role__actions.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--in) ease 0.16s;
+}
+
+.role__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 180, 106, 0.4);
+  border-radius: 999px;
+  color: #fbd896;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.role__action span {
+  transition: translate 0.2s ease;
+}
+
+.role__action:hover,
+.role__action:focus-visible {
+  border-color: #ffb46a;
+  background: rgba(255, 139, 18, 0.1);
+  color: #fff;
+}
+
+.role__action:hover span,
+.role__action:focus-visible span {
+  translate: 4px 0;
+}
+
+.role__action:focus-visible {
+  outline: 2px solid #ffb46a;
+  outline-offset: 3px;
+}
+
+.role__action:active {
+  background: rgba(255, 139, 18, 0.18);
+}
+
+.role__action--primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, #ff8b12, #ffb46a);
+  color: #1a0d03;
+}
+
+.role__action--primary:hover,
+.role__action--primary:focus-visible {
+  border-color: transparent;
+  background: linear-gradient(135deg, #ffa040, #fbd896);
+  color: #1a0d03;
 }
 
 /* --- The products ----------------------------------------------------------------- */
@@ -556,22 +675,8 @@
     max-width: 560px;
   }
 
-  .role__tab {
-    padding: 14px 14px 0;
-  }
-
-  .role__bar {
-    margin: 4px -14px 0;
-  }
-
   .role__product-line {
     font-size: 12.5px;
-  }
-}
-
-@media (max-width: 860px) {
-  .role__tab-line {
-    display: none;
   }
 }
 
@@ -579,60 +684,17 @@
    its products one under another. Only the chosen set is laid out, so the
    page is as tall as what it shows. */
 @media (max-width: 700px) {
-  .role__control {
-    grid-template-areas:
-      "tabs"
-      "lead";
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .role__tabs {
-    gap: 8px;
-  }
-
   .role__tab {
-    gap: 6px;
-    padding: 12px 8px 0;
-    border-radius: 14px;
+    height: 36px;
+    padding: 0 12px 0 11px;
   }
 
   .role__tab-label {
     font-size: 10px;
-    letter-spacing: 0;
   }
 
-  .role__tab-meta {
-    font-size: 9px;
-    letter-spacing: 0.06em;
-  }
-
-  .role__mark {
-    width: 8px;
-    height: 8px;
-  }
-
-  .role__bar {
-    margin: 2px -8px 0;
-  }
-
-  .role__lead {
-    display: grid;
-  }
-
-  .role__lead-line {
-    grid-area: 1 / 1;
-    color: rgba(255, 243, 231, 0.7);
+  .role__line {
     font-size: 14px;
-    line-height: 1.6;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--out) ease;
-  }
-
-  .role__lead-line.is-active {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity var(--in) ease 0.08s;
   }
 
   .role__products {
@@ -676,8 +738,13 @@
 @media (prefers-reduced-motion: reduce) {
   .role__products,
   .role__products.is-active,
-  .role__lead-line,
-  .role__lead-line.is-active {
+  .role__roll-item,
+  .role__roll-item.is-active,
+  .role__line,
+  .role__line.is-active,
+  .role__actions,
+  .role__actions.is-active,
+  .role__products.is-active .role__product {
     translate: none;
     transition: none;
     animation: none;
@@ -696,4 +763,57 @@
     animation: none;
     opacity: 0.6;
   }
+}
+
+/* The new set's cards come in one after another. */
+.role__products.is-active .role__product {
+  animation: roleRise var(--in) var(--ease) both;
+  animation-delay: calc(0.1s + var(--n, 0) * 70ms);
+}
+
+/* A software platform without a picture: its category on a lit panel. */
+.role__media--plain {
+  background:
+    radial-gradient(60% 70% at 50% 45%, rgba(255, 139, 18, 0.16), transparent 70%),
+    #0d0806;
+}
+
+.role__plain {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.role__plain-ring {
+  grid-area: 1 / 1;
+  width: 46%;
+  max-width: 150px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 180, 106, 0.4);
+  border-radius: 50%;
+  box-shadow:
+    0 0 30px rgba(255, 139, 18, 0.18),
+    inset 0 0 24px rgba(255, 139, 18, 0.14);
+  transition:
+    scale 0.4s var(--ease),
+    border-color 0.3s ease;
+}
+
+.role__product:hover .role__plain-ring,
+.role__product:focus-visible .role__plain-ring {
+  border-color: rgba(255, 180, 106, 0.75);
+  scale: 1.06;
+}
+
+.role__plain-tag {
+  grid-area: 1 / 1;
+  max-width: 70%;
+  color: #fbd896;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  text-align: center;
+  text-transform: uppercase;
 }

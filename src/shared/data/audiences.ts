@@ -137,19 +137,28 @@ export const audiences: Audience[] = [
 export const DEMO_POINTS = 10_000;
 
 /** One product in "Who are you here as?", with a short line drawn from its own description. */
-export type RoleProduct = AudienceItem & {
+export type RoleProduct = Omit<AudienceItem, "image" | "cover"> & {
+  /** The product's picture; software platforms without one show a plain panel. */
+  image?: string;
   summary: string;
   /** A stage the product is at, shown beside its name (only where it isn't released). */
   status?: string;
 };
 
+export type RoleAction = { label: string; href: string };
+
 export type Role = {
   id: string;
-  /** The audience's name on its tab. */
+  /** The audience's name on its pill. */
   label: string;
-  /** What the role gets from ChakraVue AI, in a line (its card, or under the cards on phones). */
+  /** The audience in the question "Are you a …?", with its article. */
+  article: "a" | "an";
+  noun: string;
+  /** What the role gets from ChakraVue AI, in a line. */
   line: string;
   products: RoleProduct[];
+  /** The role's next steps, the first one primary. */
+  actions: RoleAction[];
 };
 
 const item = (key: string) => {
@@ -158,51 +167,98 @@ const item = (key: string) => {
   return found;
 };
 
+/** Try Demo with this product's request form open (TryDemoPage reads `demo`). */
+const demoOf = (key: string) => `/try-demo?demo=${encodeURIComponent(key)}`;
+
+// Two software platforms, condensed from product-suite/platforms.ts (they have no pictures yet).
+const implantPlanning: RoleProduct = {
+  key: "implant-planning",
+  name: "Dental Implant Planning",
+  tagline: "Dental AI & 3D visualisation",
+  description: "Patient-specific implant planning. It reconstructs the jaw in 3D, maps the nerve and warns when a planned implant comes too close.",
+  summary: "Patient-specific implant planning: the jaw in 3D, the nerve mapped, and a warning when an implant comes too close.",
+  imageAlt: "",
+  href: "/product-suite#platforms",
+  action: "Explore product",
+  hint: "In the suite",
+};
+
+const doctorPatientApp: RoleProduct = {
+  key: "doctor-patient-app",
+  name: "ChakraVue Doctor Patient App",
+  tagline: "Clinicians & patients",
+  description: "One connected pair of apps: the clinician and the patient each have their own, and the care between visits runs through both.",
+  summary: "A connected pair of apps for the clinician and the patient, so the care between visits runs through both.",
+  imageAlt: "",
+  href: "/product-suite#platforms",
+  action: "Explore product",
+  hint: "In the suite",
+};
+
+const surgical: RoleProduct = {
+  ...item("surgical-assistant"),
+  summary: "Real-time visual overlays and guidance in the surgeon's field of view, with structured data captured from every procedure.",
+};
+const slitLamp: RoleProduct = {
+  ...item("slit-lamp-module"),
+  summary: "Captures each examination, highlights relevant findings in real time and files structured records into the patient history.",
+};
+const system: RoleProduct = {
+  ...product("ai-powered-emr", "The ChakraVue System's patient dashboard."),
+  summary: "Imaging, device output and clinical notes on one timeline, built around ophthalmic workflows.",
+};
+const gaming: RoleProduct = {
+  ...item("gaming"),
+  summary: "Supports skill development and surgical training through gaming-based experiences.",
+};
+const integratedDevices: RoleProduct = {
+  ...product("integrated-devices", "The Integrated Devices connectivity module."),
+  summary: "Connects the equipment you already own and routes its data into your patient records in real time.",
+};
+
 /**
- * Home's "Who are you here as?" (RoleShowcase.tsx, owner's brief 2026-10-29):
- * three visitors and the products most relevant to each. Products come from
- * the mapping above (and so from product-suite/data.ts); each `summary`
- * paraphrases that product's own description and claims nothing more. Add a
- * role or a product here; the component needs no change.
+ * Home's "Who are you here as?" (RoleShowcase.tsx; eight audiences since
+ * 2026-10-31): each visitor, the products most relevant to them and their
+ * next steps. Products come from the mapping above, product-suite/data.ts
+ * and platforms.ts; each `summary` paraphrases that product's own
+ * description and claims nothing more. The distributor and OEM roles list
+ * the products to ask about, not a promise that each is offered that way.
+ * Add a role or a product here; the component needs no change.
  */
 export const roles: Role[] = [
   {
     id: "clinicians",
     label: "Clinicians",
+    article: "a",
+    noun: "Clinician",
     line: "Bring clinical precision and real-time intelligence into your ophthalmic practice.",
-    products: [
-      {
-        ...item("surgical-assistant"),
-        summary: "Real-time visual overlays and guidance in the surgeon's field of view, with structured data captured from every procedure.",
-      },
-      {
-        ...item("slit-lamp-module"),
-        summary: "Captures each examination, highlights relevant findings in real time and files structured records into the patient history.",
-      },
+    products: [surgical, slitLamp],
+    actions: [
+      { label: "Explore products", href: "/product-suite" },
+      { label: "Try Demo", href: demoOf("surgical-assistant") },
     ],
   },
   {
     id: "pgs",
     label: "PGs",
+    article: "a",
+    noun: "PG",
     line: "Explore a smarter way to learn, understand, and work with ophthalmic clinical information.",
     products: [
-      {
-        ...item("gaming"),
-        summary: "Supports skill development and surgical training through gaming-based experiences.",
-      },
-      {
-        ...item("slit-lamp-module"),
-        summary: "Every examination captured in high fidelity, with relevant findings highlighted as they appear.",
-      },
-      {
-        ...product("ai-powered-emr", "The ChakraVue System's patient dashboard."),
-        summary: "Imaging, device output and clinical notes on one timeline, built around ophthalmic workflows.",
-      },
+      gaming,
+      { ...slitLamp, summary: "Every examination captured in high fidelity, with relevant findings highlighted as they appear." },
+      system,
+    ],
+    actions: [
+      { label: "Explore training solutions", href: contactAbout("Training Solutions") },
+      { label: "Try Demo", href: demoOf("slit-lamp-module") },
     ],
   },
   {
     id: "researchers",
     label: "Researchers",
+    article: "a",
+    noun: "Researcher",
     line: "Explore new possibilities in ophthalmic intelligence, clinical data, and AI-assisted research.",
     products: [
       {
@@ -215,13 +271,73 @@ export const roles: Role[] = [
         summary: "From your own de-identified ChakraVue System data to a paper, poster or slides.",
         status: "Pilot",
         image: "/images/campaign/reels/research-before.webp",
-        cover: "/images/campaign/reels/research-before.webp",
         coverPosition: "50% 30%",
         imageAlt: "A researcher at a conference, notes on his lap, waiting for his turn to present.",
         href: contactAbout("Sidekick (research)"),
         action: "Ask about Sidekick",
         hint: "Talk to us",
       },
+      // Its own note says it's for planning, training and research.
+      implantPlanning,
+    ],
+    actions: [
+      { label: "Explore solutions", href: "/product-suite" },
+      { label: "Contact us", href: contactAbout("Sidekick (research)") },
+    ],
+  },
+  {
+    id: "oems",
+    label: "OEMs",
+    article: "an",
+    noun: "OEM",
+    line: "Add software capabilities to the microscopes and devices you build.",
+    products: [{ ...item("microscope-integrations"), summary: "Software integrations for manufacturers who want to add software capabilities to their microscopes." }],
+    actions: [{ label: "Explore OEM partnerships", href: contactAbout("OEM Partnership") }],
+  },
+  {
+    id: "distributors",
+    label: "Distributors",
+    article: "a",
+    noun: "Distributor",
+    line: "Talk to us about distributing our ophthalmic products in your region.",
+    products: [surgical, slitLamp],
+    actions: [{ label: "Become a distributor", href: contactAbout("Distribution") }],
+  },
+  {
+    id: "institutions",
+    label: "Institutions",
+    article: "an",
+    noun: "Institution",
+    line: "Clinical documentation, training and research tools for teaching institutions.",
+    products: [system, gaming, implantPlanning],
+    actions: [
+      { label: "Explore solutions", href: "/product-suite" },
+      { label: "Request a consultation", href: contactAbout("Training Solutions") },
+    ],
+  },
+  {
+    id: "hospitals",
+    label: "Hospitals",
+    article: "a",
+    noun: "Hospital",
+    line: "Clinical workflows, connected equipment and patient records in one place.",
+    products: [system, integratedDevices, doctorPatientApp],
+    actions: [
+      { label: "Explore healthcare solutions", href: "/product-suite" },
+      { label: "Try Demo", href: demoOf("ai-powered-emr") },
+    ],
+  },
+  {
+    id: "dental",
+    label: "Dental clinicians",
+    article: "a",
+    noun: "Dental Clinician",
+    line: "Plan implants patient by patient, with the jaw in 3D and the nerve in view.",
+    products: [implantPlanning],
+    actions: [
+      { label: "Explore dental solutions", href: "/product-suite#platforms" },
+      // No dental demo card on Try Demo yet: ask through Contact.
+      { label: "Try Demo", href: contactAbout("Dental Solutions") },
     ],
   },
 ];

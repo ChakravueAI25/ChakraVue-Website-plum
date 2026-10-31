@@ -10,21 +10,25 @@ import "./roles.css";
 const compact = typeof window !== "undefined" && window.matchMedia("(max-width: 700px)").matches;
 
 /**
- * "Who are you here as?" (Home; redesigned 2026-10-30 as a product
- * discovery block): a compact introduction, the three roles as selectable
- * cards in one row, then the products for the chosen role in an even grid
- * that fits however many there are (one, two or three), then the software
- * platforms and the link to the whole suite.
+ * "Who are you here as?" (Home; an audience selector since 2026-10-31): the
+ * heading, then a question whose audience rolls ("Are you a Clinician?",
+ * "Are you an OEM?", ...), the audiences as pills, the chosen audience's
+ * products in an even grid (one, two or three), and its next steps.
  *
- * The roles and their products are `roles` in shared/data/audiences.ts.
- * Every role's products share one grid cell, so on wider screens changing
- * role never moves the page; the old set fades out and the new one rises a
- * few pixels in. The roles play by themselves there: the active card's bar
- * fills, and when it ends the next role comes in, so the bar is the only
- * timer. Picking a role restarts it. Pointing at the cards or the products,
- * keyboard focus inside, the pause button, the section being off screen or
- * the tab being hidden all pause it. On phones and under reduced motion
- * nothing changes by itself.
+ * One state drives it all: `active`. The question's word, its article, the
+ * line, the products and the actions are each a stack of every audience's
+ * version in one grid cell, and `active` only says which is shown, so they
+ * change together and the layout never moves (each stack is as big as its
+ * largest member). Every product picture is in the page from the start, so
+ * nothing reloads as the audiences change.
+ *
+ * The audiences play by themselves on wider screens: the active pill's bar
+ * fills, and when it ends the next audience comes in, so the bar is the
+ * only timer. Picking one restarts it. Pointing at the pills, products or
+ * actions, keyboard focus inside, the pause button, the section being off
+ * screen or the tab being hidden all pause it. On phones and under reduced
+ * motion nothing changes by itself. The roles and their products are
+ * `roles` in shared/data/audiences.ts.
  */
 export function RoleShowcase() {
   const ref = useRef<HTMLElement>(null);
@@ -38,6 +42,7 @@ export function RoleShowcase() {
   const [hidden, setHidden] = useState(document.hidden);
   const count = roles.length;
   const autoplay = !reduceMotion && !compact;
+  const role = roles[active];
 
   useEffect(() => {
     const section = ref.current;
@@ -68,6 +73,9 @@ export function RoleShowcase() {
     choose(next);
     ref.current?.querySelectorAll<HTMLElement>(".role__tab")[next]?.focus();
   };
+
+  /** A stack's member: shown when it's the active audience's. */
+  const state = (i: number) => (i === active ? " is-active" : "");
 
   return (
     <section
@@ -124,56 +132,64 @@ export function RoleShowcase() {
         </header>
 
         <div className="role__explore" {...hover}>
-          <div className="role__control">
-            <div className="role__tabs" role="tablist" aria-label="Who are you?" onKeyDown={onKeyDown}>
-              {roles.map((r, i) => {
-                const on = i === active;
-                return (
-                  <button
-                    key={r.id}
-                    id={`role-tab-${r.id}`}
-                    type="button"
-                    role="tab"
-                    className={`role__tab${on ? " is-active" : ""}`}
-                    aria-selected={on}
-                    aria-controls={`role-panel-${r.id}`}
-                    tabIndex={on ? 0 : -1}
-                    onClick={() => choose(i)}
-                  >
-                    <span className="role__tab-top">
-                      <span className="role__tab-index">{String(i + 1).padStart(2, "0")}</span>
-                      {/* Hollow when idle, filled when chosen: the state reads without colour. */}
-                      <span className="role__mark" aria-hidden="true" />
+          {/* The question: "Are you" stays; the audience, with its article, rolls. Screen readers get one plain
+              sentence, not announced as it changes (it changes every few seconds). */}
+          <div className="role__ask" data-motion="own">
+            <p className="role__question">
+              <span className="sr-only">
+                Are you {role.article} {role.noun}?
+              </span>
+              <span className="role__q" aria-hidden="true">
+                <span>Are you</span>{" "}
+                <span className="role__roll">
+                  {roles.map((r, i) => (
+                    <span key={r.id} className={`role__roll-item${state(i)}`}>
+                      {r.article} <span className="role__noun">{r.noun}</span>?
                     </span>
-                    <span className="role__tab-label">{r.label}</span>
-                    <span className="role__tab-line">{r.line}</span>
-                    <span className="role__tab-meta">
-                      {r.products.length} {r.products.length === 1 ? "product" : "products"}
-                    </span>
-                    <span className="role__bar" aria-hidden="true">
-                      {on && (
-                        <span
-                          key={run}
-                          className={`role__fill${autoplay ? "" : " is-still"}`}
-                          style={autoplay ? { animationPlayState: playing ? "running" : "paused" } : undefined}
-                          onAnimationEnd={autoplay ? () => setActive((active + 1) % count) : undefined}
-                        />
-                      )}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Phones show the chosen role's line here instead of inside the cards. */}
-            <div className="role__lead" data-motion="own">
+                  ))}
+                </span>
+              </span>
+            </p>
+            <div className="role__lines">
               {roles.map((r, i) => (
-                <p key={r.id} className={`role__lead-line${i === active ? " is-active" : ""}`} aria-hidden="true">
+                <p key={r.id} className={`role__line${state(i)}`} aria-hidden={i !== active}>
                   {r.line}
                 </p>
               ))}
             </div>
+          </div>
 
+          <div className="role__tabs" role="tablist" aria-label="Who are you?" onKeyDown={onKeyDown}>
+            {roles.map((r, i) => {
+              const on = i === active;
+              return (
+                <button
+                  key={r.id}
+                  id={`role-tab-${r.id}`}
+                  type="button"
+                  role="tab"
+                  className={`role__tab${on ? " is-active" : ""}`}
+                  aria-selected={on}
+                  aria-controls={`role-panel-${r.id}`}
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => choose(i)}
+                >
+                  {/* Hollow when idle, filled when chosen: the state reads without colour. */}
+                  <span className="role__mark" aria-hidden="true" />
+                  <span className="role__tab-label">{r.label}</span>
+                  <span className="role__bar" aria-hidden="true">
+                    {on && (
+                      <span
+                        key={run}
+                        className={`role__fill${autoplay ? "" : " is-still"}`}
+                        style={autoplay ? { animationPlayState: playing ? "running" : "paused" } : undefined}
+                        onAnimationEnd={autoplay ? () => setActive((active + 1) % count) : undefined}
+                      />
+                    )}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="role__stage" data-motion="own">
@@ -183,22 +199,21 @@ export function RoleShowcase() {
                 id={`role-panel-${r.id}`}
                 role="tabpanel"
                 aria-labelledby={`role-tab-${r.id}`}
-                className={`role__products${i === active ? " is-active" : ""}`}
+                className={`role__products${state(i)}`}
                 data-count={Math.min(r.products.length, 3)}
                 aria-hidden={i !== active}
                 inert={i !== active}
               >
-                {r.products.length === 0 ? (
-                  <div className="role__empty">
-                    <p>Products for {r.label.toLowerCase()} are on their way.</p>
-                    <Link href="/contact-us" className="hsec-link">
-                      Tell us what you need <span aria-hidden="true">→</span>
-                    </Link>
-                  </div>
-                ) : (
-                  r.products.map((p) => (
-                    <Link key={p.key} href={p.href} className="role__product" data-spotlight>
-                      <span className="role__media">
+                {r.products.map((p, n) => (
+                  <Link
+                    key={p.key}
+                    href={p.href}
+                    className="role__product"
+                    data-spotlight
+                    style={{ "--n": n } as CSSProperties}
+                  >
+                    <span className={`role__media${p.image ? "" : " role__media--plain"}`}>
+                      {p.image ? (
                         <img
                           src={p.image}
                           alt={p.imageAlt}
@@ -206,22 +221,41 @@ export function RoleShowcase() {
                           decoding="async"
                           style={{ objectPosition: p.coverPosition } as CSSProperties}
                         />
-                      </span>
-                      <span className="role__product-body">
-                        <span className="role__product-tag">{p.tagline}</span>
-                        <span className="role__product-name">
-                          <BrandText text={p.name} />
-                          {p.status && <span className="role__status">{p.status}</span>}
+                      ) : (
+                        // Software platforms have no picture yet: their category on a lit panel.
+                        <span className="role__plain" aria-hidden="true">
+                          <span className="role__plain-ring" />
+                          <span className="role__plain-tag">{p.tagline}</span>
                         </span>
-                        <span className="role__product-line">{p.summary}</span>
-                        <span className="role__product-cta">
-                          {p.href.startsWith("/product-suite") ? "Explore product" : p.action}
-                          <span aria-hidden="true">→</span>
-                        </span>
+                      )}
+                    </span>
+                    <span className="role__product-body">
+                      <span className="role__product-tag">{p.tagline}</span>
+                      <span className="role__product-name">
+                        <BrandText text={p.name} />
+                        {p.status && <span className="role__status">{p.status}</span>}
                       </span>
-                    </Link>
-                  ))
-                )}
+                      <span className="role__product-line">{p.summary}</span>
+                      <span className="role__product-cta">
+                        {p.href.startsWith("/product-suite") ? "Know more" : p.action}
+                        <span aria-hidden="true">→</span>
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* The chosen audience's next steps, stacked like the products. */}
+          <div className="role__actions-stack" data-motion="own">
+            {roles.map((r, i) => (
+              <div key={r.id} className={`role__actions${state(i)}`} aria-hidden={i !== active} inert={i !== active}>
+                {r.actions.map((a, n) => (
+                  <Link key={a.label} href={a.href} className={`role__action${n === 0 ? " role__action--primary" : ""}`}>
+                    {a.label} <span aria-hidden="true">→</span>
+                  </Link>
+                ))}
               </div>
             ))}
           </div>
